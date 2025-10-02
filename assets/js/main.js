@@ -370,6 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- EVENT LISTENERS ---
 
   document.addEventListener("click", (e) => {
+    // Navigasi halaman utama
     const pageLink = e.target.closest(".page-link");
     if (pageLink) {
       e.preventDefault();
@@ -382,16 +383,68 @@ document.addEventListener("DOMContentLoaded", () => {
         .querySelectorAll(`.nav-link[data-page="${page}"]`)
         .forEach((l) => l.classList.add("active"));
       closeSidebar();
+      return;
     }
 
+    // Tombol "Pesan Layanan ini" dari halaman Layanan
     const orderFromServiceBtn = e.target.closest(".order-from-service-btn");
     if (orderFromServiceBtn) {
       e.preventDefault();
       loadPage("pemesanan", orderFromServiceBtn.dataset.categorySlug);
+      return;
     }
 
+    // Pemicu modal pembayaran
     if (e.target.closest(".payment-modal-trigger")) {
       showPaymentModal(e.target.closest(".payment-modal-trigger").dataset.pay);
+      return;
+    }
+
+    // --- PERBAIKAN: Event delegation untuk tombol kategori di halaman Pemesanan ---
+    const orderCatBtn = e.target.closest(".order-category-btn");
+    if (orderCatBtn && document.getElementById("order-category-cards")) {
+      document
+        .querySelectorAll(".order-category-btn")
+        .forEach((b) =>
+          b.classList.remove(
+            "active",
+            "bg-brand-orange-100",
+            "border-brand-orange-500"
+          )
+        );
+      orderCatBtn.classList.add(
+        "active",
+        "bg-brand-orange-100",
+        "border-brand-orange-500"
+      );
+      const categorySlug = orderCatBtn.dataset.categorySlug;
+      if (categorySlug === "custom") {
+        renderCustomServiceForm();
+      } else {
+        renderOrderItems(categorySlug);
+      }
+      updateProcessIndicator(1);
+      return;
+    }
+
+    // --- PERBAIKAN: Event delegation untuk tombol navigasi di halaman Layanan ---
+    const layananNavBtn = e.target.closest(".layanan-nav-btn");
+    if (layananNavBtn && document.getElementById("layanan-section-container")) {
+      const slug = layananNavBtn.dataset.serviceSlug;
+      if (layananNavBtn.closest("#layanan-accordion-mobile")) {
+        const wasActive = layananNavBtn.classList.contains("active");
+        // Tutup semua accordion
+        document
+          .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
+          .forEach((b) => b.classList.remove("active"));
+        // Buka yang diklik jika sebelumnya tertutup
+        if (!wasActive) {
+          layananNavBtn.classList.add("active");
+        }
+      } else {
+        updateLayananContent(slug);
+      }
+      return;
     }
   });
 
@@ -504,24 +557,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     lucide.createIcons();
     updateLayananContent("harian");
-
-    document
-      .getElementById("layanan-section-container")
-      .addEventListener("click", (e) => {
-        const btn = e.target.closest(".layanan-nav-btn");
-        if (!btn) return;
-        const slug = btn.dataset.serviceSlug;
-
-        if (btn.closest("#layanan-accordion-mobile")) {
-          const wasActive = btn.classList.contains("active");
-          document
-            .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
-            .forEach((b) => b.classList.remove("active"));
-          if (!wasActive) btn.classList.add("active");
-        } else {
-          updateLayananContent(slug);
-        }
-      });
   }
 
   function updateLayananContent(slug) {
@@ -585,29 +620,6 @@ document.addEventListener("DOMContentLoaded", () => {
       </button>`;
     orderCategoryCardsContainer.innerHTML = cardHtml;
     lucide.createIcons();
-
-    orderCategoryCardsContainer.addEventListener("click", (e) => {
-      const btn = e.target.closest(".order-category-btn");
-      if (!btn) return;
-      document
-        .querySelectorAll(".order-category-btn")
-        .forEach((b) =>
-          b.classList.remove(
-            "active",
-            "bg-brand-orange-100",
-            "border-brand-orange-500"
-          )
-        );
-      btn.classList.add(
-        "active",
-        "bg-brand-orange-100",
-        "border-brand-orange-500"
-      );
-      const categorySlug = btn.dataset.categorySlug;
-      if (categorySlug === "custom") renderCustomServiceForm();
-      else renderOrderItems(categorySlug);
-      updateProcessIndicator(1);
-    });
 
     orderFormItemsContainer.addEventListener("change", (e) => {
       const t = e.target;
