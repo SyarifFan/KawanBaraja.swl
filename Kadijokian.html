@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KADIJOKIAN - Solusi Cepat & Praktis untuk Semua Tugasmu</title>
+
+  <!-- Tailwind & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'sans-serif'],
+            'display': ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            'brand-orange': {'50':'#fff7ed','100':'#ffedd5','200':'#fed7aa','300':'#fdba74','400':'#fb923c','500':'#f97316','600':'#ea580c','700':'#c2410c','800':'#9a3412','900':'#7c2d12'},
+            'brand-blue':   {'50':'#eff6ff','100':'#dbeafe','200':'#bfdbfe','300':'#93c5fd','400':'#60a5fa','500':'#3b82f6','600':'#2563eb','700':'#1d4ed8','800':'#1e40af','900':'#1e3a8a'},
+            'brand-green':  {'500':'#10b981','600':'#059669'},
+            'brand-purple': {'500':'#8b5cf6','600':'#7c3aed'},
+            'brand-pink':   {'500':'#ec4899','600':'#db2777'},
+            'brand-teal':   {'500':'#14b8a6','600':'#0d9488'},
+            'brand-amber':  {'500':'#f59e0b','600':'#d97706'}
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body{font-family:'Inter',sans-serif;overflow-x:hidden; background-color: #f8fafc;}
+    h1, h2, h3, h4, .font-display {font-family:'Poppins',sans-serif;}
+
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:#f1f1f1}
+    ::-webkit-scrollbar-thumb{background:#ffedd5;border-radius:10px}
+    ::-webkit-scrollbar-thumb:hover{background:#fdba74}
+
+    /* Pencegahan FOUC (Flash of Unstyled Content) */
+    #main-content { opacity: 0; transition: opacity 400ms ease-in-out; }
+    #main-content.loaded { opacity: 1; }
+
+    .page-section{display:none;animation:fadeInPage .6s ease-in-out}
+    .page-section.active{display:block}
+    @keyframes fadeInPage{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .nav-link.active{color:#f97316;font-weight:700}
+
+    .animated-text-container span{display:inline-block;opacity:0;transform:translateY(10px);animation:fadeInText .5s forwards}
+    @keyframes fadeInText{to{opacity:1;transform:translateY(0)}}
+
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+    .animate-float{animation:float 4s ease-in-out infinite}
+
+    .fab-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:40}
+    .fab-main-btn-anim{animation:bounce-fab 2.5s infinite ease-in-out}
+    @keyframes bounce-fab{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.05)}}
+    .fab-options{display:flex;flex-direction:column;align-items:center;gap:1rem;position:absolute;bottom:5rem;left:50%;transform:translateX(-50%)}
+    .fab-options a{box-shadow:0 4px 14px rgba(0,0,0,.15);transition:transform .3s ease,opacity .3s ease;opacity:0;transform:translateY(10px);pointer-events:none}
+    .fab-container.open .fab-options a{opacity:1;transform:translateY(0);pointer-events:auto}
+    .fab-container.open .fab-options a:nth-child(1){transition-delay:.3s}
+    .fab-container.open .fab-options a:nth-child(2){transition-delay:.2s}
+    .fab-container.open .fab-options a:nth-child(3){transition-delay:.1s}
+    .fab-container.open .fab-options a:nth-child(4){transition-delay:0s}
+    .fab-options a:hover{transform:scale(1.1)}
+
+    .faq-answer{max-height:0;overflow:hidden;transition:max-height .5s ease-in-out}
+
+    .sidebar-enter{transform:translateX(-100%)}
+    .sidebar-enter.sidebar-open{transform:translateX(0)}
+
+    /* Testimonial Slider */
+    .testimonial-slider { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    .testimonial-slider::-webkit-scrollbar { display: none; }
+    .testimonial-slide { scroll-snap-align: center; }
+
+    /* Modal Styles */
+    .modal-backdrop { transition: opacity 0.3s ease-in-out; }
+    .modal-content { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; }
+    .modal-hidden { visibility: hidden; opacity: 0; pointer-events: none; }
+    .modal-visible { visibility: visible; opacity: 1; pointer-events: auto; }
+    .modal-hidden .modal-content { transform: scale(0.95); opacity: 0; }
+    .modal-visible .modal-content { transform: scale(1); opacity: 1; }
+
+    /* Layanan Accordion for Mobile */
+    .layanan-desc-mobile { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out; padding-top: 0; padding-bottom: 0; }
+    .layanan-nav-btn.active + .layanan-desc-mobile { max-height: 500px; padding-top: 1rem; padding-bottom: 1rem; }
+    .layanan-nav-btn.active .accordion-icon { transform: rotate(180deg); }
+
+    /* Hide number input arrows */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+    
+    /* Order/Layanan category button hover effect */
+    .order-category-btn, .layanan-nav-btn { transition: transform 0.2s ease-in-out; }
+    .order-category-btn:hover, .layanan-nav-btn:hover { transform: scale(1.02); }
+    
+    /* Tooltip Styles */
+    .tooltip-container { position: relative; cursor: pointer; }
+    .tooltip-text {
+      visibility: hidden;
+      width: 140px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 6px 8px;
+      position: absolute;
+      z-index: 10;
+      bottom: 135%;
+      left: 50%;
+      transform: translateX(-50%); 
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      font-size: 12px;
+      font-weight: 500;
+      pointer-events: none;
+    }
+    #process-indicator .tooltip-container:first-child .tooltip-text {
+        left: 0;
+        transform: translateX(0);
+    }
+    #process-indicator .tooltip-container:last-child .tooltip-text {
+        left: auto;
+        right: 0;
+        transform: translateX(0);
+    }
+    .tooltip-container:hover .tooltip-text,
+    .tooltip-container.tooltip-active .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+  <!-- Main Content, now visible by default -->
+  <div id="main-content">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <a href="#" data-page="beranda" class="flex items-center space-x-3 page-link">
+            <div class="bg-brand-orange-500 text-white p-2 rounded-lg shadow-md">
+              <i data-lucide="graduation-cap"></i>
+            </div>
+            <span class="text-2xl font-extrabold text-brand-orange-600 font-display">KADIJOKIAN</span>
+          </a>
+
+          <!-- Desktop nav -->
+          <nav class="hidden md:flex items-center space-x-6">
+            <a href="#" data-page="layanan" class="nav-link page-link hover:text-brand-orange-500 transition-colors font-semibold">Layanan</a>
+            <a href="#" data-page="pemesanan" class="nav-link page-link hover:text-brand-orange-500 transition-colors font-semibold">Pemesanan</a>
+            <a href="#" data-page="tentang" class="nav-link page-link hover:text-brand-orange-500 transition-colors font-semibold">Tentang Kami</a>
+            <a href="#" data-page="faq" class="nav-link page-link hover:text-brand-orange-500 transition-colors font-semibold">FAQ</a>
+            <a href="#" data-page="kontak" class="nav-link page-link hover:text-brand-orange-500 transition-colors font-semibold">Kontak</a>
+          </nav>
+
+          <!-- Mobile hamburger -->
+          <button id="open-sidebar" class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-orange-300" aria-label="Buka menu">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile Sidebar -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/30 z-50 hidden"></div>
+    <aside id="mobile-sidebar" class="fixed inset-y-0 left-0 w-72 bg-white shadow-xl z-50 sidebar-enter transition-transform duration-300 ease-out">
+      <div class="flex items-center justify-between px-4 h-16 border-b">
+        <span class="font-semibold text-brand-orange-600 font-display">Menu</span>
+        <button id="close-sidebar" class="p-2 rounded-md hover:bg-gray-100" aria-label="Tutup menu">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <nav class="p-4 space-y-1">
+        <a href="#" data-page="beranda" class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium">Beranda</a>
+        <a href="#" data-page="layanan" class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium">Layanan</a>
+        <a href="#" data-page="pemesanan" class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium">Pemesanan</a>
+        <a href="#" data-page="tentang" class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium">Tentang Kami</a>
+        <a href="#" data-page="faq" class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium">FAQ</a>
+        <a href="#" data-page="kontak" class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium">Kontak</a>
+      </nav>
+    </aside>
+
+    <main class="flex-grow">
+      <!-- Beranda -->
+      <section id="beranda" class="page-section">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="md:w-1/2 text-center md:text-left">
+              <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-brand-orange-600 leading-tight font-display">Tugas & Deadline Bikin Pusing?</h1>
+              <p id="animated-text" class="animated-text-container mt-4 text-lg sm:text-xl lg:text-2xl text-gray-700 max-w-xl"></p>
+              <button data-page="pemesanan" class="page-link mt-8 inline-flex items-center gap-2 bg-brand-orange-500 text-white font-extrabold py-3 px-8 rounded-full text-lg hover:bg-brand-orange-600 transition-transform transform hover:scale-105 shadow-lg font-display">
+                <i data-lucide="shopping-cart" class="w-5 h-5"></i> Pesan Sekarang
+              </button>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+              <img src="Mahasiswa.png" alt="Ilustrasi Mahasiswa" class="w-3/4 md:w-full max-w-md animate-float"/>
+            </div>
+          </div>
+
+          <!-- Statistik -->
+          <section id="statistik" class="mt-16 bg-white py-12 rounded-2xl shadow-lg">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              <div>
+                <i data-lucide="file-text" class="w-10 h-10 mx-auto text-brand-blue-600 mb-3"></i>
+                <p class="text-3xl font-extrabold text-gray-800 counter font-display" data-target="28593">0</p>
+                <p class="text-gray-700 font-semibold">Project Selesai</p>
+              </div>
+              <div>
+                <i data-lucide="graduation-cap" class="w-10 h-10 mx-auto text-brand-orange-600 mb-3"></i>
+                <p class="text-3xl font-extrabold text-gray-800 counter font-display" data-target="127">0</p>
+                <p class="text-gray-700 font-semibold">Universitas Berbeda</p>
+              </div>
+              <div>
+                <i data-lucide="school" class="w-10 h-10 mx-auto text-brand-green-600 mb-3"></i>
+                <p class="text-3xl font-extrabold text-gray-800 counter font-display" data-target="269">0</p>
+                <p class="text-gray-700 font-semibold">Sekolah Berbeda</p>
+              </div>
+              <div>
+                <i data-lucide="building" class="w-10 h-10 mx-auto text-brand-purple-600 mb-3"></i>
+                <p class="text-3xl font-extrabold text-gray-800 counter font-display" data-target="173">0</p>
+                <p class="text-gray-700 font-semibold">Instansi Berbeda</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Donasi - Beranda -->
+          <section class="mt-16 bg-white p-6 md:p-10 rounded-2xl shadow-lg">
+            <div class="flex items-start gap-6">
+              <div class="shrink-0">
+                <div class="bg-green-100 text-green-700 p-3 rounded-xl inline-block">
+                  <i data-lucide="hand-coins" class="w-7 h-7"></i>
+                </div>
+              </div>
+              <div class="flex-1">
+                <h2 class="text-3xl font-extrabold text-brand-blue-700 font-display">Dukungan & Donasi</h2>
+                <p class="mt-2 text-gray-700 leading-relaxed">Bantu kami terus berkembang dan menyediakan layanan edukatif yang terjangkau. Pilih metode di bawah untuk berdonasi.</p>
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <button class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border" data-pay="gopay">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay logo" class="w-12"/>
+                    <span class="font-semibold text-sm">Lihat Detail GoPay</span>
+                  </button>
+                  <button class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border" data-pay="bsi">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bank_Syariah_Indonesia.svg/2560px-Bank_Syariah_Indonesia.svg.png" alt="BSI logo" class="w-12"/>
+                    <span class="font-semibold text-sm">Lihat Detail BSI</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Map section -->
+          <div class="mt-16 bg-white p-6 md:p-10 rounded-2xl shadow-lg">
+            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+              <div class="md:w-1/2">
+                <h2 class="text-3xl font-extrabold text-brand-blue-700 font-display">Temukan Lokasi Kami</h2>
+                <p class="mt-2 text-gray-700 mb-6">Kami berbasis di Sawahlunto, Sumatera Barat. Hubungi kami secara online kapan pun.</p>
+                <ul class="space-y-3 text-gray-700">
+                  <li class="flex items-start gap-3">
+                    <i data-lucide="map-pin" class="w-5 h-5 text-brand-orange-500 flex-shrink-0 mt-1"></i>
+                    <span>Dekat SMPN 6 Muaro Kalaban, Kota Sawahlunto.</span>
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <i data-lucide="clock" class="w-5 h-5 text-brand-orange-500"></i>
+                    <span>Buka Setiap Hari (dengan janji temu)</span>
+                  </li>
+                </ul>
+                <a href="https://maps.app.goo.gl/wGinCsRHZHkEnzUR9" target="_blank" class="mt-6 inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-brand-blue-600 transition-all shadow">Lihat di Google Maps</a>
+              </div>
+              <div class="md:w-1/2 w-full">
+                <div class="relative border-4 border-white rounded-xl shadow-lg overflow-hidden">
+                  <div class="relative w-full h-0 pb-[60%]">
+                    <iframe class="absolute inset-0 w-full h-full" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.4312196621943!2d100.7766185759325!3d-0.6865007994336186!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e2b3238914a8775%3A0x705296813a34a8e3!2sSyariffan!5e0!3m2!1sen!2sid!4v1726322045558!5m2!1sen!2sid" style="border:0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Layanan -->
+      <section id="layanan" class="page-section py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-brand-blue-700 font-display">Layanan Kami</h2>
+            <p class="mt-2 text-gray-700">Pilih kategori untuk melihat detail layanan yang kami tawarkan.</p>
+          </div>
+          <div class="flex flex-col md:flex-row gap-8">
+            <!-- For Desktop: Nav on Left -->
+            <div id="layanan-nav-desktop" class="hidden md:block md:w-1/3 space-y-2"></div>
+            <!-- For Desktop: Content on Right -->
+            <div id="layanan-content-desktop" class="hidden md:block md:w-2/3 bg-white p-8 rounded-xl shadow-md min-h-[420px]"></div>
+            <!-- For Mobile: Accordion Style -->
+            <div id="layanan-accordion-mobile" class="md:hidden w-full space-y-3"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pemesanan -->
+      <section id="pemesanan" class="page-section py-16 bg-blue-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-brand-orange-600 font-display">Formulir Pemesanan</h2>
+          </div>
+
+          <div id="process-indicator" class="flex justify-center items-center gap-2 md:gap-4 mb-8"></div>
+
+          <div class="flex flex-col lg:flex-row gap-8">
+            <div class="lg:w-2/3 space-y-6">
+              <div id="order-category-cards" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+              <div id="order-form-items" class="bg-white p-6 rounded-xl shadow-md min-h-[320px]">
+                <div id="order-placeholder" class="flex flex-col items-center justify-center h-full text-center text-gray-500">
+                  <i data-lucide="mouse-pointer-click" class="w-16 h-16 mb-4"></i>
+                  <p class="font-semibold">Pilih kategori layanan di atas</p>
+                  <p class="text-sm">Daftar item akan muncul di sini.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="lg:w-1/3">
+              <div class="sticky top-24 bg-white p-6 rounded-xl shadow-md">
+                <div class="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
+                  <h3 class="text-xl font-extrabold font-display flex items-center gap-2">
+                    Ringkasan Pesanan
+                    <i data-lucide="shopping-basket"></i>
+                  </h3>
+                  <button id="cancel-all-btn" title="Batalkan Semua Pesanan" class="text-red-500 hover:text-red-700 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors" disabled>
+                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                  </button>
+                </div>
+                <div class="mb-4 min-h-[50px] max-h-40 overflow-y-auto">
+                    <div id="cart-items-list" class="space-y-3"></div>
+                    <p id="empty-cart-message" class="text-gray-500">Keranjang masih kosong...</p>
+                </div>
+
+                <!-- Metode Pembayaran -->
+                <div class="border-t pt-4 mt-4 border-gray-200">
+                  <h4 class="font-bold mb-3 flex items-center gap-2">
+                    <i data-lucide="wallet-cards" class="w-5 h-5"></i> Metode Pembayaran
+                  </h4>
+                  <div class="grid grid-cols-2 gap-3">
+                    <button class="payment-modal-trigger flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 p-2 rounded-lg border" data-pay="gopay">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay logo" class="h-4"/>
+                    </button>
+                    <button class="payment-modal-trigger flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 p-2 rounded-lg border" data-pay="bsi">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bank_Syariah_Indonesia.svg/2560px-Bank_Syariah_Indonesia.svg.png" alt="BSI logo" class="h-4"/>
+                    </button>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-2">Klik untuk melihat detail pembayaran.</p>
+                </div>
+
+                <div class="border-t pt-4 mt-4 border-gray-200 space-y-2">
+                  <div class="flex justify-between items-center text-sm">
+                    <span>Subtotal:</span><span id="subtotal-price" class="font-medium">Rp 0</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm">
+                    <span>Diskon:</span><span id="discount-amount" class="text-green-600 font-medium">Rp 0</span>
+                  </div>
+                  <div class="flex justify-between items-center font-extrabold text-lg font-display">
+                    <span>Total Akhir:</span><span id="total-price" class="text-brand-orange-600">Rp 0</span>
+                  </div>
+                  <button id="checkout-btn" class="mt-6 w-full bg-brand-orange-500 text-white font-extrabold py-3 px-6 rounded-lg hover:bg-brand-orange-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center gap-2 font-display" disabled>
+                    <i data-lucide="send" class="w-5 h-5"></i> Selesai & Pesan
+                  </button>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-200 space-y-4">
+                  <div>
+                    <label for="customer-comments" class="block text-sm font-semibold text-gray-700">Catatan Tambahan</label>
+                    <textarea id="customer-comments" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm" placeholder="Contoh: Tolong gunakan referensi 5 tahun terakhir."></textarea>
+                  </div>
+                  <div>
+                    <label for="discount-request" class="block text-sm font-semibold text-gray-700">Permintaan Diskon (Rp)</label>
+                    <input id="discount-request" type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm" placeholder="Opsional, misal: 10000"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tentang -->
+      <section id="tentang" class="page-section py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-brand-blue-700 font-display">Tentang Kami</h2>
+            <p class="mt-2 text-gray-700">Perjalanan & dedikasi di balik KADIJOKIAN.</p>
+          </div>
+
+          <div class="bg-white p-8 rounded-2xl shadow-lg flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            <div class="md:w-1/3 text-center flex-shrink-0">
+              <img src="Syariffan.png" alt="Foto Syariffan, S.Pd" class="w-40 h-40 rounded-full mx-auto object-cover shadow-lg border-4 border-brand-orange-200"/>
+              <h3 class="mt-4 text-2xl font-extrabold text-brand-orange-600 font-display">Syariffan, S.Pd</h3>
+              <p class="text-gray-600 font-medium">Founder KADIJOKIAN</p>
+              <p class="text-sm mt-2"><i data-lucide="map-pin" class="inline w-4 h-4 mr-1"></i>Sawahlunto, Sumatera Barat</p>
+            </div>
+            <div class="md:w-2/3 border-t-2 md:border-t-0 md:border-l-2 border-dashed border-gray-300 pt-8 md:pt-0 md:pl-8">
+              <p id="rotating-quote" class="text-gray-700 leading-relaxed mb-6 italic"></p>
+              <div class="space-y-5">
+                <div class="flex items-start gap-4">
+                  <div class="bg-brand-blue-100 text-brand-blue-600 p-2 rounded-full"><i data-lucide="rocket"></i></div>
+                  <div>
+                    <h4 class="font-bold font-display">Misi Kami</h4>
+                    <p class="text-sm text-gray-600">Memberikan pendampingan akademik yang <strong>cepat, akurat, dan edukatif</strong>—bukan sekadar menyelesaikan tugas, tetapi juga membantu memahami konsepnya.</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div class="bg-brand-blue-100 text-brand-blue-600 p-2 rounded-full"><i data-lucide="award"></i></div>
+                  <div>
+                    <h4 class="font-bold font-display">Keahlian</h4>
+                    <p class="text-sm text-gray-600">Analisis data kuantitatif/kualitatif (SPSS/AMOS/PLS), manajemen sitasi (Mendeley/Zotero), parafrase akademik, serta proofreading sesuai gaya selingkung kampus.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimoni Baru -->
+          <div class="mt-16">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-extrabold text-brand-blue-700 font-display">Kata Mereka</h2>
+                <p class="mt-2 text-gray-700">Geser untuk melihat testimoni lainnya.</p>
+            </div>
+            <div class="relative max-w-sm mx-auto">
+              <!-- iPhone Mockup -->
+              <div class="relative mx-auto bg-black border-[10px] border-black rounded-[40px] shadow-2xl">
+                  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-xl z-10"></div>
+                  <div class="absolute -left-[13px] top-[90px] h-[40px] w-[3px] bg-gray-800 rounded-l-lg"></div>
+                  <div class="absolute -left-[13px] top-[140px] h-[70px] w-[3px] bg-gray-800 rounded-l-lg"></div>
+                  <div class="absolute -right-[13px] top-[120px] h-[70px] w-[3px] bg-gray-800 rounded-r-lg"></div>
+                  
+                  <div class="w-full h-[600px] bg-gray-200 overflow-hidden rounded-[30px]">
+                    <div id="testimonial-slider" class="testimonial-slider h-full flex overflow-x-scroll snap-x snap-mandatory">
+                      <!-- Slides here -->
+                    </div>
+                  </div>
+              </div>
+              <div id="testimonial-dots" class="flex justify-center gap-2 mt-4"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq" class="page-section py-16 bg-blue-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+          <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-brand-blue-700 font-display">Tanya Jawab (FAQ)</h2>
+            <p class="mt-2 text-gray-700">Pertanyaan yang sering diajukan oleh klien kami.</p>
+          </div>
+          <div id="faq-container" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <!-- Kontak -->
+      <section id="kontak" class="page-section py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-2xl">
+          <h2 class="text-3xl font-extrabold text-brand-blue-700 font-display">Hubungi Kami</h2>
+          <p class="mt-2 text-gray-700">Jangan ragu untuk bertanya atau sekadar menyapa!</p>
+          <div class="mt-8 bg-white p-8 rounded-xl shadow-md text-left grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <a href="#" class="contact-modal-trigger flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-100 transition-colors" data-type="whatsapp" data-name="Syariffan (Admin)" data-id="6283801343431" data-icon="message-circle" data-color="text-green-500">
+              <i data-lucide="message-circle" class="w-8 h-8 text-green-500"></i>
+              <div><p class="font-semibold">WhatsApp</p><p class="text-sm text-gray-600">0838 0134 3431</p></div>
+            </a>
+            <a href="#" class="contact-modal-trigger flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-100 transition-colors" data-type="social" data-name="Instagram" data-url="https://instagram.com/syarif_fan" data-icon="instagram" data-color="text-pink-500">
+              <i data-lucide="instagram" class="w-8 h-8 text-pink-500"></i>
+              <div><p class="font-semibold">Instagram</p><p class="text-sm text-gray-600">@syarif_fan</p></div>
+            </a>
+            <a href="#" class="contact-modal-trigger flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-100 transition-colors" data-type="social" data-name="Facebook" data-url="https://facebook.com/Syariffan" data-icon="facebook" data-color="text-blue-600">
+              <i data-lucide="facebook" class="w-8 h-8 text-blue-600"></i>
+              <div><p class="font-semibold">Facebook</p><p class="text-sm text-gray-600">Syariffan</p></div>
+            </a>
+            <a href="#" class="contact-modal-trigger flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-100 transition-colors" data-type="social" data-name="YouTube" data-url="https://www.youtube.com/@kakSyariffan" data-icon="youtube" data-color="text-red-500">
+              <i data-lucide="youtube" class="w-8 h-8 text-red-500"></i>
+              <div><p class="font-semibold">YouTube</p><p class="text-sm text-gray-600">Kak Syariffan</p></div>
+            </a>
+          </div>
+
+          <!-- Kontak Admin Lainnya -->
+          <div class="mt-8 bg-white p-6 rounded-xl shadow-md text-left">
+            <h3 class="text-xl font-extrabold flex items-center gap-2 font-display"><i data-lucide="users" class="w-5 h-5"></i> Kontak Admin Lainnya</h3>
+            <p class="text-sm text-gray-700 mt-1">Anda juga dapat menghubungi tim kami melalui kontak di bawah ini.</p>
+            <div class="grid grid-cols-1 gap-3 mt-4">
+              <a href="#" class="contact-modal-trigger flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-100 transition-colors border" data-type="whatsapp" data-name="Shintia" data-id="6282283067595" data-icon="message-circle" data-color="text-green-500">
+                <i data-lucide="message-circle" class="w-7 h-7 text-green-500"></i>
+                <div><p class="font-semibold">Shintia</p><p class="text-sm text-gray-600">0822-8306-7595</p></div>
+              </a>
+              <a href="#" class="contact-modal-trigger flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-100 transition-colors border" data-type="whatsapp" data-name="Reren" data-id="6283150556118" data-icon="message-circle" data-color="text-green-500">
+                <i data-lucide="message-circle" class="w-7 h-7 text-green-500"></i>
+                <div><p class="font-semibold">Reren</p><p class="text-sm text-gray-600">0831-5055-6118</p></div>
+              </a>
+              <a href="#" class="contact-modal-trigger flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-100 transition-colors border" data-type="whatsapp" data-name="Giska" data-id="6285265895671" data-icon="message-circle" data-color="text-green-500">
+                <i data-lucide="message-circle" class="w-7 h-7 text-green-500"></i>
+                <div><p class="font-semibold">Giska</p><p class="text-sm text-gray-600">0852-6589-5671</p></div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Donasi - Kontak -->
+          <div class="mt-8 bg-white p-6 rounded-xl shadow-md text-left">
+            <h3 class="text-xl font-extrabold flex items-center gap-2 font-display"><i data-lucide="hand-coins" class="w-5 h-5"></i> Donasi</h3>
+            <p class="text-sm text-gray-700 mt-1">Terima kasih atas dukungannya. Klik salah satu untuk melihat detail pembayaran.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+              <button class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border" data-pay="gopay">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay logo" class="w-12"/>
+                <span class="font-semibold text-sm">Lihat Detail GoPay</span>
+              </button>
+              <button class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border" data-pay="bsi">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bank_Syariah_Indonesia.svg/2560px-Bank_Syariah_Indonesia.svg.png" alt="BSI logo" class="w-12"/>
+                <span class="font-semibold text-sm">Lihat Detail BSI</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white pt-12 pb-6">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="space-y-4">
+            <a href="#" data-page="beranda" class="flex items-center justify-center md:justify-start space-x-3 page-link">
+              <div class="bg-brand-orange-500 text-white p-2 rounded-lg shadow-md"><i data-lucide="graduation-cap"></i></div>
+              <span class="text-2xl font-extrabold font-display">KADIJOKIAN</span>
+            </a>
+            <p class="text-gray-400 text-sm">Solusi cepat, praktis, dan terpercaya untuk semua kebutuhan tugas akademik Anda.</p>
+          </div>
+          <nav>
+            <h3 class="text-lg font-extrabold text-white font-display">Navigasi</h3>
+            <ul class="mt-4 space-y-2 text-sm">
+              <li><a href="#" data-page="layanan" class="page-link text-gray-300 hover:text-white transition-colors">Layanan</a></li>
+              <li><a href="#" data-page="pemesanan" class="page-link text-gray-300 hover:text-white transition-colors">Pemesanan</a></li>
+              <li><a href="#" data-page="tentang" class="page-link text-gray-300 hover:text-white transition-colors">Tentang Kami</a></li>
+              <li><a href="#" data-page="faq" class="page-link text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+              <li><a href="#" data-page="kontak" class="page-link text-gray-300 hover:text-white transition-colors">Kontak</a></li>
+            </ul>
+          </nav>
+          <div>
+            <h3 class="text-lg font-extrabold text-white font-display">Hubungi Kami</h3>
+            <ul class="mt-4 space-y-2 text-sm text-gray-300">
+              <li class="flex items-center justify-center md:justify-start gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4"></i><span>Sawahlunto, Sumatera Barat</span>
+              </li>
+              <li class="flex items-center justify-center md:justify-start gap-2">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                <a href="https://wa.me/6283801343431?text=Assalamualaikum" target="_blank" class="hover:text-white transition-colors">0838 0134 3431 (Admin)</a>
+              </li>
+              <li class="flex items-center justify-center md:justify-start gap-2">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                <a href="https://wa.me/6282283067595?text=Assalamualaikum" target="_blank" class="hover:text-white transition-colors">0822-8306-7595 (Shintia)</a>
+              </li>
+              <li class="flex items-center justify-center md:justify-start gap-2">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                <a href="https://wa.me/6283150556118?text=Assalamualaikum" target="_blank" class="hover:text-white transition-colors">0831-5055-6118 (Reren)</a>
+              </li>
+              <li class="flex items-center justify-center md:justify-start gap-2">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                <a href="https://wa.me/6285265895671?text=Assalamualaikum" target="_blank" class="hover:text-white transition-colors">0852-6589-5671 (Giska)</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
+          <p>&copy; <span id="current-year"></span> KADIJOKIAN. Dibuat dengan ❤️ oleh Syariffan, S.Pd.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- FAB -->
+    <div id="fab-container" class="fab-container">
+      <div class="fab-options">
+        <a href="https://wa.me/6283801343431" target="_blank" title="WhatsApp" class="bg-green-500 text-white p-3 rounded-full"><i data-lucide="message-circle"></i></a>
+        <a href="https://instagram.com/syarif_fan" target="_blank" title="Instagram" class="bg-gradient-to-br from-purple-500 to-pink-500 text-white p-3 rounded-full"><i data-lucide="instagram"></i></a>
+        <a href="https://facebook.com/Syariffan" target="_blank" title="Facebook" class="bg-blue-600 text-white p-3 rounded-full"><i data-lucide="facebook"></i></a>
+        <a href="https://www.youtube.com/@kakSyariffan" target="_blank" title="YouTube" class="bg-red-600 text-white p-3 rounded-full"><i data-lucide="youtube"></i></a>
+      </div>
+      <button id="fab-main-btn" class="bg-brand-orange-500 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center fab-main-btn-anim">
+        <i id="fab-icon" data-lucide="message-circle-plus" class="transition-transform duration-300"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- User Info Modal (was Welcome Screen) -->
+  <div id="user-info-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 modal-hidden">
+    <div class="modal-content bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden">
+        <div class="p-6">
+            <div class="flex justify-between items-start">
+              <h3 class="text-xl font-extrabold font-display text-brand-orange-600">Lengkapi Detail Pesanan</h3>
+              <button id="user-info-modal-close" class="text-gray-400 hover:text-gray-600">&times;</button>
+            </div>
+            <p class="text-sm text-gray-600 mt-1 mb-6">Tinggal satu langkah lagi sebelum mengirim pesanan Anda.</p>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                  <label for="visitor-name" class="block text-sm font-semibold text-gray-700">Nama Anda</label>
+                  <input id="visitor-name" type="text" placeholder="Masukkan nama Anda" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm"/>
+                </div>
+                <div>
+                  <label for="visitor-deadline-value" class="block text-sm font-semibold text-gray-700">Estimasi Deadline</label>
+                  <div class="flex items-center gap-2">
+                    <input id="visitor-deadline-value" type="number" placeholder="Contoh: 3" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm"/>
+                    <select id="visitor-deadline-unit" class="mt-1 block w-auto rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm">
+                      <option>Hari</option>
+                      <option>Minggu</option>
+                      <option>Bulan</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <div class="bg-gray-100 px-6 py-4">
+            <button id="confirm-order-btn" class="w-full bg-brand-orange-500 text-white font-extrabold py-3 px-6 rounded-lg hover:bg-brand-orange-600 transition-all shadow-lg disabled:bg-gray-400 font-display">Konfirmasi & Lanjutkan</button>
+        </div>
+    </div>
+  </div>
+
+
+  <!-- Payment/Donation Modal -->
+  <div id="payment-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 modal-hidden">
+    <div id="payment-modal-content" class="modal-content bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden">
+      <div class="p-6">
+        <div class="flex justify-between items-start">
+          <div class="flex items-center gap-3">
+            <div id="payment-modal-icon-bg" class="p-2 rounded-lg"><i id="payment-modal-icon" data-lucide="wallet" class="w-6 h-6"></i></div>
+            <div>
+              <h3 id="payment-modal-title" class="text-xl font-extrabold font-display">Informasi Pembayaran</h3>
+              <p id="payment-modal-subtitle" class="text-sm text-gray-500"></p>
+            </div>
+          </div>
+          <button id="payment-modal-close" class="text-gray-400 hover:text-gray-600">&times;</button>
+        </div>
+        <div class="mt-6 bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+          <p class="text-sm text-gray-600">Nomor / Rekening:</p>
+          <p id="payment-modal-number" class="text-2xl font-bold my-1"></p>
+          <p class="text-sm text-gray-600">a.n. <strong id="payment-modal-holder"></strong></p>
+        </div>
+      </div>
+      <div class="bg-gray-100 px-6 py-4 flex gap-3">
+        <button id="payment-modal-copy" class="w-full bg-brand-orange-500 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-brand-orange-600 transition-all flex items-center justify-center gap-2">
+          <i data-lucide="copy" class="w-4 h-4"></i> <span id="copy-button-text">Salin Nomor</span>
+        </button>
+        <button id="payment-modal-close-bottom" class="w-full bg-gray-200 text-gray-700 font-bold py-2.5 px-4 rounded-lg hover:bg-gray-300 transition-all">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Modal -->
+  <div id="contact-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 modal-hidden">
+    <div id="contact-modal-content" class="modal-content bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden">
+      <div class="p-6">
+        <div class="flex justify-between items-start">
+          <div class="flex items-center gap-3">
+            <div id="contact-modal-icon-bg" class="p-2 rounded-lg"><i id="contact-modal-icon" data-lucide="user" class="w-6 h-6"></i></div>
+            <div>
+              <h3 id="contact-modal-title" class="text-xl font-extrabold font-display">Hubungi</h3>
+              <p id="contact-modal-subtitle" class="text-sm text-gray-500"></p>
+            </div>
+          </div>
+          <button id="contact-modal-close" class="text-gray-400 hover:text-gray-600">&times;</button>
+        </div>
+        <div class="mt-6">
+          <label for="contact-modal-message" class="block text-sm font-semibold text-gray-700">Pesan Anda</label>
+          <textarea id="contact-modal-message" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm"></textarea>
+        </div>
+      </div>
+      <div class="bg-gray-100 px-6 py-4 flex gap-3">
+        <button id="contact-modal-send" class="w-full bg-brand-orange-500 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-brand-orange-600 transition-all flex items-center justify-center gap-2">
+          <i data-lucide="send" class="w-4 h-4"></i> <span>Kirim Pesan</span>
+        </button>
+        <button id="contact-modal-cancel" class="w-full bg-gray-200 text-gray-700 font-bold py-2.5 px-4 rounded-lg hover:bg-gray-300 transition-all">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // USER DATA
+      let visitorData = { name: 'Klien', deadline: '' };
+      let hasCounterAnimated = false;
+
+      // COUNTER ANIMATION
+      function animateCounters() {
+        if (hasCounterAnimated) return;
+        const counters = document.querySelectorAll('.counter');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const counter = entry.target;
+              counter.textContent = '0'; // Reset before starting
+              const target = +counter.getAttribute('data-target');
+              let current = 0;
+              const duration = 1500;
+              const increment = Math.max(1, Math.ceil(target / (duration / 16)));
+              
+              const update = () => {
+                current += increment;
+                if (current >= target) {
+                  counter.textContent = target.toLocaleString('id-ID');
+                } else {
+                  counter.textContent = current.toLocaleString('id-ID');
+                  requestAnimationFrame(update);
+                }
+              };
+              update();
+              observer.unobserve(counter);
+            }
+          });
+        }, { threshold: 0.5 });
+        counters.forEach(counter => observer.observe(counter));
+        hasCounterAnimated = true;
+      }
+
+      // DATA SETS
+      const quotes = [
+        "Pendidikan adalah senjata paling ampuh yang bisa kamu gunakan untuk mengubah dunia. - Nelson Mandela",
+        "Satu-satunya sumber pengetahuan adalah pengalaman. - Albert Einstein",
+        "Hiduplah seolah-olah kamu akan mati besok. Belajarlah seolah-olah kamu akan hidup selamanya. - Mahatma Gandhi"
+      ];
+
+      const faqData = [
+        { question: "Bagaimana sistem pembayarannya?", answer: "Sistem pembayaran kami sangat fleksibel. Anda cukup membayar <strong>DP (Down Payment) sebesar 50%</strong> dari total biaya di awal pengerjaan. Sisa pelunasan dilakukan setelah kami mengirimkan bukti pratinjau (preview) dari hasil pekerjaan. Ini memberikan jaminan bahwa Anda puas dengan hasilnya sebelum membayar penuh." },
+        { question: "Apakah kerahasiaan data saya terjamin?", answer: "<strong>Tentu saja.</strong> Kami sangat menjunjung tinggi etika profesional dan privasi setiap klien. Semua data, dokumen, dan informasi pribadi yang Anda berikan akan kami jaga kerahasiaannya dan tidak akan pernah dibagikan kepada pihak ketiga manapun tanpa persetujuan Anda." },
+        { question: "Bagaimana jika ada revisi dari dosen?", answer: "Kami memahami bahwa proses bimbingan terkadang memerlukan revisi. Untuk layanan <strong>skripsi dan tesis, revisi minor pertama gratis</strong>. Revisi selanjutnya atau revisi mayor (perubahan konsep dasar) akan dikenakan biaya tambahan yang sangat terjangkau, yang akan kita diskusikan terlebih dahulu." },
+        { question: "Berapa lama waktu pengerjaan tugas?", answer: "Durasi pengerjaan sangat bervariasi, tergantung pada jenis layanan, tingkat kesulitan, dan kelengkapan materi yang diberikan. Namun, kami selalu berkomitmen untuk <strong>menyelesaikan pekerjaan sesuai dengan deadline</strong> yang telah kita sepakati bersama di awal." },
+      ];
+
+      const servicesData = [
+        { category:"Tugas Harian & Proyek", slug:"harian", icon:"notebook-pen", color:"brand-amber-500",
+          description:"Kami siap membantu mengerjakan beragam tugas harian Anda, mulai dari <strong>esai singkat, makalah, hingga proyek kelompok.</strong> Layanan ini mencakup penyesuaian format sesuai standar akademik, riset pustaka dasar, dan konsultasi untuk memastikan tugas Anda selesai dengan baik dan tepat waktu.",
+          items:[ { id:'harian_esai', name:'Esai / Latihan Soal', price:10000, unit:'soal' }, { id:'harian_makalah', name:'Makalah (lengkap)', price:50000, unit:'makalah' }, { id:'harian_proyek_sedang', name:'Proyek Individu (sedang)', price:100000, unit:'proyek' }, ] },
+        { category:"Presentasi & Materi Visual", slug:"presentasi", icon:"presentation", color:"brand-purple-500",
+          description:"Ubah materi Anda menjadi presentasi yang profesional dan menarik. Kami membuat slide di <strong>PowerPoint atau Canva</strong> dengan desain yang bersih, alur yang jelas, dan visualisasi data yang efektif. Cocok untuk tugas presentasi, seminar, atau ringkasan materi belajar.",
+          items:[ { id:'presentasi_slide', name:'Slide (PPT/Canva)', price:5000, unit:'slide' }, { id:'presentasi_ringkasan_sedikit', name:'Ringkasan Materi (≤ 3 hlm)', price:30000, unit:'file' }, { id:'presentasi_ringkasan_banyak', name:'Ringkasan Materi (> 3 hlm)', price:60000, unit:'file' }, ] },
+        { category:"Pengolahan Data & Analisis", slug:"data", icon:"database-zap", color:"brand-teal-500",
+          description:"Butuh bantuan analisis data untuk penelitian? Kami ahli dalam mengolah data kuantitatif menggunakan <strong>SPSS, AMOS, SmartPLS, atau Excel</strong>. Layanan ini mencakup uji statistik, interpretasi hasil, dan penyajian data dalam bentuk tabel atau grafik yang siap pakai untuk laporan Anda.",
+          items:[ { id:'data_kuantitatif', name:'Pengolahan Data (SPSS, dll.)', price:150000, unit:'dataset' }, { id:'data_kualitatif', name:'Analisis Kualitatif', price:100000, unit:'paket' }, { id:'data_visualisasi', name:'Visualisasi Data', price:100000, unit:'paket' }, ] },
+        { category:"Skripsi", slug:"skripsi", icon:"book-marked", color:"brand-blue-500",
+          description:"Pendampingan intensif untuk tugas akhir Anda, mulai dari <strong>per BAB hingga paket lengkap.</strong> Kami membantu dalam perumusan masalah, tinjauan pustaka, metodologi, analisis data, hingga pembahasan. Termasuk penyesuaian gaya selingkung kampus dan manajemen sitasi.",
+          items:[ { id:'skripsi_per_bab', name:'Penulisan per BAB', price:400000, unit:'bab', selectable:true }, { id:'skripsi_full', name:'Paket Full Skripsi', price:1500000, unit:'paket' }, { id:'skripsi_revisi', name:'Revisi Skripsi', price:50000, unit:'revisi', note:'Revisi pertama gratis' }, ] },
+        { category:"Tesis", slug:"tesis", icon:"book-up-2", color:"brand-green-500",
+          description:"Layanan premium untuk jenjang S2. Kami menawarkan pendampingan penulisan tesis dengan <strong>analisis yang lebih mendalam, metodologi yang kuat, dan argumen yang tajam.</strong> Fokus pada kualitas riset, kebaruan, dan konsistensi naskah sesuai standar publikasi ilmiah.",
+          items:[ { id:'tesis_per_bab', name:'Penulisan per BAB', price:700000, unit:'bab', selectable:true }, { id:'tesis_full', name:'Paket Full Tesis', price:2600000, unit:'paket' }, { id:'tesis_revisi', name:'Revisi Tesis', price:50000, unit:'revisi', note:'Revisi pertama gratis' }, ] },
+        { category:"Utilitas/Turnitin", slug:"utilitas", icon:"file-check-2", color:"brand-pink-500",
+          description:"Pastikan naskah Anda bebas dari plagiarisme dan siap untuk diserahkan. Kami menyediakan layanan <strong>pengecekan kemiripan dengan Turnitin, parafrase akademik</strong> untuk menurunkan skor similarity, serta <strong>proofreading</strong> untuk memperbaiki tata bahasa dan struktur kalimat.",
+          items:[ { id:'util_plagiasi', name:'Cek Plagiasi (Turnitin)', price:30000, unit:'file' }, { id:'util_parafrase', name:'Parafrase (turunkan similarity)', price:100000, unit:'file' }, { id:'util_proofread', name:'Proofreading & Editing', price:150000, unit:'file' }, ] },
+        { category:"Artikel & Jurnal", slug:"artikel-jurnal", icon:"newspaper", color:"brand-purple-500",
+          description:"Layanan lengkap untuk kebutuhan publikasi ilmiah Anda. Kami membantu mulai dari penulisan artikel, penyesuaian naskah, hingga proses publikasi. Layanan ini sangat cocok untuk mahasiswa, dosen, atau peneliti yang ingin mempublikasikan karyanya di jurnal nasional atau internasional.",
+          items:[ 
+            { id:'artikel_buat_umum', name:'Buat Artikel/Jurnal', price:5000, unit:'halaman', selectable:false },
+            { id:'artikel_buat_skripsi', name:'Buat Artikel/Jurnal Penelitian Skripsi', price:10000, unit:'halaman', selectable:false },
+            { id:'artikel_publish_non_sinta', name:'Publish Artikel Non Sinta/OJS', price:300000, unit:'per-artikel', selectable:false },
+            { id:'artikel_publish_sinta', name:'Publish Artikel Sinta 3,4,5, dan 6', price:0, unit:'nego', note:'Disesuaikan dengan prediket sinta dan Publisher Jurnal Keilmuan', selectable:false },
+            { id:'artikel_submit', name:'Submit Artikel Non Sinta/Prediket Sinta', price:50000, unit:'per-file', selectable:false },
+          ] },
+      ];
+      
+      const testimonialsData = [
+        { name: 'Admin', message: 'Halo kak, draft Bab 4 & 5 nya sudah selesai ya. Silakan dicek dulu sebelum lanjut revisi.' },
+        { name: 'Budi - Teknik', message: 'Mantap kak, cepat sekali! Saya cek dulu. Tampilannya rapi banget, langsung di-acc dosen pembimbing nih kayaknya. Recommended!' },
+        { name: 'Admin', message: 'Alhamdulillah, siap kak. Nanti kalau ada feedback dari dosen, kabari saja ya.' },
+        { name: 'Anita - Sastra', message: 'Kak, terima kasih banyak bantuannya! Pengerjaan makalahnya cepat, rapi, dan nilaiku aman. Sangat membantu!' },
+        { name: 'Admin', message: 'Sama-sama kak Anita! Senang bisa membantu. Sukses selalu ya kuliahnya.' },
+        { name: 'Rian - Ekonomi', message: 'Layanan olah datanya luar biasa. Hasil SPSS nya detail dan penjelasannya mudah dipahami. Hemat waktu banget.' },
+        { name: 'Admin', message: 'Terima kasih feedbacknya kak Rian. Semoga lancar penelitiannya sampai selesai.' },
+        { name: 'Sari - Komunikasi', message: 'Slide presentasiku jadi keren banget! Desainnya modern dan isinya ringkas tapi kena. Jadi lebih PD buat presentasi. Makasih kak!' },
+        { name: 'Admin', message: 'You are welcome kak Sari! Semoga presentasinya lancar dan dapat nilai maksimal ya.' },
+        { name: 'Joko - Hukum', message: 'Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada Kadijokian. Makasih banyak kak!' },
+      ];
+
+      // CART MODEL
+      let cart = {};
+
+      // DOM refs
+      const mainContent = document.getElementById('main-content');
+      const animatedTextEl = document.getElementById('animated-text');
+      const layananNavDesktop = document.getElementById('layanan-nav-desktop');
+      const layananContentDesktop = document.getElementById('layanan-content-desktop');
+      const layananAccordionMobile = document.getElementById('layanan-accordion-mobile');
+      const orderCategoryCardsContainer = document.getElementById('order-category-cards');
+      const orderFormItemsContainer = document.getElementById('order-form-items');
+      const orderPlaceholder = document.getElementById('order-placeholder');
+      const processIndicator = document.getElementById('process-indicator');
+      const cartItemsList = document.getElementById('cart-items-list');
+      
+      const subtotalPriceEl = document.getElementById('subtotal-price');
+      const discountAmountEl = document.getElementById('discount-amount');
+      const totalPriceEl = document.getElementById('total-price');
+      const emptyCartMessage = document.getElementById('empty-cart-message');
+      const checkoutBtn = document.getElementById('checkout-btn');
+      const cancelAllBtn = document.getElementById('cancel-all-btn');
+      const discountInput = document.getElementById('discount-request');
+      const customerCommentsEl = document.getElementById('customer-comments');
+      const rotatingQuoteEl = document.getElementById('rotating-quote');
+      const fabContainer = document.getElementById('fab-container');
+      const fabMainBtn = document.getElementById('fab-main-btn');
+      const fabIcon = document.getElementById('fab-icon');
+      const sidebar = document.getElementById('mobile-sidebar');
+      const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+      const openSidebarBtn = document.getElementById('open-sidebar');
+      const closeSidebarBtn = document.getElementById('close-sidebar');
+
+      // New Modal Refs
+      const userInfoModal = document.getElementById('user-info-modal');
+      const confirmOrderBtn = document.getElementById('confirm-order-btn');
+      const closeUserInfoModalBtn = document.getElementById('user-info-modal-close');
+
+      const formatCurrency = a => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(a);
+
+      // Homepage animation
+      function runHomepageAnimation() {
+          const textToAnimate = `KADIJOKIAN siap membantumu!`;
+          animatedTextEl.innerHTML = '';
+          textToAnimate.split('').forEach((char, idx) => {
+            const span = document.createElement('span');
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            span.style.animationDelay = `${idx * 0.05}s`;
+            animatedTextEl.appendChild(span);
+          });
+          
+          animateCounters();
+      }
+
+      // FAB
+      fabMainBtn.addEventListener('click', e => { e.stopPropagation(); fabContainer.classList.toggle('open'); fabIcon.classList.toggle('rotate-45'); });
+      document.addEventListener('click', e => { if (!fabContainer.contains(e.target)) { fabContainer.classList.remove('open'); fabIcon.classList.remove('rotate-45'); } });
+
+      // SIDEBAR (MOBILE)
+      function openSidebar(){ sidebar.classList.add('sidebar-open'); sidebarBackdrop.classList.remove('hidden')}
+      function closeSidebar(){ sidebar.classList.remove('sidebar-open'); sidebarBackdrop.classList.add('hidden')}
+      openSidebarBtn.addEventListener('click', openSidebar);
+      closeSidebarBtn.addEventListener('click', closeSidebar);
+      sidebarBackdrop.addEventListener('click', closeSidebar);
+      
+      // RENDER: LAYANAN
+      function renderLayanan() {
+        // Desktop
+        layananNavDesktop.innerHTML = servicesData.map((s,i)=>`
+          <button data-service-slug="${s.slug}" class="layanan-nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-left ${i===0?'bg-brand-orange-100 text-brand-orange-800 font-semibold':'hover:bg-gray-100'}">
+            <i data-lucide="${s.icon}" class="w-6 h-6 text-${s.color} flex-shrink-0"></i>
+            <span class="font-semibold">${s.category}</span>
+          </button>
+        `).join('');
+        
+        // Mobile (Accordion)
+        layananAccordionMobile.innerHTML = servicesData.map((s,i)=>`
+          <div class="bg-white rounded-lg shadow-sm">
+            <button data-service-slug="${s.slug}" class="layanan-nav-btn w-full flex justify-between items-center gap-4 p-4 text-left">
+              <div class="flex items-center gap-4">
+                <i data-lucide="${s.icon}" class="w-6 h-6 text-${s.color} flex-shrink-0"></i>
+                <span class="font-semibold text-gray-800">${s.category}</span>
+              </div>
+              <i data-lucide="chevron-down" class="accordion-icon w-5 h-5 text-gray-400 transition-transform"></i>
+            </button>
+            <div class="layanan-desc-mobile px-4 text-gray-600">
+              <div class="border-t pt-4">
+                <p class="mb-4 leading-relaxed">${s.description}</p>
+                <button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-brand-blue-600 text-sm">
+                  <i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        lucide.createIcons();
+      }
+
+      function updateLayananContent(slug){
+        const s = servicesData.find(v=>v.slug===slug); if(!s) return;
+        
+        layananContentDesktop.innerHTML = `
+          <div style="animation:fadeInPage .5s">
+            <h3 class="text-2xl font-extrabold text-brand-blue-700 mb-2 font-display">${s.category}</h3>
+            <p class="text-gray-700 mb-6 leading-relaxed">${s.description}</p>
+            <div class="border-t pt-4">
+              <button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-brand-blue-600 transition-all shadow">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini
+              </button>
+            </div>
+          </div>`;
+        
+        document.querySelectorAll('.layanan-nav-btn').forEach(b=>b.classList.remove('active', 'bg-brand-orange-100', 'text-brand-orange-800'));
+        document.querySelectorAll(`.layanan-nav-btn[data-service-slug="${slug}"]`).forEach(b => {
+          b.classList.add('active');
+          if (!b.closest('#layanan-accordion-mobile')) {
+            b.classList.add('bg-brand-orange-100', 'text-brand-orange-800');
+          }
+        });
+
+        lucide.createIcons();
+      }
+      
+      document.getElementById('layanan').addEventListener('click', e => {
+        const btn = e.target.closest('.layanan-nav-btn');
+        if (!btn) return;
+        
+        const slug = btn.dataset.serviceSlug;
+        
+        if (btn.closest('#layanan-accordion-mobile')) {
+          const wasActive = btn.classList.contains('active');
+          document.querySelectorAll('#layanan-accordion-mobile .layanan-nav-btn').forEach(b => b.classList.remove('active'));
+          if (!wasActive) {
+            btn.classList.add('active');
+          }
+        } else {
+          updateLayananContent(slug);
+        }
+      });
+      
+      // RENDER: TESTIMONIALS
+      function renderTestimonials() {
+        const slider = document.getElementById('testimonial-slider');
+        const dotsContainer = document.getElementById('testimonial-dots');
+        let currentConversation = [];
+        const conversations = [];
+
+        testimonialsData.forEach(item => {
+          currentConversation.push(item);
+          if (item.name !== 'Admin' && testimonialsData.indexOf(item) < testimonialsData.length -1 && testimonialsData[testimonialsData.indexOf(item)+1].name === 'Admin') {
+              conversations.push(currentConversation);
+              currentConversation = [];
+          }
+        });
+        if(currentConversation.length > 0) conversations.push(currentConversation);
+        
+        slider.innerHTML = conversations.map((convo) => `
+          <div class="testimonial-slide flex-shrink-0 w-full">
+            <div class="w-full h-full flex flex-col" style="background-image: url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg'); background-size: cover;">
+              <!-- WhatsApp Header -->
+              <div class="bg-[#005E54] text-white pt-10 pb-2 px-2 flex items-center gap-3 shadow-md flex-shrink-0">
+                  <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                  <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center border-2 border-white/50">
+                    <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                  </div>
+                  <div class="flex-1">
+                      <h4 class="font-bold">Klien</h4>
+                      <p class="text-xs">online</p>
+                  </div>
+                  <i data-lucide="video" class="w-5 h-5"></i>
+                  <i data-lucide="phone" class="w-5 h-5"></i>
+              </div>
+              <!-- Chat Area -->
+              <div class="p-4 flex-1 overflow-y-auto flex flex-col space-y-3 pt-6 pb-6">
+                ${convo.map(chat => `
+                  <div class="flex ${chat.name === 'Admin' ? 'justify-end' : 'justify-start'}">
+                    <div class="max-w-[80%] p-2.5 rounded-xl shadow-sm ${chat.name === 'Admin' 
+                      ? 'bg-[#E2FFC7] text-gray-800 rounded-br-none' 
+                      : 'bg-white text-gray-800 rounded-bl-none'}">
+                      <p class="text-sm">${chat.message}</p>
+                      ${chat.name !== 'Admin' ? `<p class="text-xs text-left mt-1 font-bold text-brand-blue-600">${chat.name}</p>` : ''}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              <!-- Input area -->
+              <div class="bg-gray-100 p-2 flex items-center gap-2 flex-shrink-0">
+                  <i data-lucide="smile" class="w-6 h-6 text-gray-500"></i>
+                  <div class="flex-1 bg-white rounded-full p-2 text-sm text-gray-400">Ketik pesan...</div>
+                  <i data-lucide="paperclip" class="w-6 h-6 text-gray-500"></i>
+                  <i data-lucide="camera" class="w-6 h-6 text-gray-500"></i>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        dotsContainer.innerHTML = conversations.map((_, i) => `<button data-slide-to="${i}" class="testimonial-dot h-2 w-2 rounded-full transition-colors ${i === 0 ? 'bg-brand-orange-500' : 'bg-gray-300'}"></button>`).join('');
+
+        const dots = document.querySelectorAll('.testimonial-dot');
+        slider.addEventListener('scroll', () => {
+          const slideWidth = slider.offsetWidth;
+          const activeIndex = Math.round(slider.scrollLeft / slideWidth);
+          dots.forEach((dot, i) => {
+            dot.classList.toggle('bg-brand-orange-500', i === activeIndex);
+            dot.classList.toggle('bg-gray-300', i !== activeIndex);
+          });
+        });
+
+        dotsContainer.addEventListener('click', e => {
+          if(e.target.matches('.testimonial-dot')) {
+            const slideIndex = e.target.dataset.slideTo;
+            slider.scrollTo({ left: slider.offsetWidth * slideIndex, behavior: 'smooth' });
+          }
+        });
+        lucide.createIcons();
+      }
+
+
+      // RENDER: ORDER
+      function renderOrderCategoryCards(){
+        let html = servicesData.map(s=>`
+          <button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+            <i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i>
+            <span class="block text-xs font-semibold mt-2">${s.category}</span>
+          </button>
+        `).join('');
+        html += `
+          <button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+            <i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i>
+            <span class="block text-xs font-semibold mt-2">Layanan Lainnya</span>
+          </button>`;
+        orderCategoryCardsContainer.innerHTML = html;
+        lucide.createIcons();
+      }
+
+      function updateProcessIndicator(step){
+        const steps=[ 
+            {icon:'list-filter',text:'Pilih Kategori', tooltip: 'Pilih jenis layanan yang Anda butuhkan.'}, 
+            {icon:'shopping-basket',text:'Atur Pesanan', tooltip: 'Tambahkan item dan atur jumlah pesanan.'}, 
+            {icon:'send',text:'Kirim Pesanan', tooltip: 'Selesaikan dan kirim rincian pesanan via WhatsApp.'}
+        ];
+        processIndicator.innerHTML = steps.map((s,i)=>`
+            <div class="relative tooltip-container">
+                <div class="flex items-center gap-2 ${i+1<=step?'text-brand-orange-600':'text-gray-400'}">
+                    <div class="rounded-full border-2 ${i+1<=step?'border-brand-orange-500 bg-brand-orange-50':'border-gray-300'} p-1.5"> <i data-lucide="${s.icon}" class="w-4 h-4"></i> </div>
+                    <span class="hidden sm:inline font-semibold text-sm">${s.text}</span>
+                </div>
+                <span class="tooltip-text">${s.tooltip}</span>
+            </div>
+            ${i<steps.length-1?`<div class="flex-1 h-0.5 ${i+1<step?'bg-brand-orange-500':'bg-gray-300'}"></div>`:''}
+        `).join('');
+        lucide.createIcons();
+      }
+
+      function renderOrderItems(slug){
+        const s = servicesData.find(v=>v.slug===slug); if(!s) return;
+        orderPlaceholder.style.display='none';
+        orderFormItemsContainer.innerHTML = `<div class="space-y-3" style="animation:fadeInPage .5s"></div>`;
+        const container = orderFormItemsContainer.querySelector('.space-y-3');
+        s.items.forEach(item=>{
+          const wrap = document.createElement('div');
+          wrap.className='bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-colors';
+          let inner = `<div class="flex items-center justify-between"> <div class="flex items-center flex-1 min-w-0"> <input type="checkbox" id="check_${item.id}" data-id="${item.id}" class="h-5 w-5 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500 flex-shrink-0" ${cart[item.id]?'checked':''}> <label for="check_${item.id}" class="ml-3 text-sm sm:text-base cursor-pointer font-medium">${item.name} <span class="text-xs text-gray-500">(${item.price>0?formatCurrency(item.price)+'/'+item.unit:(item.note||'')})</span></label> </div>`;
+          if(!item.selectable){ inner += `<div id="qty_${item.id}" class="${cart[item.id]?'flex':'hidden'} items-center space-x-2"> <button data-id="${item.id}" data-change="-1" class="qty-btn bg-gray-200 w-7 h-7 rounded-full font-bold hover:bg-gray-300" aria-label="Kurangi">-</button> <span id="qty_val_${item.id}" class="font-bold w-8 text-center">${cart[item.id]?cart[item.id].quantity:1}</span> <button data-id="${item.id}" data-change="1" class="qty-btn bg-gray-200 w-7 h-7 rounded-full font-bold hover:bg-gray-300" aria-label="Tambah">+</button> </div>`; }
+          inner += `</div>`;
+          wrap.innerHTML = inner;
+          if(item.selectable){ const sel = document.createElement('div'); sel.id = `selection_container_${item.id}`; sel.className = `pl-8 pt-2 space-y-2 ${cart[item.id]?'':'hidden'}`; const cartItem = cart[item.id] || {}; const totalChapters = cartItem.totalChapters || 5; sel.innerHTML = `<div class="flex items-center gap-2"> <label for="total_chapters_${item.id}" class="text-sm font-semibold">Jumlah BAB:</label> <input id="total_chapters_${item.id}" data-id="${item.id}" type="number" value="${totalChapters}" min="1" class="total-chapters-input w-16 rounded-md border-gray-300 shadow-sm sm:text-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200"> </div> <div id="chapters_${item.id}" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 pt-2"></div>`; wrap.appendChild(sel); }
+          container.appendChild(wrap);
+          if(item.selectable && cart[item.id]) renderChapterCheckboxes(item.id, cart[item.id].totalChapters||5);
+        });
+      }
+      
+      function renderCustomServiceForm(){
+        updateProcessIndicator(1);
+        orderPlaceholder.style.display='none';
+        orderFormItemsContainer.innerHTML = `
+          <div class="space-y-4" style="animation:fadeInPage .5s">
+            <h4 class="font-bold text-gray-800">Buat Pesanan Kustom</h4>
+            <p class="text-sm text-gray-600">Jelaskan kebutuhan Anda di bawah ini. Harga akan didiskusikan lebih lanjut melalui WhatsApp.</p>
+            <div>
+              <label for="custom-service-name" class="block text-sm font-semibold text-gray-700">Nama Layanan/Tugas</label>
+              <input id="custom-service-name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm" placeholder="Contoh: Review jurnal internasional">
+            </div>
+            <button id="add-custom-service-btn" class="inline-flex items-center gap-2 bg-brand-orange-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-brand-orange-600 transition-all shadow">
+              <i data-lucide="plus" class="w-4 h-4"></i> Tambahkan ke Pesanan
+            </button>
+          </div>`;
+        lucide.createIcons();
+      }
+
+      function renderChapterCheckboxes(itemId,total){
+        const container = document.getElementById(`chapters_${itemId}`); if(!container) return;
+        container.innerHTML='';
+        const cartItem = cart[itemId] || {chapters:[]};
+        for(let i=1;i<=total;i++){
+          const isChecked = cartItem.chapters && cartItem.chapters.includes(String(i));
+          container.innerHTML += `<label class="inline-flex items-center text-sm"> <input type="checkbox" data-id="${itemId}" data-chapter="${i}" class="chapter-check h-4 w-4 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500" ${isChecked?'checked':''}> <span class="ml-1.5">BAB ${i}</span> </label>`;
+        }
+      }
+
+      // CART & TOTALS
+      function calculateSubtotal(){ let subtotal=0; for(const itemId in cart){ const c = cart[itemId]; if (c.isCustom) continue; const item = servicesData.flatMap(s=>s.items).find(i=>i.id===itemId); if(item){ if(item.selectable){ let bill = new Set(c.chapters||[]); if(c.chapters?.includes('4') && c.chapters?.includes('5')) bill.delete('5'); subtotal += item.price * bill.size; } else { subtotal += item.price * c.quantity; } } } return subtotal; }
+      
+      function updateCartUI(){
+        cartItemsList.innerHTML = '';
+        const subtotal = calculateSubtotal();
+        const maxDiscount = Math.floor(subtotal * 0.1);
+
+        let discount = parseInt(discountInput.value) || 0;
+        if (discount > maxDiscount && maxDiscount > 0) {
+            discountInput.value = maxDiscount;
+            discount = maxDiscount;
+        }
+        
+        const cartKeys = Object.keys(cart);
+
+        const hasItems = cartKeys.some(key => {
+            const item = cart[key];
+            if (item.isCustom) return true;
+            if (item.selectable) return item.chapters && item.chapters.length > 0;
+            return true;
+        });
+
+        for(const itemId of cartKeys){ 
+            const c = cart[itemId];
+            if (c.isCustom) {
+                const el = document.createElement('div');
+                el.className = 'flex justify-between items-center text-sm';
+                el.innerHTML = `<div><p class="font-semibold">${c.name}</p><p class="text-xs text-gray-500">Layanan Kustom</p></div><p class="font-bold text-brand-blue-500">Nego</p>`;
+                cartItemsList.appendChild(el);
+            } else {
+                const item = servicesData.flatMap(s => s.items).find(i => i.id === itemId);
+                if (item) {
+                    if (item.selectable && (!c.chapters || c.chapters.length === 0)) continue;
+                    
+                    const el = document.createElement('div');
+                    el.className = 'flex justify-between items-center text-sm';
+                    
+                    let name = item.name;
+                    let priceText = '';
+                    let itemTotal = 0;
+                    if (item.selectable) {
+                        const selectedChapters = c.chapters || [];
+                        let bill = new Set(selectedChapters);
+                        if (c.totalChapters === 5 && bill.has('4') && bill.has('5')) {
+                             bill.delete('5');
+                        }
+                        name += ` (BAB ${selectedChapters.join(', ')})`;
+                        priceText = `${bill.size} x ${formatCurrency(item.price)}`;
+                        itemTotal = item.price * bill.size;
+                    } else {
+                        priceText = `${c.quantity} x ${formatCurrency(item.price)}`;
+                        itemTotal = item.price * c.quantity;
+                    }
+
+                    el.innerHTML = `<div><p class="font-semibold">${name}</p><p class="text-xs text-gray-500">${priceText}</p></div><p class="font-bold">${formatCurrency(itemTotal)}</p>`;
+                    cartItemsList.appendChild(el);
+                }
+            }
+        }
+        
+        if(!hasItems){
+            emptyCartMessage.style.display = 'block';
+            checkoutBtn.disabled=true;
+            cancelAllBtn.disabled=true;
+            updateProcessIndicator(1);
+        } else {
+            emptyCartMessage.style.display = 'none';
+            checkoutBtn.disabled=false;
+            cancelAllBtn.disabled=false;
+            updateProcessIndicator(2);
+        }
+        
+        const finalTotal = Math.max(0, subtotal - discount);
+        subtotalPriceEl.textContent = formatCurrency(subtotal);
+        discountAmountEl.textContent = `- ${formatCurrency(discount)}`;
+        totalPriceEl.textContent = formatCurrency(finalTotal);
+      }
+      
+      function resetCart(){ cart={}; const active=document.querySelector('.order-category-btn.active'); if(active){ const slug = active.dataset.categorySlug; if (slug === 'custom') { renderCustomServiceForm(); } else { renderOrderItems(slug); } } discountInput.value=''; customerCommentsEl.value = ''; updateCartUI(); }
+
+      // Event Listeners: Order Page
+      orderCategoryCardsContainer.addEventListener('click', e=>{
+        const btn=e.target.closest('.order-category-btn'); if(!btn) return;
+        document.querySelectorAll('.order-category-btn').forEach(b=>b.classList.remove('active','bg-brand-orange-100','border-brand-orange-500'));
+        btn.classList.add('active','bg-brand-orange-100','border-brand-orange-500');
+        const slug=btn.dataset.categorySlug;
+        if(slug==='custom') renderCustomServiceForm(); else renderOrderItems(slug);
+        updateProcessIndicator(1);
+      });
+      orderFormItemsContainer.addEventListener('click', e=>{
+        const qtyBtn=e.target.closest('.qty-btn');
+        if(qtyBtn){ const id=qtyBtn.dataset.id; const change=parseInt(qtyBtn.dataset.change,10); const cur=cart[id]?cart[id].quantity:0; const next=Math.max(1, cur+change); cart[id].quantity=next; document.getElementById(`qty_val_${id}`).textContent=next; updateCartUI(); }
+
+        if (e.target.id === 'add-custom-service-btn') {
+            const input = document.getElementById('custom-service-name');
+            const val = input.value.trim();
+            if (!val) {
+                input.focus();
+                return;
+            }
+            const id = `custom_${Date.now()}`;
+            cart[id] = { name: val, isCustom: true };
+            updateCartUI();
+            input.value = '';
+            input.focus();
+        }
+      });
+      orderFormItemsContainer.addEventListener('change', e=>{
+        const t=e.target;
+        if(t.type==='checkbox' && !t.classList.contains('chapter-check')){ 
+            const id=t.dataset.id; 
+            const item = servicesData.flatMap(s=>s.items).find(i=>i.id===id);
+            const parentService = servicesData.find(s => s.items.some(i => i.id === id));
+            if (t.checked) {
+              const cartItem = { category: parentService.category };
+              if (item.selectable) {
+                const total=cart[id]?.totalChapters||5;
+                cartItem.chapters = [];
+                cartItem.totalChapters = total;
+                document.getElementById(`selection_container_${id}`)?.classList.remove('hidden'); 
+                renderChapterCheckboxes(id,total);
+              } else {
+                cartItem.quantity = 1;
+                const qtyEl = document.getElementById(`qty_${id}`);
+                if (qtyEl) {
+                  qtyEl.classList.remove('hidden');
+                  qtyEl.classList.add('flex');
+                  document.getElementById(`qty_val_${id}`).textContent = '1';
+                }
+              }
+              cart[id] = cartItem;
+            } else {
+              delete cart[id];
+              if (item.selectable) {
+                document.getElementById(`selection_container_${id}`)?.classList.add('hidden');
+              } else {
+                document.getElementById(`qty_${id}`)?.classList.add('hidden');
+              }
+            }
+            updateCartUI(); 
+        }
+        if(t.classList.contains('chapter-check')){ const id=t.dataset.id; const chapter=t.dataset.chapter; if(cart[id] && cart[id].totalChapters===5){ const boxContainer=t.closest(`#chapters_${id}`); if(chapter==='4'){ const c5=boxContainer.querySelector('[data-chapter="5"]'); if(c5) c5.checked=t.checked; } if(chapter==='5'){ const c4=boxContainer.querySelector('[data-chapter="4"]'); if(c4) c4.checked=t.checked; } } if(cart[id]){ const sel=[]; const boxContainer=t.closest(`#chapters_${id}`); boxContainer.querySelectorAll('.chapter-check:checked').forEach(cb=>sel.push(cb.dataset.chapter)); cart[id].chapters = sel.sort((a,b)=>parseInt(a)-parseInt(b)); } updateCartUI(); }
+      });
+      orderFormItemsContainer.addEventListener('input', e=>{
+        if(e.target.classList.contains('total-chapters-input')){ const id=e.target.dataset.id; const total=parseInt(e.target.value)||1; if(cart[id]){ cart[id].totalChapters=total; renderChapterCheckboxes(id,total); cart[id].chapters = (cart[id].chapters||[]).filter(c=>parseInt(c)<=total); updateCartUI(); } }
+      });
+      discountInput.addEventListener('input', updateCartUI);
+      discountInput.addEventListener('blur', ()=>{
+        let cur = parseInt(discountInput.value) || 0;
+        const rounded = Math.round(cur / 1000) * 1000;
+        if(discountInput.value !== '') discountInput.value = rounded;
+        if(rounded === 0) discountInput.value = '';
+        updateCartUI();
+      });
+      cancelAllBtn.addEventListener('click', resetCart);
+
+      processIndicator.addEventListener('click', e => {
+        const clickedContainer = e.target.closest('.tooltip-container');
+        if (!clickedContainer) return;
+        const wasActive = clickedContainer.classList.contains('tooltip-active');
+        processIndicator.querySelectorAll('.tooltip-container').forEach(container => {
+          container.classList.remove('tooltip-active');
+        });
+        if (!wasActive) {
+          clickedContainer.classList.add('tooltip-active');
+        }
+      });
+
+      // --- CHECKOUT & NEW MODAL LOGIC ---
+      function showUserInfoModal() {
+        userInfoModal.classList.remove('modal-hidden');
+        userInfoModal.classList.add('modal-visible');
+        document.getElementById('visitor-name').focus();
+      }
+
+      function closeUserInfoModal() {
+        userInfoModal.classList.add('modal-hidden');
+        userInfoModal.classList.remove('modal-visible');
+      }
+
+      checkoutBtn.addEventListener('click', showUserInfoModal);
+      closeUserInfoModalBtn.addEventListener('click', closeUserInfoModal);
+      userInfoModal.addEventListener('click', (e) => {
+        if (e.target === userInfoModal) closeUserInfoModal();
+      });
+
+      confirmOrderBtn.addEventListener('click', ()=>{
+        const visitorNameInput = document.getElementById('visitor-name');
+        const visitorName = visitorNameInput.value.trim();
+        if (!visitorName) {
+            visitorNameInput.focus();
+            visitorNameInput.classList.add('border-red-500','ring-red-500');
+            return;
+        }
+        visitorNameInput.classList.remove('border-red-500','ring-red-500');
+        
+        visitorData.name = visitorName;
+        const deadlineValue = document.getElementById('visitor-deadline-value').value.trim();
+        const deadlineUnit = document.getElementById('visitor-deadline-unit').value;
+        visitorData.deadline = deadlineValue ? `${deadlineValue} ${deadlineUnit}` : 'Tidak ditentukan';
+
+        updateProcessIndicator(3);
+        const subtotal = calculateSubtotal();
+        const disc = parseInt(discountInput.value) || 0;
+        const finalTotal = Math.max(0, subtotal - disc);
+        const comments = customerCommentsEl.value.trim();
+        const bsiNumber = '7324408295';
+        const gopayNumber = '083801343431';
+        const accountHolder = 'Syariffan';
+
+        let msg = `Halo KADIJOKIAN, saya ${visitorData.name}. Saya tertarik untuk memesan layanan berikut:\n\n`;
+        if(visitorData.deadline) msg += `*Estimasi Deadline:* ${visitorData.deadline}\n\n`;
+        
+        let regular = "";
+        let custom = "";
+        
+        for(const id in cart){
+          const c=cart[id];
+          if(c.isCustom) {
+            custom += `- ${c.name}\n  _(Harga akan didiskusikan)_\n`;
+            continue;
+          }
+          const item = servicesData.flatMap(s=>s.items).find(i=>i.id===id);
+          if(item){
+            if(item.selectable){
+              const n=c.chapters?.length||0;
+              if(n>0){ 
+                let bill=new Set(c.chapters); 
+                if(c.totalChapters===5 && bill.has('4') && bill.has('5')) bill.delete('5'); 
+                const total=item.price*bill.size; 
+                regular += `*- ${item.name} (${c.category})* (BAB ${c.chapters.join(', ')})\n  Jumlah terhitung: ${bill.size} bab\n  Harga: ${formatCurrency(total)}\n\n`; 
+              }
+            } else {
+              const total=item.price*c.quantity; 
+              if (item.price === 0) {
+                regular += `*- ${item.name}*\n  Harga: ${item.note}\n\n`;
+              } else {
+                regular += `*- ${item.name}*\n  Jumlah: ${c.quantity} ${item.unit}\n  Harga: ${formatCurrency(total)}\n\n`;
+              }
+            }
+          }
+        }
+
+        if(regular) msg += `*Layanan Utama:*\n${regular}`;
+        if(custom) {
+          if (regular) msg += `--------------------------------------\n`;
+          msg += `*Layanan Kustom:*\n${custom}\n`;
+        }
+        
+        msg += "--------------------------------------\n";
+        msg += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
+        if(disc>0){
+          msg += `*Diskon Diminta:* -${formatCurrency(disc)}\n`;
+          msg += `*Total Setelah Diskon:* ${formatCurrency(finalTotal)}\n\n`;
+        } else {
+          msg += `*Total Akhir:* ${formatCurrency(finalTotal)}\n\n`;
+        }
+        if (comments) {
+          msg += "--------------------------------------\n*Catatan Tambahan:*\n" + comments + "\n\n";
+        }
+
+        msg += `--------------------------------------\n*Informasi Pembayaran:*\nSilakan lakukan pembayaran ke salah satu rekening di bawah ini:\n\n*Bank Syariah Indonesia (BSI)*\nNo. Rek: ${bsiNumber}\nA/n: ${accountHolder}\n\n*GoPay*\nNo. HP: ${gopayNumber}\nA/n: ${accountHolder}\n\n`;
+        msg += "Mohon konfirmasi dan informasinya. Terima kasih!";
+        
+        closeUserInfoModal();
+        window.open(`https://wa.me/6283801343431?text=${encodeURIComponent(msg)}`,'_blank');
+      });
+
+      // FAQ accordion
+      const faqContainer=document.getElementById('faq-container');
+      function renderFaq(){
+        faqContainer.innerHTML = faqData.map(item=>`
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <button class="faq-question w-full flex justify-between items-center text-left p-4 font-semibold">
+              <span>${item.question}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down transition-transform duration-300"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer px-4"><div class="pb-4 text-gray-700">${item.answer}</div></div>
+          </div>`).join('');
+      }
+      faqContainer.addEventListener('click', e=>{
+        const btn=e.target.closest('.faq-question'); if(!btn) return;
+        const answer=btn.nextElementSibling;
+        const icon=btn.querySelector('svg');
+        if (!answer || !icon) return;
+
+        const wasOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+        
+        document.querySelectorAll('.faq-answer').forEach(ans => ans.style.maxHeight = null);
+        document.querySelectorAll('.faq-question svg').forEach(ic => ic.style.transform = 'rotate(0deg)');
+        
+        if(!wasOpen) {
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+            icon.style.transform = 'rotate(180deg)';
+        }
+      });
+
+      // SPA Navigation
+      function showPage(id, slug=null){
+        document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('.nav-link').forEach(a=>a.classList.remove('active'));
+        document.getElementById(id)?.classList.add('active');
+        document.querySelector(`.nav-link[data-page="${id}"]`)?.classList.add('active');
+        if(id==='beranda'){
+          runHomepageAnimation();
+        }
+        if(id==='tentang' && rotatingQuoteEl){
+          rotatingQuoteEl.textContent = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`;
+        }
+        if(id==='pemesanan'){
+          updateProcessIndicator(Object.keys(cart).length>0?2:1);
+          if(slug){ setTimeout(()=>{ document.querySelector(`.order-category-btn[data-category-slug="${slug}"]`)?.click(); },100); }
+        }
+        window.scrollTo({top:0,behavior:'smooth'});
+        closeSidebar();
+      }
+
+      document.body.addEventListener('click', e => {
+        const link = e.target.closest('.page-link');
+        if (link) {
+            e.preventDefault();
+            showPage(link.dataset.page);
+        }
+        // BUG FIX: Changed orderBtn.dataset.category-slug to orderBtn.dataset.categorySlug
+        const orderBtn = e.target.closest('.order-from-service-btn');
+        if (orderBtn) {
+            e.preventDefault();
+            showPage('pemesanan', orderBtn.dataset.categorySlug);
+        }
+      });
+
+
+      // PAYMENT MODAL
+      const paymentModal = document.getElementById('payment-modal');
+      const paymentMeta = {
+        gopay: { title:'GoPay', number:'083801343431', holder:'Syariffan', icon:'smartphone', color: 'bg-blue-100 text-blue-600' },
+        bsi:   { title:'Bank Syariah Indonesia (BSI)', number:'7324408295', holder:'Syariffan', icon:'banknote', color: 'bg-green-100 text-green-700' }
+      };
+      
+      function showPaymentModal(kind) {
+        const data = paymentMeta[kind];
+        if(!data) return;
+
+        document.getElementById('payment-modal-subtitle').textContent = data.title;
+        document.getElementById('payment-modal-number').textContent = data.number;
+        document.getElementById('payment-modal-holder').textContent = data.holder;
+        const iconContainer = document.getElementById('payment-modal-icon-bg');
+        iconContainer.className = `p-2 rounded-lg ${data.color}`;
+        document.getElementById('payment-modal-icon').setAttribute('data-lucide', data.icon);
+        lucide.createIcons();
+        document.getElementById('payment-modal-copy').dataset.number = data.number;
+
+        paymentModal.classList.remove('modal-hidden');
+        paymentModal.classList.add('modal-visible');
+      }
+
+      function closePaymentModal() {
+        paymentModal.classList.add('modal-hidden');
+        paymentModal.classList.remove('modal-visible');
+      }
+      
+      document.querySelectorAll('.payment-modal-trigger').forEach(btn => btn.addEventListener('click', () => showPaymentModal(btn.dataset.pay)));
+      document.getElementById('payment-modal-close').addEventListener('click', closePaymentModal);
+      document.getElementById('payment-modal-close-bottom').addEventListener('click', closePaymentModal);
+      paymentModal.addEventListener('click', (e) => {
+        if (e.target === paymentModal) closePaymentModal();
+      });
+
+      document.getElementById('payment-modal-copy').addEventListener('click', function() {
+          const numberToCopy = this.dataset.number;
+          navigator.clipboard.writeText(numberToCopy).then(() => {
+              const btnText = document.getElementById('copy-button-text');
+              btnText.textContent = 'Berhasil Disalin!';
+              setTimeout(() => { btnText.textContent = 'Salin Nomor'; }, 2000);
+          });
+      });
+
+      // CONTACT MODAL
+      const contactModal = document.getElementById('contact-modal');
+      let currentContactInfo = {};
+
+      function showContactModal(contactInfo) {
+          currentContactInfo = contactInfo;
+          const { type, name, id, icon, color } = contactInfo;
+
+          document.getElementById('contact-modal-subtitle').textContent = name;
+          const iconContainer = document.getElementById('contact-modal-icon-bg');
+          iconContainer.className = `p-2 rounded-lg`;
+          const iconEl = document.getElementById('contact-modal-icon');
+          iconEl.setAttribute('data-lucide', icon);
+          iconEl.className = `w-6 h-6 ${color}`;
+          lucide.createIcons();
+          
+          const messageTextarea = document.getElementById('contact-modal-message');
+          let defaultMessage = '';
+          if (type === 'whatsapp') {
+              defaultMessage = `Assalamualaikum Kak ${name.split(' ')[0]},\n\nSaya ingin bertanya tentang layanan KADIJOKIAN...`;
+          } else {
+              defaultMessage = `Halo Kak ${name.split(' ')[0]},\n\nSaya menemukan profil Anda dari website KADIJOKIAN.`;
+          }
+          messageTextarea.value = defaultMessage;
+
+          contactModal.classList.remove('modal-hidden');
+          contactModal.classList.add('modal-visible');
+          messageTextarea.focus();
+      }
+
+      function closeContactModal() {
+          contactModal.classList.add('modal-hidden');
+          contactModal.classList.remove('modal-visible');
+      }
+
+      document.getElementById('kontak').addEventListener('click', e => {
+          const trigger = e.target.closest('.contact-modal-trigger');
+          if (trigger) {
+              e.preventDefault();
+              const contactInfo = {
+                  type: trigger.dataset.type,
+                  name: trigger.dataset.name,
+                  id: trigger.dataset.id,
+                  icon: trigger.dataset.icon,
+                  color: trigger.dataset.color,
+                  url: trigger.dataset.url
+              };
+              showContactModal(contactInfo);
+          }
+      });
+
+      document.getElementById('contact-modal-send').addEventListener('click', () => {
+          const message = document.getElementById('contact-modal-message').value;
+          let url = '';
+
+          if (currentContactInfo.type === 'whatsapp') {
+              url = `https://wa.me/${currentContactInfo.id}?text=${encodeURIComponent(message)}`;
+          } else {
+              url = currentContactInfo.url;
+          }
+          
+          if (url) {
+              window.open(url, '_blank');
+          }
+          closeContactModal();
+      });
+
+      document.getElementById('contact-modal-close').addEventListener('click', closeContactModal);
+      document.getElementById('contact-modal-cancel').addEventListener('click', closeContactModal);
+      contactModal.addEventListener('click', e => {
+          if(e.target === contactModal) {
+              closeContactModal();
+          }
+      });
+
+      // INITIAL RENDERS
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      renderLayanan();
+      updateLayananContent('harian'); // default tab
+      renderOrderCategoryCards();
+      renderFaq();
+      renderTestimonials();
+      updateProcessIndicator(0);
+      lucide.createIcons();
+      showPage('beranda');
+      // Menampilkan konten setelah semua siap untuk mencegah 'flash' footer
+      document.getElementById('main-content').classList.add('loaded');
+    });
+  </script>
+</body>
+</html>
+
