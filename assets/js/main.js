@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // KONFIGURASI UTAMA
+  // --- KONFIGURASI UTAMA ---
   const WA_ADMIN_NUMBER = "6288709650064"; // Nomor WA Admin Utama
   const PAYMENT_DETAILS = {
     dana: { name: "DANA", number: "088709650064", holder: "Syariffan" },
@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
       chats: [
         {
           from: "client",
-          text: "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada Kadijokian. Makasih banyak kak!",
+          text: "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada KawanBaraja. Makasih banyak kak!",
         },
         {
           from: "admin",
@@ -415,7 +415,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Animasi counter di-reset setiap kali beranda dimuat
     const counters = document.querySelectorAll(".counter");
     const observer = new IntersectionObserver(
       (entries) => {
@@ -444,7 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
       { threshold: 0.5 }
     );
     counters.forEach((counter) => {
-      counter.textContent = "0"; // Reset ke 0 sebelum di-observe
+      counter.textContent = "0";
       observer.observe(counter);
     });
   }
@@ -786,17 +785,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const btn = e.target.closest(".faq-question");
       if (!btn) return;
       const answer = btn.nextElementSibling;
-      const icon = btn.querySelector("i");
+      // PERBAIKAN: Menggunakan 'svg' karena Lucide Icons mengubah <i> menjadi <svg>
+      const icon = btn.querySelector("svg");
       if (!answer || !icon) return;
 
       const wasOpen =
         answer.style.maxHeight && answer.style.maxHeight !== "0px";
 
+      // Tutup semua jawaban lain sebelum membuka yang baru
       document
         .querySelectorAll("#faq-container .faq-answer")
         .forEach((ans) => (ans.style.maxHeight = null));
       document
-        .querySelectorAll("#faq-container .faq-question i")
+        .querySelectorAll("#faq-container .faq-question svg")
         .forEach((ic) => (ic.style.transform = "rotate(0deg)"));
 
       if (!wasOpen) {
@@ -1196,29 +1197,88 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- MODALS & UI HELPERS ---
 
-  function showUserInfoModal() {
-    const modal = document.getElementById("user-info-modal");
+  function showModal(modalId) {
+    const modal = document.getElementById(modalId);
     if (modal) {
       modal.classList.remove("modal-hidden");
       modal.classList.add("modal-visible");
-      document.getElementById("visitor-name").focus();
+      document.body.style.overflow = "hidden";
     }
   }
 
-  function closeUserInfoModal() {
-    const modal = document.getElementById("user-info-modal");
+  function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
     if (modal) {
       modal.classList.add("modal-hidden");
       modal.classList.remove("modal-visible");
+      document.body.style.overflow = "";
     }
   }
 
+  function showUserInfoModal() {
+    showModal("user-info-modal");
+    document.getElementById("visitor-name").focus();
+  }
+
+  function showPaymentModal(kind) {
+    const data = {
+      dana: {
+        title: "DANA",
+        number: PAYMENT_DETAILS.dana.number,
+        holder: PAYMENT_DETAILS.dana.holder,
+        icon: "smartphone",
+        color: "bg-blue-100 text-blue-600",
+      },
+      bsi: {
+        title: "Bank Syariah Indonesia",
+        number: PAYMENT_DETAILS.bsi.number,
+        holder: PAYMENT_DETAILS.bsi.holder,
+        icon: "banknote",
+        color: "bg-green-100 text-green-700",
+      },
+    }[kind];
+    if (!data) return;
+
+    document.getElementById("payment-modal-subtitle").textContent = data.title;
+    document.getElementById("payment-modal-number").textContent = data.number;
+    document.getElementById("payment-modal-holder").textContent = data.holder;
+    document.getElementById(
+      "payment-modal-icon-bg"
+    ).className = `p-2 rounded-lg ${data.color}`;
+    document
+      .getElementById("payment-modal-icon")
+      .setAttribute("data-lucide", data.icon);
+    lucide.createIcons();
+    document.getElementById("payment-modal-copy").dataset.number = data.number;
+
+    showModal("payment-modal");
+  }
+
+  // Event listeners untuk semua modal
   document
     .getElementById("user-info-modal-close")
-    ?.addEventListener("click", closeUserInfoModal);
+    ?.addEventListener("click", () => closeModal("user-info-modal"));
   document.getElementById("user-info-modal")?.addEventListener("click", (e) => {
-    if (e.target.id === "user-info-modal") closeUserInfoModal();
+    if (e.target.id === "user-info-modal") closeModal("user-info-modal");
   });
+
+  document
+    .getElementById("payment-modal-close")
+    ?.addEventListener("click", () => closeModal("payment-modal"));
+  document
+    .getElementById("payment-modal-close-bottom")
+    ?.addEventListener("click", () => closeModal("payment-modal"));
+  document.getElementById("payment-modal")?.addEventListener("click", (e) => {
+    if (e.target.id === "payment-modal") closeModal("payment-modal");
+  });
+  document
+    .getElementById("payment-modal-copy")
+    ?.addEventListener("click", function () {
+      navigator.clipboard.writeText(this.dataset.number).then(() => {
+        showToast("Nomor berhasil disalin!");
+      });
+    });
+
   document
     .getElementById("confirm-order-btn")
     ?.addEventListener("click", () => {
@@ -1303,81 +1363,12 @@ document.addEventListener("DOMContentLoaded", () => {
       msg += `*${PAYMENT_DETAILS.bsi.name}*\nNo: ${PAYMENT_DETAILS.bsi.number}\nA/n: ${PAYMENT_DETAILS.bsi.holder}\n\n`;
       msg += `Mohon konfirmasi dan informasinya. Terima kasih!`;
 
-      closeUserInfoModal();
+      closeModal("user-info-modal");
       window.open(
         `https://wa.me/${WA_ADMIN_NUMBER}?text=${encodeURIComponent(msg)}`,
         "_blank"
       );
     });
-
-  function showPaymentModal(kind) {
-    const data = {
-      dana: {
-        title: "DANA",
-        number: PAYMENT_DETAILS.dana.number,
-        holder: PAYMENT_DETAILS.dana.holder,
-        icon: "smartphone",
-        color: "bg-blue-100 text-blue-600",
-      },
-      bsi: {
-        title: "Bank Syariah Indonesia",
-        number: PAYMENT_DETAILS.bsi.number,
-        holder: PAYMENT_DETAILS.bsi.holder,
-        icon: "banknote",
-        color: "bg-green-100 text-green-700",
-      },
-    }[kind];
-    if (!data) return;
-
-    const modal = document.getElementById("payment-modal");
-    document.getElementById("payment-modal-subtitle").textContent = data.title;
-    document.getElementById("payment-modal-number").textContent = data.number;
-    document.getElementById("payment-modal-holder").textContent = data.holder;
-    document.getElementById(
-      "payment-modal-icon-bg"
-    ).className = `p-2 rounded-lg ${data.color}`;
-    document
-      .getElementById("payment-modal-icon")
-      .setAttribute("data-lucide", data.icon);
-    lucide.createIcons();
-    document.getElementById("payment-modal-copy").dataset.number = data.number;
-
-    // --- START: Perbaikan Event Listener Modal ---
-    const copyBtn = document.getElementById("payment-modal-copy");
-    const closeBtn = document.getElementById("payment-modal-close");
-    const closeBottomBtn = document.getElementById(
-      "payment-modal-close-bottom"
-    );
-
-    // Hapus listener lama untuk mencegah penumpukan
-    const newCopyBtn = copyBtn.cloneNode(true);
-    copyBtn.parentNode.replaceChild(newCopyBtn, copyBtn);
-    const newCloseBtn = closeBtn.cloneNode(true);
-    closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
-    const newCloseBottomBtn = closeBottomBtn.cloneNode(true);
-    closeBottomBtn.parentNode.replaceChild(newCloseBottomBtn, closeBottomBtn);
-
-    const handleCopy = () => {
-      navigator.clipboard.writeText(newCopyBtn.dataset.number).then(() => {
-        showToast("Nomor berhasil disalin!");
-      });
-    };
-    const handleClose = () => {
-      modal.classList.add("modal-hidden");
-    };
-    const handleBackdropClose = (e) => {
-      if (e.target === modal) handleClose();
-    };
-
-    newCopyBtn.addEventListener("click", handleCopy);
-    newCloseBtn.addEventListener("click", handleClose);
-    newCloseBottomBtn.addEventListener("click", handleClose);
-    modal.addEventListener("click", handleBackdropClose, { once: true });
-    // --- END: Perbaikan Event Listener Modal ---
-
-    modal.classList.remove("modal-hidden");
-    modal.classList.add("modal-visible");
-  }
 
   const sidebar = document.getElementById("mobile-sidebar");
   const sidebarBackdrop = document.getElementById("sidebar-backdrop");
@@ -1415,7 +1406,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function showToast(message, isError = false) {
     const toast = document.createElement("div");
     toast.textContent = message;
-    toast.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-lg text-white font-semibold z-50 transition-transform duration-300 transform translate-y-20`;
+    toast.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-lg text-white font-semibold z-[100] transition-transform duration-300 transform translate-y-20`;
     toast.classList.add(isError ? "bg-red-500" : "bg-gray-800");
     document.body.appendChild(toast);
     setTimeout(() => {
