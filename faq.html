@@ -1,0 +1,87 @@
+<!-- FAQ -->
+<section class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 max-w-3xl">
+  <div class="text-center mb-12">
+    <h2 class="text-3xl font-extrabold text-blue-700 font-display">
+      Tanya Jawab (FAQ)
+    </h2>
+    <p class="mt-2 text-gray-600">
+      Beberapa pertanyaan yang sering diajukan oleh klien KawanBaraja.
+    </p>
+  </div>
+
+  <div class="space-y-4" id="faq-list">
+    <!-- FAQ 1 -->
+    <div class="bg-white p-5 rounded-xl shadow hover:shadow-md transition">
+      <button
+        class="flex justify-between items-center w-full text-left font-semibold text-gray-800 focus:outline-none"
+        onclick="toggleFaq(this)"
+      >
+        <span>Bagaimana sistem pembayarannya?</span>
+        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500"></i>
+      </button>
+      <div class="faq-answer mt-3 hidden text-gray-600 text-sm leading-relaxed">
+        Pembayaran dapat dilakukan melalui
+        <strong>DANA (0887-0965-0064 a.n. KawanBaraja)</strong> atau
+        <strong>rekening BSI</strong>. Cukup lakukan DP 50% di awal, sisanya
+        setelah preview hasil kami kirim.
+      </div>
+    </div>
+
+    <!-- FAQ 2 -->
+    <div class="bg-white p-5 rounded-xl shadow hover:shadow-md transition">
+      <button
+        class="flex justify-between items-center w-full text-left font-semibold text-gray-800"
+        onclick="toggleFaq(this)"
+      >
+        <span>Apakah data saya aman?</span>
+        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500"></i>
+      </button>
+      <div class="faq-answer mt-3 hidden text-gray-600 text-sm leading-relaxed">
+        <strong>Tentu saja.</strong> Kami menjamin kerahasiaan semua file,
+        dokumen, dan informasi pribadi Anda. Tidak akan dibagikan kepada pihak
+        ketiga tanpa izin.
+      </div>
+    </div>
+
+    <!-- FAQ 3 -->
+    <div class="bg-white p-5 rounded-xl shadow hover:shadow-md transition">
+      <button
+        class="flex justify-between items-center w-full text-left font-semibold text-gray-800"
+        onclick="toggleFaq(this)"
+      >
+        <span>Bagaimana jika ada revisi dari dosen?</span>
+        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500"></i>
+      </button>
+      <div class="faq-answer mt-3 hidden text-gray-600 text-sm leading-relaxed">
+        Untuk skripsi dan tesis, revisi minor pertama <strong>gratis</strong>.
+        Revisi selanjutnya atau revisi mayor akan dikenakan biaya tambahan yang
+        terjangkau, dan tentu dibicarakan dulu dengan Anda.
+      </div>
+    </div>
+
+    <!-- FAQ 4 -->
+    <div class="bg-white p-5 rounded-xl shadow hover:shadow-md transition">
+      <button
+        class="flex justify-between items-center w-full text-left font-semibold text-gray-800"
+        onclick="toggleFaq(this)"
+      >
+        <span>Berapa lama waktu pengerjaan?</span>
+        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500"></i>
+      </button>
+      <div class="faq-answer mt-3 hidden text-gray-600 text-sm leading-relaxed">
+        Durasi tergantung jenis layanan dan tingkat kesulitannya. Namun kami
+        selalu berkomitmen menyelesaikan sesuai deadline yang disepakati
+        bersama.
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function toggleFaq(button) {
+    const answer = button.parentElement.querySelector(".faq-answer");
+    const icon = button.querySelector("i");
+    answer.classList.toggle("hidden");
+    icon.classList.toggle("rotate-180");
+  }
+</script>
