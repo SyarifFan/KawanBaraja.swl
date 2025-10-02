@@ -335,13 +335,37 @@ document.addEventListener("DOMContentLoaded", () => {
   // SPA Navigation: Loads page content from HTML files
   async function showPage(page, slug = null) {
     try {
+      // If the page is already loaded, don't refetch
+      const currentSection = pageContainer.querySelector(`#${page}`);
+      if (currentSection) {
+        // If it's the pemesanan page and a slug is passed, re-run setup
+        if (page === "pemesanan" && slug) {
+          if (typeof window[`setup_pemesanan`] === "function") {
+            window[`setup_pemesanan`](slug);
+          }
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        closeSidebar();
+        return;
+      }
+
       const response = await fetch(`${page}.html`);
       if (!response.ok) {
         pageContainer.innerHTML = `<p class="text-center p-8">Halaman tidak ditemukan.</p>`;
         return;
       }
       const html = await response.text();
-      pageContainer.innerHTML = html;
+
+      // Hide all sections before showing the new one
+      Array.from(pageContainer.children).forEach(
+        (child) => (child.style.display = "none")
+      );
+
+      // Add new page content
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
+      const newPageElement = tempDiv.firstElementChild;
+      pageContainer.appendChild(newPageElement);
 
       // Update active nav links
       document
@@ -415,9 +439,6 @@ document.addEventListener("DOMContentLoaded", () => {
       counters.forEach((counter) => observer.observe(counter));
       hasCounterAnimated = true;
     }
-
-    // Interactive Timeline
-    // (Rendered directly in beranda.html)
   };
 
   window.setup_layanan = function () {
@@ -429,7 +450,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "layanan-accordion-mobile"
     );
 
-    // Render Desktop Nav and Mobile Accordion
     layananNavDesktop.innerHTML = servicesData
       .map(
         (s, i) => `
@@ -507,7 +527,6 @@ document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
     }
 
-    // Event listener for desktop/mobile nav
     const layananSection = document.getElementById("layanan");
     layananSection.addEventListener("click", (e) => {
       const btn = e.target.closest(".layanan-nav-btn");
@@ -525,7 +544,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Initialize with the first service
     updateLayananContent("harian");
   };
 
@@ -852,7 +870,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return msg;
     }
 
-    // Render initial category cards
     orderCategoryCardsContainer.innerHTML =
       servicesData
         .map(
@@ -870,7 +887,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="block text-xs font-semibold mt-2">Layanan Lainnya</span>
         </button>`;
 
-    // Event Listeners for Order Page
     orderCategoryCardsContainer.addEventListener("click", (e) => {
       const btn = e.target.closest(".order-category-btn");
       if (!btn) return;
@@ -1000,7 +1016,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Initialize view
     if (slug) {
       setTimeout(
         () =>
@@ -1024,7 +1039,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const slider = document.getElementById("testimonial-slider");
     const dotsContainer = document.getElementById("testimonial-dots");
 
-    // Split testimonials into conversations for slider
     let conversations = [];
     let currentConversation = [];
     testimonialsData.forEach((item) => {
@@ -1151,12 +1165,11 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   window.setup_kontak = function () {
-    // Event listeners for payment/contact modals are handled globally
+    // Event listeners for payment modals are handled globally
   };
 
   // --- GLOBAL EVENT LISTENERS & INITIALIZATION ---
 
-  // Sidebar Toggling
   function openSidebar() {
     sidebar.classList.add("sidebar-open");
     sidebarBackdrop.classList.remove("hidden");
@@ -1169,7 +1182,6 @@ document.addEventListener("DOMContentLoaded", () => {
   closeSidebarBtn.addEventListener("click", closeSidebar);
   sidebarBackdrop.addEventListener("click", closeSidebar);
 
-  // FAB Toggling
   fabMainBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     fabContainer.classList.toggle("open");
@@ -1182,22 +1194,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Main navigation clicks
   document.body.addEventListener("click", (e) => {
-    let targetElement = e.target;
-    // Find the link, even if an icon inside it was clicked
-    const pageLink = targetElement.closest(
-      ".page-link, .order-from-service-btn"
-    );
+    const pageLink = e.target.closest(".page-link, .order-from-service-btn");
     if (pageLink) {
       e.preventDefault();
       const page = pageLink.dataset.page;
       const slug = pageLink.dataset.categorySlug;
-      showPage(page, slug);
+      const targetSection = document.getElementById(page);
+
+      // Hide all sections, show the target one
+      document
+        .querySelectorAll("#page-container > section")
+        .forEach((s) => (s.style.display = "none"));
+      if (targetSection) {
+        targetSection.style.display = "block";
+      } else {
+        // If section doesn't exist, load it
+        showPage(page, slug);
+      }
+
+      // Update active nav links
+      document
+        .querySelectorAll(".nav-link")
+        .forEach((a) => a.classList.remove("active"));
+      document
+        .querySelector(`.nav-link[data-page="${page}"]`)
+        ?.classList.add("active");
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      closeSidebar();
     }
   });
 
-  // Modal Handling
   const modals = {
     userInfo: {
       element: document.getElementById("user-info-modal"),
@@ -1207,46 +1235,37 @@ document.addEventListener("DOMContentLoaded", () => {
       element: document.getElementById("payment-modal"),
       closeBtn: document.getElementById("payment-modal-close"),
     },
-    contact: {
-      element: document.getElementById("contact-modal"),
-      closeBtn: document.getElementById("contact-modal-close"),
-    },
   };
 
   function showModal(modalName) {
-    const modal = modals[modalName];
-    if (modal && modal.element) {
-      modal.element.classList.remove("modal-hidden");
-      modal.element.classList.add("modal-visible");
+    if (modals[modalName]) {
+      modals[modalName].element.classList.remove("modal-hidden");
+      modals[modalName].element.classList.add("modal-visible");
     }
   }
 
   function closeModal(modalName) {
-    const modal = modals[modalName];
-    if (modal && modal.element) {
-      modal.element.classList.add("modal-hidden");
-      modal.element.classList.remove("modal-visible");
+    if (modals[modalName]) {
+      modals[modalName].element.classList.add("modal-hidden");
+      modals[modalName].element.classList.remove("modal-visible");
     }
   }
 
-  // Generic modal close listeners
   Object.keys(modals).forEach((key) => {
     const modal = modals[key];
-    if (modal.element) {
+    if (modal.element)
       modal.element.addEventListener("click", (e) => {
         if (e.target === modal.element) closeModal(key);
       });
-    }
-    if (modal.closeBtn) {
+    if (modal.closeBtn)
       modal.closeBtn.addEventListener("click", () => closeModal(key));
-    }
   });
 
-  // Specific Modal Logic: User Info / Checkout
   document.body.addEventListener("click", (e) => {
     if (e.target.id === "checkout-btn") showModal("userInfo");
   });
 
+  // *** THIS IS THE CORRECTED PART ***
   document.getElementById("confirm-order-btn").addEventListener("click", () => {
     const nameInput = document.getElementById("visitor-name");
     if (!nameInput.value.trim()) {
@@ -1266,25 +1285,92 @@ document.addEventListener("DOMContentLoaded", () => {
         }`
       : "Tidak ditentukan";
 
-    const { finalTotal } = calculateTotals();
-    const orderText = getOrderText();
+    const { subtotal, discount, fastTrackFee, finalTotal } = calculateTotals();
+    const comments = document.getElementById("customer-comments").value.trim();
+
     const adminWA = "088709650064";
     const danaNumber = "088709650064";
     const bsiNumber = "7324408295";
     const accountHolder = "Syariffan";
 
-    let msg = `Halo KawanBaraja, saya ${visitorData.name}. Saya ingin memesan layanan:\n\n${orderText}`;
-    msg += `--------------------------\n*Informasi Pembayaran:*\nSilakan lakukan pembayaran ke salah satu rekening di bawah ini:\n\n*Bank Syariah Indonesia (BSI)*\nNo. Rek: ${bsiNumber}\nA/n: ${accountHolder}\n\n*DANA*\nNo. HP: ${danaNumber}\nA/n: ${accountHolder}\n\n`;
+    let msg = `Halo KawanBaraja, saya ${visitorData.name}. Saya tertarik untuk memesan layanan berikut:\n\n`;
+    if (visitorData.deadline !== "Tidak ditentukan") {
+      msg += `*Estimasi Deadline:* ${visitorData.deadline}\n\n`;
+    }
+
+    let regular = "";
+    let custom = "";
+
+    for (const id in cart) {
+      const c = cart[id];
+      if (c.isCustom) {
+        custom += `- ${c.name}\n  _(Harga akan didiskusikan)_\n`;
+        continue;
+      }
+      const item = servicesData
+        .flatMap((s) => s.items)
+        .find((i) => i.id === id);
+      if (item) {
+        if (item.selectable) {
+          const n = c.chapters?.length || 0;
+          if (n > 0) {
+            let bill = new Set(c.chapters);
+            if (c.totalChapters === 5 && bill.has("4") && bill.has("5"))
+              bill.delete("5");
+            const total = item.price * bill.size;
+            const parentService = servicesData.find((s) =>
+              s.items.some((i) => i.id === id)
+            );
+            regular += `*- ${item.name} (${
+              parentService.category
+            })* (BAB ${c.chapters.join(", ")})\n  Jumlah terhitung: ${
+              bill.size
+            } bab\n  Harga: ${formatCurrency(total)}\n\n`;
+          }
+        } else {
+          const total = item.price * c.quantity;
+          if (item.price === 0) {
+            regular += `*- ${item.name}*\n  Harga: ${item.note}\n\n`;
+          } else {
+            regular += `*- ${item.name}*\n  Jumlah: ${c.quantity} ${
+              item.unit
+            }\n  Harga: ${formatCurrency(total)}\n\n`;
+          }
+        }
+      }
+    }
+
+    if (regular) msg += `*Layanan Utama:*\n${regular}`;
+    if (custom) {
+      if (regular) msg += `--------------------------------------\n`;
+      msg += `*Layanan Kustom:*\n${custom}\n`;
+    }
+
+    msg += "--------------------------------------\n";
+    msg += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
+    if (discount > 0) msg += `*Diskon Diminta:* -${formatCurrency(discount)}\n`;
+    if (isFastTrack)
+      msg += `*Biaya Fast Track:* +${formatCurrency(fastTrackFee)}\n`;
+    msg += `*Total Akhir:* ${formatCurrency(finalTotal)}\n\n`;
+
+    if (comments) {
+      msg +=
+        "--------------------------------------\n*Catatan Tambahan:*\n" +
+        comments +
+        "\n\n";
+    }
+
+    msg += `--------------------------------------\n*Informasi Pembayaran:*\nSilakan lakukan pembayaran ke salah satu rekening di bawah ini:\n\n*Bank Syariah Indonesia (BSI)*\nNo. Rek: ${bsiNumber}\nA/n: ${accountHolder}\n\n*DANA*\nNo. HP: ${danaNumber}\nA/n: ${accountHolder}\n\n`;
     msg += "Mohon konfirmasi dan informasinya. Terima kasih!";
 
     closeModal("userInfo");
+    // Correctly format WA number by removing leading '0'
     window.open(
-      `https://wa.me/62${adminWA}?text=${encodeURIComponent(msg)}`,
+      `https://wa.me/62${adminWA.substring(1)}?text=${encodeURIComponent(msg)}`,
       "_blank"
     );
   });
 
-  // Specific Modal Logic: Payment
   const paymentMeta = {
     dana: {
       title: "DANA",
@@ -1340,9 +1426,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   // Initial Load
-  document.getElementById("current-year").textContent =
-    new Date().getFullYear();
-  const initialPage = window.location.hash.substring(1) || "beranda";
-  showPage(initialPage);
-  mainContent.style.opacity = 1;
+  async function init() {
+    await showPage("beranda");
+    await showPage("layanan");
+    await showPage("pemesanan");
+    await showPage("tentang");
+    await showPage("faq");
+    await showPage("kontak");
+
+    // After all pages are loaded, show beranda by default
+    document
+      .querySelectorAll("#page-container > section")
+      .forEach((s) => (s.style.display = "none"));
+    document.getElementById("beranda").style.display = "block";
+    document
+      .querySelector('.nav-link[data-page="beranda"]')
+      ?.classList.add("active");
+
+    document.getElementById("current-year").textContent =
+      new Date().getFullYear();
+    mainContent.style.opacity = 1;
+  }
+
+  init();
 });
