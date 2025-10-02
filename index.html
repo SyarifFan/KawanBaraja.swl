@@ -5,16 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KawanBaraja - Solusi Cepat & Praktis untuk Semua Tugasmu</title>
 
-    <!-- Tailwind, Fonts, and Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="assets/css/style.css" />
 
     <script>
       tailwind.config = {
@@ -59,10 +55,13 @@
         },
       };
     </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
     <div id="main-content" style="opacity: 0">
-      <!-- Header -->
       <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-between h-16">
@@ -82,7 +81,6 @@
               >
             </a>
 
-            <!-- Desktop nav -->
             <nav class="hidden md:flex items-center space-x-6">
               <a
                 href="#"
@@ -122,7 +120,6 @@
               >
             </nav>
 
-            <!-- Mobile hamburger -->
             <button
               id="open-sidebar"
               class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-orange-300"
@@ -134,7 +131,6 @@
         </div>
       </header>
 
-      <!-- Mobile Sidebar -->
       <div
         id="sidebar-backdrop"
         class="fixed inset-0 bg-black/30 z-50 hidden"
@@ -195,11 +191,8 @@
         </nav>
       </aside>
 
-      <main id="page-container" class="flex-grow">
-        <!-- Konten halaman dinamis akan dimuat di sini -->
-      </main>
+      <main id="page-container" class="flex-grow"></main>
 
-      <!-- Footer -->
       <footer class="bg-gray-800 text-white pt-12 pb-6">
         <div
           class="container mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left"
@@ -286,8 +279,8 @@
                 <li
                   class="flex items-center justify-center md:justify-start gap-2"
                 >
-                  <i data-lucide="message-circle" class="w-4 h-4"></i>
-                  <a
+                  <i data-lucide="message-circle" class="w-4 h-4"></i
+                  ><a
                     href="https://wa.me/6288709650064"
                     target="_blank"
                     class="hover:text-white transition-colors"
@@ -297,8 +290,8 @@
                 <li
                   class="flex items-center justify-center md:justify-start gap-2"
                 >
-                  <i data-lucide="message-circle" class="w-4 h-4"></i>
-                  <a
+                  <i data-lucide="message-circle" class="w-4 h-4"></i
+                  ><a
                     href="https://wa.me/6282283067595"
                     target="_blank"
                     class="hover:text-white transition-colors"
@@ -308,8 +301,8 @@
                 <li
                   class="flex items-center justify-center md:justify-start gap-2"
                 >
-                  <i data-lucide="message-circle" class="w-4 h-4"></i>
-                  <a
+                  <i data-lucide="message-circle" class="w-4 h-4"></i
+                  ><a
                     href="https://wa.me/6283150556118"
                     target="_blank"
                     class="hover:text-white transition-colors"
@@ -319,8 +312,8 @@
                 <li
                   class="flex items-center justify-center md:justify-start gap-2"
                 >
-                  <i data-lucide="message-circle" class="w-4 h-4"></i>
-                  <a
+                  <i data-lucide="message-circle" class="w-4 h-4"></i
+                  ><a
                     href="https://wa.me/6285265895671"
                     target="_blank"
                     class="hover:text-white transition-colors"
@@ -341,7 +334,6 @@
         </div>
       </footer>
 
-      <!-- FAB -->
       <div id="fab-container" class="fab-container">
         <div class="fab-options">
           <a
@@ -386,10 +378,9 @@
       </div>
     </div>
 
-    <!-- User Info Modal -->
     <div
       id="user-info-modal"
-      class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 modal-hidden"
+      class="modal-container fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 modal-hidden"
     >
       <div
         class="modal-content bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden"
@@ -401,11 +392,8 @@
             >
               Lengkapi Detail Pesanan
             </h3>
-            <button
-              id="user-info-modal-close"
-              class="text-gray-400 hover:text-gray-600 text-3xl leading-none"
-            >
-              &times;
+            <button data-modal-close class="text-gray-400 hover:text-gray-600">
+              <i data-lucide="x" class="w-6 h-6"></i>
             </button>
           </div>
           <p class="text-sm text-gray-600 mt-1 mb-6">
@@ -462,10 +450,9 @@
       </div>
     </div>
 
-    <!-- Payment/Donation Modal -->
     <div
       id="payment-modal"
-      class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 modal-hidden"
+      class="modal-container fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 modal-hidden"
     >
       <div
         class="modal-content bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden"
@@ -493,11 +480,8 @@
                 ></p>
               </div>
             </div>
-            <button
-              id="payment-modal-close"
-              class="text-gray-400 hover:text-gray-600 text-3xl leading-none"
-            >
-              &times;
+            <button data-modal-close class="text-gray-400 hover:text-gray-600">
+              <i data-lucide="x" class="w-6 h-6"></i>
             </button>
           </div>
           <div
@@ -519,7 +503,7 @@
             <span id="copy-button-text">Salin Nomor</span>
           </button>
           <button
-            id="payment-modal-close-bottom"
+            data-modal-close
             class="w-full bg-gray-200 text-gray-700 font-bold py-2.5 px-4 rounded-lg hover:bg-gray-300 transition-all"
           >
             Tutup
@@ -528,6 +512,11 @@
       </div>
     </div>
 
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="assets/js/main.js"></script>
+
+    <script>
+      lucide.createIcons();
+    </script>
   </body>
 </html>

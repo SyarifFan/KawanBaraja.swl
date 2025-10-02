@@ -226,21 +226,18 @@ document.addEventListener("DOMContentLoaded", () => {
           name: "Buat Artikel/Jurnal",
           price: 5000,
           unit: "halaman",
-          selectable: false,
         },
         {
           id: "artikel_buat_skripsi",
           name: "Buat Artikel/Jurnal Penelitian Skripsi",
           price: 10000,
           unit: "halaman",
-          selectable: false,
         },
         {
           id: "artikel_publish_non_sinta",
           name: "Publish Artikel Non Sinta/OJS",
           price: 300000,
           unit: "per-artikel",
-          selectable: false,
         },
         {
           id: "artikel_publish_sinta",
@@ -248,14 +245,12 @@ document.addEventListener("DOMContentLoaded", () => {
           price: 0,
           unit: "nego",
           note: "Disesuaikan dengan prediket sinta dan Publisher Jurnal Keilmuan",
-          selectable: false,
         },
         {
           id: "artikel_submit",
           name: "Submit Artikel Non Sinta/Prediket Sinta",
           price: 50000,
           unit: "per-file",
-          selectable: false,
         },
       ],
     },
@@ -363,13 +358,12 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Gagal memuat halaman:", error);
       document.getElementById(
         "page-container"
-      ).innerHTML = `<div class="text-center p-8"><p>Maaf, terjadi kesalahan saat memuat konten.</p></div>`;
+      ).innerHTML = `<div class="text-center p-8"><p>Maaf, terjadi kesalahan saat memuat konten. Halaman mungkin tidak ada.</p></div>`;
     }
   }
 
   // --- EVENT LISTENERS ---
 
-  // Listener yang diaktifkan SETELAH halaman baru dimuat
   document.addEventListener("pageLoaded", (e) => {
     const { page, slug } = e.detail;
     if (page === "beranda") initBeranda();
@@ -379,11 +373,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (page === "faq") initFaq();
   });
 
-  // Listener utama pada body yang stabil untuk semua klik
   document.body.addEventListener("click", (e) => {
     const target = e.target;
-
-    // Navigasi SPA
     const pageLink = target.closest(".page-link, .order-from-service-btn");
     if (pageLink && !pageLink.getAttribute("href")?.startsWith("http")) {
       e.preventDefault();
@@ -464,6 +455,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const layananAccordionMobile = document.getElementById(
       "layanan-accordion-mobile"
     );
+
     layananNavDesktop.innerHTML = servicesData
       .map(
         (s, i) =>
@@ -473,19 +465,38 @@ document.addEventListener("DOMContentLoaded", () => {
             i === 0
               ? "bg-brand-orange-100 text-brand-orange-800 font-semibold"
               : "hover:bg-gray-100"
-          }"><i data-lucide="${s.icon}" class="w-6 h-6 text-${
+          }">
+            <i data-lucide="${s.icon}" class="w-6 h-6 text-${
             s.color
-          } flex-shrink-0"></i><span class="font-semibold">${
-            s.category
-          }</span></button>`
+          } flex-shrink-0"></i>
+            <span class="font-semibold">${s.category}</span>
+        </button>`
       )
       .join("");
+
     layananAccordionMobile.innerHTML = servicesData
       .map(
         (s) =>
-          `<div class="bg-white rounded-lg shadow-sm"><button data-service-slug="${s.slug}" class="layanan-nav-btn w-full flex justify-between items-center gap-4 p-4 text-left"><div class="flex items-center gap-4"><i data-lucide="${s.icon}" class="w-6 h-6 text-${s.color} flex-shrink-0"></i><span class="font-semibold text-gray-800">${s.category}</span></div><i data-lucide="chevron-down" class="accordion-icon w-5 h-5 text-gray-400 transition-transform"></i></button><div class="layanan-desc-mobile px-4 text-gray-600"><div class="border-t pt-4"><p class="mb-4 leading-relaxed">${s.description}</p><button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-brand-blue-600 text-sm"><i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini</button></div></div></div>`
+          `<div class="bg-white rounded-lg shadow-sm">
+            <button data-service-slug="${s.slug}" class="layanan-nav-btn w-full flex justify-between items-center gap-4 p-4 text-left">
+                <div class="flex items-center gap-4">
+                    <i data-lucide="${s.icon}" class="w-6 h-6 text-${s.color} flex-shrink-0"></i>
+                    <span class="font-semibold text-gray-800">${s.category}</span>
+                </div>
+                <i data-lucide="chevron-down" class="accordion-icon w-5 h-5 text-gray-400 transition-transform"></i>
+            </button>
+            <div class="layanan-desc-mobile px-4 text-gray-600">
+                <div class="border-t pt-4 pb-4">
+                    <p class="mb-4 leading-relaxed">${s.description}</p>
+                    <button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-brand-blue-600 text-sm">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini
+                    </button>
+                </div>
+            </div>
+        </div>`
       )
       .join("");
+
     lucide.createIcons();
     updateLayananContent("harian");
 
@@ -495,14 +506,37 @@ document.addEventListener("DOMContentLoaded", () => {
         const btn = e.target.closest(".layanan-nav-btn");
         if (!btn) return;
         const slug = btn.dataset.serviceSlug;
+
+        // Logic for Desktop
+        if (btn.closest("#layanan-nav-desktop")) {
+          updateLayananContent(slug);
+        }
+
+        // [FIXED] Logic for Mobile Accordion
         if (btn.closest("#layanan-accordion-mobile")) {
+          const parent = btn.parentElement;
+          const content = parent.querySelector(".layanan-desc-mobile");
+          const icon = btn.querySelector(".accordion-icon");
           const wasActive = btn.classList.contains("active");
+
+          // Close all other accordions
           document
             .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
-            .forEach((b) => b.classList.remove("active"));
-          if (!wasActive) btn.classList.add("active");
-        } else {
-          updateLayananContent(slug);
+            .forEach((b) => {
+              b.classList.remove("active");
+              b.parentElement.querySelector(
+                ".layanan-desc-mobile"
+              ).style.maxHeight = null;
+              b.querySelector(".accordion-icon").style.transform =
+                "rotate(0deg)";
+            });
+
+          // If it wasn't already active, open it
+          if (!wasActive) {
+            btn.classList.add("active");
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.style.transform = "rotate(180deg)";
+          }
         }
       });
   }
@@ -513,8 +547,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(
       "layanan-content-desktop"
     ).innerHTML = `<div style="animation:fadeInPage .5s"><h3 class="text-2xl font-extrabold text-brand-blue-700 mb-2 font-display">${s.category}</h3><p class="text-gray-700 mb-6 leading-relaxed">${s.description}</p><div class="border-t pt-4"><button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-brand-blue-600 transition-all shadow"><i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini</button></div></div>`;
+
+    // Update active state only for desktop nav
     document
-      .querySelectorAll(".layanan-nav-btn")
+      .querySelectorAll("#layanan-nav-desktop .layanan-nav-btn")
       .forEach((b) =>
         b.classList.remove(
           "active",
@@ -523,12 +559,15 @@ document.addEventListener("DOMContentLoaded", () => {
         )
       );
     document
-      .querySelectorAll(`.layanan-nav-btn[data-service-slug="${slug}"]`)
+      .querySelectorAll(
+        `#layanan-nav-desktop .layanan-nav-btn[data-service-slug="${slug}"]`
+      )
       .forEach((b) => {
-        b.classList.add("active");
-        if (!b.closest("#layanan-accordion-mobile")) {
-          b.classList.add("bg-brand-orange-100", "text-brand-orange-800");
-        }
+        b.classList.add(
+          "active",
+          "bg-brand-orange-100",
+          "text-brand-orange-800"
+        );
       });
     lucide.createIcons();
   }
@@ -537,10 +576,16 @@ document.addEventListener("DOMContentLoaded", () => {
     let cardHtml = servicesData
       .map(
         (s) =>
-          `<button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent"><i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i><span class="block text-xs font-semibold mt-2">${s.category}</span></button>`
+          `<button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+            <i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i>
+            <span class="block text-xs font-semibold mt-2">${s.category}</span>
+          </button>`
       )
       .join("");
-    cardHtml += `<button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent"><i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i><span class="block text-xs font-semibold mt-2">Layanan Lainnya</span></button>`;
+    cardHtml += `<button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+                  <i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i>
+                  <span class="block text-xs font-semibold mt-2">Layanan Lainnya</span>
+                </button>`;
     document.getElementById("order-category-cards").innerHTML = cardHtml;
     lucide.createIcons();
 
@@ -642,6 +687,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const id = t.dataset.id;
         const chapter = t.dataset.chapter;
         const boxContainer = t.closest(`#chapters_${id}`);
+        // Business logic: if total chapters is 5 (standard skripsi), checking 4 also checks 5 and vice-versa.
         if (cart[id] && cart[id].totalChapters === 5) {
           if (chapter === "4") {
             const c5 = boxContainer.querySelector('[data-chapter="5"]');
@@ -672,6 +718,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (cart[id]) {
             cart[id].totalChapters = total;
             renderChapterCheckboxes(id, total);
+            // Re-filter selected chapters to ensure they are valid
             cart[id].chapters = (cart[id].chapters || []).filter(
               (c) => parseInt(c) <= total
             );
@@ -749,12 +796,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!answer || !icon) return;
       const wasOpen =
         answer.style.maxHeight && answer.style.maxHeight !== "0px";
+
       document
         .querySelectorAll("#faq-container .faq-answer")
         .forEach((ans) => (ans.style.maxHeight = null));
       document
         .querySelectorAll("#faq-container .faq-question svg")
         .forEach((ic) => (ic.style.transform = "rotate(0deg)"));
+
       if (!wasOpen) {
         answer.style.maxHeight = answer.scrollHeight + "px";
         icon.style.transform = "rotate(180deg)";
@@ -901,12 +950,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return new Set();
     }
     const billable = new Set(cartItem.chapters);
+    // Business logic: For standard 5-chapter thesis, chapter 5 is often a package with chapter 4.
     if (
       cartItem.totalChapters === 5 &&
       billable.has("4") &&
       billable.has("5")
     ) {
-      billable.delete("5");
+      billable.delete("5"); // Don't charge for chapter 5 if 4 is also selected
     }
     return billable;
   }
@@ -924,7 +974,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const billableChapters = getBillableChapters(c);
           subtotal += item.price * billableChapters.size;
         } else {
-          subtotal += item.price * c.quantity;
+          subtotal += item.price * (c.quantity || 0);
         }
       }
     }
@@ -949,10 +999,11 @@ document.addEventListener("DOMContentLoaded", () => {
     cartItemsList.innerHTML = "";
     const subtotal = calculateSubtotal();
     const isFastTrack = fastTrackCheckbox.checked;
-    const fastTrackFee = isFastTrack ? subtotal * 0.15 : 0;
+    const fastTrackFee = isFastTrack ? subtotal * 0.15 : 0; // 15% fee for fast track
 
+    // Business logic: Discount cannot be more than 10% of subtotal.
     const maxDiscount = Math.floor(subtotal * 0.1);
-    let discount = parseInt(discountInput.value) || 0;
+    let discount = parseInt(discountInput.value.replace(/\D/g, "")) || 0;
     if (discount > maxDiscount && maxDiscount > 0) {
       discountInput.value = maxDiscount;
       discount = maxDiscount;
@@ -1016,27 +1067,41 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function copyOrderSummary() {
-    const fastTrackCheckbox = document.getElementById("fast-track-checkbox");
-    const discountInput = document.getElementById("discount-request");
+    const summary = generateWhatsAppMessage(false); // Generate without personal intro
+    navigator.clipboard
+      .writeText(summary)
+      .then(() => showToast("Rincian harga berhasil disalin!"))
+      .catch((err) => {
+        console.error("Gagal menyalin:", err);
+        showToast("Gagal menyalin rincian.", true);
+      });
+  }
 
+  function generateWhatsAppMessage(includePersonalInfo = true) {
     const subtotal = calculateSubtotal();
-    const isFastTrack = fastTrackCheckbox.checked;
+    const isFastTrack = document.getElementById("fast-track-checkbox").checked;
     const fastTrackFee = isFastTrack ? subtotal * 0.15 : 0;
+    const disc =
+      parseInt(
+        document.getElementById("discount-request").value.replace(/\D/g, "")
+      ) || 0;
+    const finalTotal = Math.max(0, subtotal + fastTrackFee - disc);
+    const comments = document.getElementById("customer-comments").value.trim();
 
-    const maxDiscount = Math.floor(subtotal * 0.1);
-    let discount = parseInt(discountInput.value) || 0;
-    if (discount > maxDiscount && maxDiscount > 0) {
-      discount = maxDiscount;
+    let msg = "";
+    if (includePersonalInfo) {
+      msg += `Halo KawanBaraja, saya *${visitorData.name}*. Saya tertarik untuk memesan layanan berikut:\n\n`;
+      if (visitorData.deadline !== "Tidak ditentukan") {
+        msg += `*Estimasi Deadline:* ${visitorData.deadline}\n\n`;
+      }
+    } else {
+      msg += `*RINGKASAN PESANAN*\n\n`;
     }
-
-    const finalTotal = Math.max(0, subtotal + fastTrackFee - discount);
-
-    let summary = `*HARGA LAYANAN*\n\n`;
 
     for (const id in cart) {
       const c = cart[id];
       if (c.isCustom) {
-        summary += `- ${c.name}: *Nego*\n`;
+        msg += `- ${c.name}: *Nego*\n`;
         continue;
       }
       const item = servicesData
@@ -1046,39 +1111,35 @@ document.addEventListener("DOMContentLoaded", () => {
         if (item.selectable) {
           const billableChapters = getBillableChapters(c);
           if (billableChapters.size > 0) {
-            summary += `- ${item.name} (BAB ${c.chapters.join(
+            msg += `- *${item.name}* (BAB ${c.chapters.join(
               ", "
-            )}): *${formatCurrency(item.price * billableChapters.size)}*\n`;
+            )}): ${formatCurrency(item.price * billableChapters.size)}\n`;
           }
         } else {
-          summary += `- ${item.name} (${c.quantity} ${
+          msg += `- *${item.name}* (${c.quantity} ${
             item.unit
-          }): *${formatCurrency(item.price * c.quantity)}*\n`;
+          }): ${formatCurrency(item.price * c.quantity)}\n`;
         }
       }
     }
 
-    summary += `\n--------------------------------------\n`;
-    summary += `Subtotal: ${formatCurrency(subtotal)}\n`;
+    msg += `\n--------------------------------------\n`;
+    msg += `Subtotal: ${formatCurrency(subtotal)}\n`;
     if (isFastTrack)
-      summary += `Biaya Fast Track: ${formatCurrency(fastTrackFee)}\n`;
-    if (discount > 0) summary += `Diskon: -${formatCurrency(discount)}\n`;
-    summary += `*Total Akhir: ${formatCurrency(finalTotal)}*\n`;
-    summary += `--------------------------------------\n\n`;
-    summary += `*Metode Pembayaran:*\n\n`;
-    summary += `*${PAYMENT_DETAILS.dana.name}*\nNo: ${PAYMENT_DETAILS.dana.number}\nA/n: ${PAYMENT_DETAILS.dana.holder}\n\n`;
-    summary += `*${PAYMENT_DETAILS.bsi.name}*\nNo: ${PAYMENT_DETAILS.bsi.number}\nA/n: ${PAYMENT_DETAILS.bsi.holder}\n\n`;
-    summary += `Terima kasih!`;
+      msg += `Biaya Fast Track: ${formatCurrency(fastTrackFee)}\n`;
+    if (disc > 0) msg += `Diskon: -${formatCurrency(disc)}\n`;
+    msg += `*Total Akhir: ${formatCurrency(finalTotal)}*\n`;
 
-    navigator.clipboard
-      .writeText(summary)
-      .then(() => {
-        showToast("Rincian harga berhasil disalin!");
-      })
-      .catch((err) => {
-        console.error("Gagal menyalin:", err);
-        showToast("Gagal menyalin rincian.", true);
-      });
+    if (includePersonalInfo && comments) {
+      msg += `\n*Catatan Tambahan:*\n${comments}\n`;
+    }
+
+    msg += `--------------------------------------\n\n*Metode Pembayaran:*\n\n`;
+    msg += `*${PAYMENT_DETAILS.dana.name}*\nNo: ${PAYMENT_DETAILS.dana.number}\nA/n: ${PAYMENT_DETAILS.dana.holder}\n\n`;
+    msg += `*${PAYMENT_DETAILS.bsi.name}*\nNo: ${PAYMENT_DETAILS.bsi.number}\nA/n: ${PAYMENT_DETAILS.bsi.holder}\n\n`;
+    msg += `Mohon konfirmasi dan informasinya. Terima kasih!`;
+
+    return msg;
   }
 
   // --- TESTIMONIALS ---
@@ -1146,9 +1207,10 @@ document.addEventListener("DOMContentLoaded", () => {
     slider.addEventListener("scroll", () => {
       const slideWidth = slider.offsetWidth;
       const activeIndex = Math.round(slider.scrollLeft / slideWidth);
-      dots.forEach((dot, i) =>
-        dot.classList.toggle("bg-brand-orange-500", i === activeIndex)
-      );
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("bg-brand-orange-500", i === activeIndex);
+        dot.classList.toggle("bg-gray-300", i !== activeIndex);
+      });
     });
 
     dotsContainer.addEventListener("click", (e) => {
@@ -1221,23 +1283,21 @@ document.addEventListener("DOMContentLoaded", () => {
     showModal("payment-modal");
   }
 
-  // Event listeners untuk semua modal (dipasang sekali)
-  document
-    .getElementById("user-info-modal-close")
-    ?.addEventListener("click", () => closeModal("user-info-modal"));
-  document.getElementById("user-info-modal")?.addEventListener("click", (e) => {
-    if (e.target.id === "user-info-modal") closeModal("user-info-modal");
+  document.querySelectorAll("[data-modal-close]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const modalId = el.closest(".modal-container").id;
+      closeModal(modalId);
+    });
   });
 
-  document
-    .getElementById("payment-modal-close")
-    ?.addEventListener("click", () => closeModal("payment-modal"));
-  document
-    .getElementById("payment-modal-close-bottom")
-    ?.addEventListener("click", () => closeModal("payment-modal"));
-  document.getElementById("payment-modal")?.addEventListener("click", (e) => {
-    if (e.target.id === "payment-modal") closeModal("payment-modal");
+  document.querySelectorAll(".modal-container").forEach((modal) => {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal(modal.id);
+      }
+    });
   });
+
   document
     .getElementById("payment-modal-copy")
     ?.addEventListener("click", function () {
@@ -1271,64 +1331,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateProcessIndicator(3);
 
-      const subtotal = calculateSubtotal();
-      const isFastTrack = document.getElementById(
-        "fast-track-checkbox"
-      ).checked;
-      const fastTrackFee = isFastTrack ? subtotal * 0.15 : 0;
-      const disc =
-        parseInt(document.getElementById("discount-request").value) || 0;
-      const finalTotal = Math.max(0, subtotal + fastTrackFee - disc);
-      const comments = document
-        .getElementById("customer-comments")
-        .value.trim();
-
-      let msg = `Halo KawanBaraja, saya *${visitorData.name}*. Saya tertarik untuk memesan layanan berikut:\n\n`;
-      if (visitorData.deadline !== "Tidak ditentukan")
-        msg += `*Estimasi Deadline:* ${visitorData.deadline}\n\n`;
-
-      for (const id in cart) {
-        const c = cart[id];
-        if (c.isCustom) {
-          msg += `- ${c.name}: *Nego*\n`;
-          continue;
-        }
-        const item = servicesData
-          .flatMap((s) => s.items)
-          .find((i) => i.id === id);
-        if (item) {
-          if (item.selectable) {
-            const billableChapters = getBillableChapters(c);
-            if (billableChapters.size > 0) {
-              msg += `- *${item.name}* (BAB ${c.chapters.join(
-                ", "
-              )} | Terhitung: ${billableChapters.size} bab): ${formatCurrency(
-                item.price * billableChapters.size
-              )}\n`;
-            }
-          } else {
-            msg += `- *${item.name}* (${c.quantity} ${
-              item.unit
-            }): ${formatCurrency(item.price * c.quantity)}\n`;
-          }
-        }
-      }
-
-      msg += `\n--------------------------------------\n`;
-      msg += `Subtotal: ${formatCurrency(subtotal)}\n`;
-      if (isFastTrack)
-        msg += `Biaya Fast Track: ${formatCurrency(fastTrackFee)}\n`;
-      if (disc > 0) msg += `Diskon: -${formatCurrency(disc)}\n`;
-      msg += `*Total Akhir: ${formatCurrency(finalTotal)}*\n`;
-
-      if (comments) {
-        msg += `\n*Catatan Tambahan:*\n${comments}\n`;
-      }
-
-      msg += `\n--------------------------------------\n*Metode Pembayaran:*\n\n`;
-      msg += `*${PAYMENT_DETAILS.dana.name}*\nNo: ${PAYMENT_DETAILS.dana.number}\nA/n: ${PAYMENT_DETAILS.dana.holder}\n\n`;
-      msg += `*${PAYMENT_DETAILS.bsi.name}*\nNo: ${PAYMENT_DETAILS.bsi.number}\nA/n: ${PAYMENT_DETAILS.bsi.holder}\n\n`;
-      msg += `Mohon konfirmasi dan informasinya. Terima kasih!`;
+      const msg = generateWhatsAppMessage(true);
 
       closeModal("user-info-modal");
       window.open(
@@ -1390,8 +1393,8 @@ document.addEventListener("DOMContentLoaded", () => {
     new Date().getFullYear();
   loadPage("beranda").then(() => {
     document.getElementById("main-content").style.opacity = 1;
+    document
+      .querySelector('.nav-link[data-page="beranda"]')
+      ?.classList.add("active");
   });
-  document
-    .querySelector('.nav-link[data-page="beranda"]')
-    ?.classList.add("active");
 });
