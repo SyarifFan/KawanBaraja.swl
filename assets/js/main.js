@@ -331,7 +331,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- STATE MANAGEMENT ---
   let cart = {};
   let visitorData = { name: "Klien", deadline: "" };
-  let hasCounterAnimated = false;
 
   const formatCurrency = (amount) =>
     new Intl.NumberFormat("id-ID", {
@@ -416,40 +415,38 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    if (!hasCounterAnimated) {
-      const counters = document.querySelectorAll(".counter");
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const counter = entry.target;
-              const target = +counter.getAttribute("data-target");
-              let current = 0;
-              const duration = 1500;
-              const increment = Math.max(
-                1,
-                Math.ceil(target / (duration / 16))
-              );
+    // Animasi counter di-reset setiap kali beranda dimuat
+    const counters = document.querySelectorAll(".counter");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const counter = entry.target;
+            const target = +counter.getAttribute("data-target");
+            let current = 0;
+            const duration = 1500;
+            const increment = Math.max(1, Math.ceil(target / (duration / 16)));
 
-              const update = () => {
-                current += increment;
-                if (current >= target) {
-                  counter.textContent = target.toLocaleString("id-ID");
-                } else {
-                  counter.textContent = current.toLocaleString("id-ID");
-                  requestAnimationFrame(update);
-                }
-              };
-              update();
-              observer.unobserve(counter);
-            }
-          });
-        },
-        { threshold: 0.5 }
-      );
-      counters.forEach((counter) => observer.observe(counter));
-      hasCounterAnimated = true;
-    }
+            const update = () => {
+              current += increment;
+              if (current >= target) {
+                counter.textContent = target.toLocaleString("id-ID");
+              } else {
+                counter.textContent = current.toLocaleString("id-ID");
+                requestAnimationFrame(update);
+              }
+            };
+            update();
+            observer.unobserve(counter);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    counters.forEach((counter) => {
+      counter.textContent = "0"; // Reset ke 0 sebelum di-observe
+      observer.observe(counter);
+    });
   }
 
   function initLayanan() {
@@ -658,7 +655,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const chapter = t.dataset.chapter;
         const boxContainer = t.closest(`#chapters_${id}`);
 
-        // Logic khusus untuk Bab 4 & 5
         if (cart[id] && cart[id].totalChapters === 5) {
           if (chapter === "4") {
             const c5 = boxContainer.querySelector('[data-chapter="5"]');
@@ -797,10 +793,10 @@ document.addEventListener("DOMContentLoaded", () => {
         answer.style.maxHeight && answer.style.maxHeight !== "0px";
 
       document
-        .querySelectorAll(".faq-answer")
+        .querySelectorAll("#faq-container .faq-answer")
         .forEach((ans) => (ans.style.maxHeight = null));
       document
-        .querySelectorAll(".faq-question i")
+        .querySelectorAll("#faq-container .faq-question i")
         .forEach((ic) => (ic.style.transform = "rotate(0deg)"));
 
       if (!wasOpen) {
@@ -1346,32 +1342,38 @@ document.addEventListener("DOMContentLoaded", () => {
     lucide.createIcons();
     document.getElementById("payment-modal-copy").dataset.number = data.number;
 
+    // --- START: Perbaikan Event Listener Modal ---
     const copyBtn = document.getElementById("payment-modal-copy");
     const closeBtn = document.getElementById("payment-modal-close");
     const closeBottomBtn = document.getElementById(
       "payment-modal-close-bottom"
     );
 
+    // Hapus listener lama untuk mencegah penumpukan
+    const newCopyBtn = copyBtn.cloneNode(true);
+    copyBtn.parentNode.replaceChild(newCopyBtn, copyBtn);
+    const newCloseBtn = closeBtn.cloneNode(true);
+    closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+    const newCloseBottomBtn = closeBottomBtn.cloneNode(true);
+    closeBottomBtn.parentNode.replaceChild(newCloseBottomBtn, closeBottomBtn);
+
     const handleCopy = () => {
-      navigator.clipboard.writeText(copyBtn.dataset.number).then(() => {
+      navigator.clipboard.writeText(newCopyBtn.dataset.number).then(() => {
         showToast("Nomor berhasil disalin!");
       });
     };
     const handleClose = () => {
       modal.classList.add("modal-hidden");
-      copyBtn.removeEventListener("click", handleCopy);
-      closeBtn.removeEventListener("click", handleClose);
-      closeBottomBtn.removeEventListener("click", handleClose);
-      modal.removeEventListener("click", handleBackdropClose);
     };
     const handleBackdropClose = (e) => {
       if (e.target === modal) handleClose();
     };
 
-    copyBtn.addEventListener("click", handleCopy);
-    closeBtn.addEventListener("click", handleClose);
-    closeBottomBtn.addEventListener("click", handleClose);
-    modal.addEventListener("click", handleBackdropClose);
+    newCopyBtn.addEventListener("click", handleCopy);
+    newCloseBtn.addEventListener("click", handleClose);
+    newCloseBottomBtn.addEventListener("click", handleClose);
+    modal.addEventListener("click", handleBackdropClose, { once: true });
+    // --- END: Perbaikan Event Listener Modal ---
 
     modal.classList.remove("modal-hidden");
     modal.classList.add("modal-visible");
