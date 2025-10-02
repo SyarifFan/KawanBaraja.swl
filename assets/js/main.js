@@ -996,7 +996,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const isFastTrack = fastTrackCheckbox.checked;
     const fastTrackFee = isFastTrack ? subtotal * 0.15 : 0;
 
+    // PERBAIKAN LOGIKA DISKON DI SINI
+    const maxDiscount = Math.floor(subtotal * 0.1);
     let discount = parseInt(discountInput.value) || 0;
+    if (discount > maxDiscount && maxDiscount > 0) {
+      discountInput.value = maxDiscount;
+      discount = maxDiscount;
+    }
     const finalTotal = Math.max(0, subtotal + fastTrackFee - discount);
 
     let hasItems = false;
