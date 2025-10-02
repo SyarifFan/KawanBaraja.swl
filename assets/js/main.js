@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           id: "skripsi_full",
           name: "Paket Full Skripsi",
-          price: 1500000,
+          price: 150000,
           unit: "paket",
         },
         {
@@ -357,6 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
       window.scrollTo({ top: 0, behavior: "smooth" });
 
+      // Kirim event bahwa halaman baru telah dimuat
       const event = new CustomEvent("pageLoaded", { detail: { page, slug } });
       document.dispatchEvent(event);
     } catch (error) {
@@ -369,8 +370,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- EVENT LISTENERS ---
 
+  // Listener utama yang menangani navigasi SPA
   document.addEventListener("click", (e) => {
-    // Navigasi halaman utama
     const pageLink = e.target.closest(".page-link");
     if (pageLink) {
       e.preventDefault();
@@ -386,68 +387,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Tombol "Pesan Layanan ini" dari halaman Layanan
     const orderFromServiceBtn = e.target.closest(".order-from-service-btn");
     if (orderFromServiceBtn) {
       e.preventDefault();
       loadPage("pemesanan", orderFromServiceBtn.dataset.categorySlug);
-      return;
-    }
-
-    // Pemicu modal pembayaran
-    if (e.target.closest(".payment-modal-trigger")) {
-      showPaymentModal(e.target.closest(".payment-modal-trigger").dataset.pay);
-      return;
-    }
-
-    // --- PERBAIKAN: Event delegation untuk tombol kategori di halaman Pemesanan ---
-    const orderCatBtn = e.target.closest(".order-category-btn");
-    if (orderCatBtn && document.getElementById("order-category-cards")) {
-      document
-        .querySelectorAll(".order-category-btn")
-        .forEach((b) =>
-          b.classList.remove(
-            "active",
-            "bg-brand-orange-100",
-            "border-brand-orange-500"
-          )
-        );
-      orderCatBtn.classList.add(
-        "active",
-        "bg-brand-orange-100",
-        "border-brand-orange-500"
-      );
-      const categorySlug = orderCatBtn.dataset.categorySlug;
-      if (categorySlug === "custom") {
-        renderCustomServiceForm();
-      } else {
-        renderOrderItems(categorySlug);
-      }
-      updateProcessIndicator(1);
-      return;
-    }
-
-    // --- PERBAIKAN: Event delegation untuk tombol navigasi di halaman Layanan ---
-    const layananNavBtn = e.target.closest(".layanan-nav-btn");
-    if (layananNavBtn && document.getElementById("layanan-section-container")) {
-      const slug = layananNavBtn.dataset.serviceSlug;
-      if (layananNavBtn.closest("#layanan-accordion-mobile")) {
-        const wasActive = layananNavBtn.classList.contains("active");
-        // Tutup semua accordion
-        document
-          .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
-          .forEach((b) => b.classList.remove("active"));
-        // Buka yang diklik jika sebelumnya tertutup
-        if (!wasActive) {
-          layananNavBtn.classList.add("active");
-        }
-      } else {
-        updateLayananContent(slug);
-      }
-      return;
     }
   });
 
+  // Listener yang diaktifkan SETELAH halaman baru dimuat
   document.addEventListener("pageLoaded", (e) => {
     const { page, slug } = e.detail;
 
@@ -456,11 +403,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (page === "pemesanan") initPemesanan(slug);
     if (page === "tentang") initTentang();
     if (page === "faq") initFaq();
+    if (page === "kontak") initKontak(); // Tambahkan init untuk halaman kontak
   });
 
   // --- PAGE INITIALIZERS ---
 
   function initBeranda() {
+    // ... (kode untuk animasi teks dan statistik tidak berubah)
     const animatedTextEl = document.getElementById("animated-text");
     if (animatedTextEl) {
       const textToAnimate = `KawanBaraja siap membantumu!`;
@@ -472,7 +421,6 @@ document.addEventListener("DOMContentLoaded", () => {
         animatedTextEl.appendChild(span);
       });
     }
-
     const counters = document.querySelectorAll(".counter");
     const observer = new IntersectionObserver(
       (entries) => {
@@ -483,7 +431,6 @@ document.addEventListener("DOMContentLoaded", () => {
             let current = 0;
             const duration = 1500;
             const increment = Math.max(1, Math.ceil(target / (duration / 16)));
-
             const update = () => {
               current += increment;
               if (current >= target) {
@@ -504,79 +451,75 @@ document.addEventListener("DOMContentLoaded", () => {
       counter.textContent = "0";
       observer.observe(counter);
     });
+
+    // Tambahkan listener untuk modal pembayaran di beranda
+    document
+      .getElementById("beranda-content")
+      .addEventListener("click", (e) => {
+        if (e.target.closest(".payment-modal-trigger")) {
+          showPaymentModal(
+            e.target.closest(".payment-modal-trigger").dataset.pay
+          );
+        }
+      });
   }
 
   function initLayanan() {
+    // Render HTML awal
     const layananNavDesktop = document.getElementById("layanan-nav-desktop");
     const layananAccordionMobile = document.getElementById(
       "layanan-accordion-mobile"
     );
-
     layananNavDesktop.innerHTML = servicesData
       .map(
-        (s, i) => `
-      <button data-service-slug="${
-        s.slug
-      }" class="layanan-nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-left ${
-          i === 0
-            ? "bg-brand-orange-100 text-brand-orange-800 font-semibold"
-            : "hover:bg-gray-100"
-        }">
-        <i data-lucide="${s.icon}" class="w-6 h-6 text-${
-          s.color
-        } flex-shrink-0"></i>
-        <span class="font-semibold">${s.category}</span>
-      </button>
-    `
+        (s, i) =>
+          `<button data-service-slug="${
+            s.slug
+          }" class="layanan-nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-left ${
+            i === 0
+              ? "bg-brand-orange-100 text-brand-orange-800 font-semibold"
+              : "hover:bg-gray-100"
+          }"><i data-lucide="${s.icon}" class="w-6 h-6 text-${
+            s.color
+          } flex-shrink-0"></i><span class="font-semibold">${
+            s.category
+          }</span></button>`
       )
       .join("");
-
     layananAccordionMobile.innerHTML = servicesData
       .map(
-        (s) => `
-      <div class="bg-white rounded-lg shadow-sm">
-        <button data-service-slug="${s.slug}" class="layanan-nav-btn w-full flex justify-between items-center gap-4 p-4 text-left">
-          <div class="flex items-center gap-4">
-            <i data-lucide="${s.icon}" class="w-6 h-6 text-${s.color} flex-shrink-0"></i>
-            <span class="font-semibold text-gray-800">${s.category}</span>
-          </div>
-          <i data-lucide="chevron-down" class="accordion-icon w-5 h-5 text-gray-400 transition-transform"></i>
-        </button>
-        <div class="layanan-desc-mobile px-4 text-gray-600">
-          <div class="border-t pt-4">
-            <p class="mb-4 leading-relaxed">${s.description}</p>
-            <button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-brand-blue-600 text-sm">
-              <i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini
-            </button>
-          </div>
-        </div>
-      </div>
-    `
+        (s) =>
+          `<div class="bg-white rounded-lg shadow-sm"><button data-service-slug="${s.slug}" class="layanan-nav-btn w-full flex justify-between items-center gap-4 p-4 text-left"><div class="flex items-center gap-4"><i data-lucide="${s.icon}" class="w-6 h-6 text-${s.color} flex-shrink-0"></i><span class="font-semibold text-gray-800">${s.category}</span></div><i data-lucide="chevron-down" class="accordion-icon w-5 h-5 text-gray-400 transition-transform"></i></button><div class="layanan-desc-mobile px-4 text-gray-600"><div class="border-t pt-4"><p class="mb-4 leading-relaxed">${s.description}</p><button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-brand-blue-600 text-sm"><i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini</button></div></div></div>`
       )
       .join("");
-
     lucide.createIcons();
     updateLayananContent("harian");
+
+    // Pasang event listener pada parent container yang stabil
+    document
+      .getElementById("layanan-section-container")
+      .addEventListener("click", (e) => {
+        const btn = e.target.closest(".layanan-nav-btn");
+        if (!btn) return;
+        const slug = btn.dataset.serviceSlug;
+        if (btn.closest("#layanan-accordion-mobile")) {
+          const wasActive = btn.classList.contains("active");
+          document
+            .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
+            .forEach((b) => b.classList.remove("active"));
+          if (!wasActive) btn.classList.add("active");
+        } else {
+          updateLayananContent(slug);
+        }
+      });
   }
 
   function updateLayananContent(slug) {
     const s = servicesData.find((v) => v.slug === slug);
     if (!s) return;
-    const layananContentDesktop = document.getElementById(
+    document.getElementById(
       "layanan-content-desktop"
-    );
-
-    layananContentDesktop.innerHTML = `
-      <div style="animation:fadeInPage .5s">
-        <h3 class="text-2xl font-extrabold text-brand-blue-700 mb-2 font-display">${s.category}</h3>
-        <p class="text-gray-700 mb-6 leading-relaxed">${s.description}</p>
-        <div class="border-t pt-4">
-          <button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-brand-blue-600 transition-all shadow">
-            <i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini
-          </button>
-        </div>
-      </div>`;
-
+    ).innerHTML = `<div style="animation:fadeInPage .5s"><h3 class="text-2xl font-extrabold text-brand-blue-700 mb-2 font-display">${s.category}</h3><p class="text-gray-700 mb-6 leading-relaxed">${s.description}</p><div class="border-t pt-4"><button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-brand-blue-600 transition-all shadow"><i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini</button></div></div>`;
     document
       .querySelectorAll(".layanan-nav-btn")
       .forEach((b) =>
@@ -598,36 +541,77 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initPemesanan(slug) {
-    const orderCategoryCardsContainer = document.getElementById(
-      "order-category-cards"
-    );
-    const orderFormItemsContainer = document.getElementById("order-form-items");
-
+    // Render HTML Awal
     let cardHtml = servicesData
       .map(
-        (s) => `
-      <button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
-        <i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i>
-        <span class="block text-xs font-semibold mt-2">${s.category}</span>
-      </button>
-    `
+        (s) =>
+          `<button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent"><i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i><span class="block text-xs font-semibold mt-2">${s.category}</span></button>`
       )
       .join("");
-    cardHtml += `
-      <button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
-        <i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i>
-        <span class="block text-xs font-semibold mt-2">Layanan Lainnya</span>
-      </button>`;
-    orderCategoryCardsContainer.innerHTML = cardHtml;
+    cardHtml += `<button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent"><i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i><span class="block text-xs font-semibold mt-2">Layanan Lainnya</span></button>`;
+    document.getElementById("order-category-cards").innerHTML = cardHtml;
     lucide.createIcons();
 
-    orderFormItemsContainer.addEventListener("change", (e) => {
+    // Pasang event listener pada parent container yang stabil
+    const pemesananContainer = document.getElementById("pemesanan-container");
+    pemesananContainer.addEventListener("click", (e) => {
+      // Tombol Kategori
+      const catBtn = e.target.closest(".order-category-btn");
+      if (catBtn) {
+        document
+          .querySelectorAll(".order-category-btn")
+          .forEach((b) =>
+            b.classList.remove(
+              "active",
+              "bg-brand-orange-100",
+              "border-brand-orange-500"
+            )
+          );
+        catBtn.classList.add(
+          "active",
+          "bg-brand-orange-100",
+          "border-brand-orange-500"
+        );
+        const categorySlug = catBtn.dataset.categorySlug;
+        if (categorySlug === "custom") renderCustomServiceForm();
+        else renderOrderItems(categorySlug);
+        updateProcessIndicator(1);
+      }
+      // Tombol +/- kuantitas
+      const qtyBtn = e.target.closest(".qty-btn");
+      if (qtyBtn) {
+        const id = qtyBtn.dataset.id;
+        const change = parseInt(qtyBtn.dataset.change, 10);
+        const cur = cart[id] ? cart[id].quantity : 0;
+        const next = Math.max(1, cur + change);
+        cart[id].quantity = next;
+        document.getElementById(`qty_val_${id}`).textContent = next;
+        updateCartUI();
+      }
+      // Tombol tambah layanan kustom
+      if (e.target.id === "add-custom-service-btn") {
+        const input = document.getElementById("custom-service-name");
+        const val = input.value.trim();
+        if (!val) {
+          input.focus();
+          return;
+        }
+        const id = `custom_${Date.now()}`;
+        cart[id] = { name: val, isCustom: true };
+        updateCartUI();
+        input.value = "";
+        input.focus();
+      }
+    });
+
+    pemesananContainer.addEventListener("change", (e) => {
       const t = e.target;
       if (
         t.type === "checkbox" &&
         !t.classList.contains("chapter-check") &&
         !t.id.includes("fast-track")
       ) {
+        // ... (logika checkbox layanan tidak berubah)
         const id = t.dataset.id;
         const item = servicesData
           .flatMap((s) => s.items)
@@ -667,10 +651,10 @@ document.addEventListener("DOMContentLoaded", () => {
         updateCartUI();
       }
       if (t.classList.contains("chapter-check")) {
+        // ... (logika checkbox BAB tidak berubah)
         const id = t.dataset.id;
         const chapter = t.dataset.chapter;
         const boxContainer = t.closest(`#chapters_${id}`);
-
         if (cart[id] && cart[id].totalChapters === 5) {
           if (chapter === "4") {
             const c5 = boxContainer.querySelector('[data-chapter="5"]');
@@ -681,7 +665,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (c4) c4.checked = t.checked;
           }
         }
-
         if (cart[id]) {
           const sel = [];
           boxContainer
@@ -693,34 +676,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    orderFormItemsContainer.addEventListener("click", (e) => {
-      const qtyBtn = e.target.closest(".qty-btn");
-      if (qtyBtn) {
-        const id = qtyBtn.dataset.id;
-        const change = parseInt(qtyBtn.dataset.change, 10);
-        const cur = cart[id] ? cart[id].quantity : 0;
-        const next = Math.max(1, cur + change);
-        cart[id].quantity = next;
-        document.getElementById(`qty_val_${id}`).textContent = next;
-        updateCartUI();
-      }
-
-      if (e.target.id === "add-custom-service-btn") {
-        const input = document.getElementById("custom-service-name");
-        const val = input.value.trim();
-        if (!val) {
-          input.focus();
-          return;
-        }
-        const id = `custom_${Date.now()}`;
-        cart[id] = { name: val, isCustom: true };
-        updateCartUI();
-        input.value = "";
-        input.focus();
-      }
-    });
-
-    orderFormItemsContainer.addEventListener("input", (e) => {
+    pemesananContainer.addEventListener("input", (e) => {
+      // ... (logika input jumlah BAB dan diskon tidak berubah)
       if (e.target.classList.contains("total-chapters-input")) {
         const id = e.target.dataset.id;
         const total = parseInt(e.target.value) || 1;
@@ -733,14 +690,15 @@ document.addEventListener("DOMContentLoaded", () => {
           updateCartUI();
         }
       }
+      if (e.target.id === "discount-request") {
+        updateCartUI();
+      }
     });
 
+    // Listener untuk elemen di luar container utama pemesanan (ringkasan)
     document
       .getElementById("fast-track-checkbox")
       .addEventListener("change", updateCartUI);
-    document
-      .getElementById("discount-request")
-      .addEventListener("input", updateCartUI);
     document.getElementById("cancel-all-btn").addEventListener("click", () => {
       cart = {};
       document.getElementById("discount-request").value = "";
@@ -751,6 +709,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const categorySlug = active.dataset.categorySlug;
         if (categorySlug === "custom") renderCustomServiceForm();
         else renderOrderItems(categorySlug);
+      } else {
+        document.getElementById(
+          "order-form-items"
+        ).innerHTML = `<div id="order-placeholder" class="flex flex-col items-center justify-center h-full text-center text-gray-500"><i data-lucide="mouse-pointer-click" class="w-16 h-16 mb-4"></i><p class="font-semibold">Pilih kategori layanan di atas</p><p class="text-sm">Daftar item akan muncul di sini.</p></div>`;
+        lucide.createIcons();
       }
       updateCartUI();
     });
@@ -761,6 +724,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .getElementById("copy-summary-btn")
       .addEventListener("click", copyOrderSummary);
 
+    // Inisialisasi awal
     updateProcessIndicator(Object.keys(cart).length > 0 ? 2 : 1);
     updateCartUI();
     if (slug) {
@@ -783,43 +747,61 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initFaq() {
+    // ... (kode init FAQ tidak berubah)
     const faqContainer = document.getElementById("faq-container");
     faqContainer.innerHTML = faqData
       .map(
-        (item) => `
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <button class="faq-question w-full flex justify-between items-center text-left p-4 font-semibold">
-          <span>${item.question}</span>
-          <i data-lucide="chevron-down" class="transition-transform duration-300 w-5 h-5"></i>
-        </button>
-        <div class="faq-answer px-4"><div class="pb-4 text-gray-700">${item.answer}</div></div>
-      </div>`
+        (item) =>
+          `<div class="bg-white rounded-lg shadow-sm border border-gray-200"><button class="faq-question w-full flex justify-between items-center text-left p-4 font-semibold"><span>${item.question}</span><i data-lucide="chevron-down" class="transition-transform duration-300 w-5 h-5"></i></button><div class="faq-answer px-4"><div class="pb-4 text-gray-700">${item.answer}</div></div></div>`
       )
       .join("");
     lucide.createIcons();
-
     faqContainer.addEventListener("click", (e) => {
       const btn = e.target.closest(".faq-question");
       if (!btn) return;
       const answer = btn.nextElementSibling;
-      // PERBAIKAN: Menggunakan 'svg' karena Lucide Icons mengubah <i> menjadi <svg>
       const icon = btn.querySelector("svg");
       if (!answer || !icon) return;
-
       const wasOpen =
         answer.style.maxHeight && answer.style.maxHeight !== "0px";
-
-      // Tutup semua jawaban lain sebelum membuka yang baru
       document
         .querySelectorAll("#faq-container .faq-answer")
         .forEach((ans) => (ans.style.maxHeight = null));
       document
         .querySelectorAll("#faq-container .faq-question svg")
         .forEach((ic) => (ic.style.transform = "rotate(0deg)"));
-
       if (!wasOpen) {
         answer.style.maxHeight = answer.scrollHeight + "px";
         icon.style.transform = "rotate(180deg)";
+      }
+    });
+  }
+
+  function initKontak() {
+    // Pasang listener untuk modal pembayaran dan kontak di halaman kontak
+    document.getElementById("kontak-content").addEventListener("click", (e) => {
+      if (e.target.closest(".payment-modal-trigger")) {
+        showPaymentModal(
+          e.target.closest(".payment-modal-trigger").dataset.pay
+        );
+      }
+      if (e.target.closest(".contact-modal-trigger")) {
+        e.preventDefault();
+        const trigger = e.target.closest(".contact-modal-trigger");
+        const contactInfo = {
+          type: trigger.dataset.type,
+          name: trigger.dataset.name,
+          id: trigger.dataset.id,
+          url: trigger.dataset.url,
+        };
+        // Langsung buka link WA tanpa modal
+        const message = `Assalamualaikum Kak ${
+          contactInfo.name.split(" ")[0]
+        },\n\nSaya ingin bertanya tentang layanan KawanBaraja...`;
+        window.open(
+          `https://wa.me/${contactInfo.id}?text=${encodeURIComponent(message)}`,
+          "_blank"
+        );
       }
     });
   }
@@ -1284,7 +1266,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showModal("payment-modal");
   }
 
-  // Event listeners untuk semua modal
+  // Event listeners untuk semua modal (dipasang sekali)
   document
     .getElementById("user-info-modal-close")
     ?.addEventListener("click", () => closeModal("user-info-modal"));
