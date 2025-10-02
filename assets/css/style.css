@@ -25,7 +25,6 @@ h4,
   background: #fdba74;
 }
 
-/* Pencegahan FOUC (Flash of Unstyled Content) */
 #main-content {
   opacity: 0;
   transition: opacity 400ms ease-in-out;
@@ -153,7 +152,6 @@ h4,
   transform: translateX(0);
 }
 
-/* Testimonial Slider */
 .testimonial-slider {
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -165,7 +163,6 @@ h4,
   scroll-snap-align: center;
 }
 
-/* Modal Styles */
 .modal-backdrop {
   transition: opacity 0.3s ease-in-out;
 }
@@ -191,7 +188,6 @@ h4,
   opacity: 1;
 }
 
-/* Layanan Accordion for Mobile */
 .layanan-desc-mobile {
   max-height: 0;
   overflow: hidden;
@@ -208,7 +204,6 @@ h4,
   transform: rotate(180deg);
 }
 
-/* Hide number input arrows */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -218,7 +213,6 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* Order/Layanan category button hover effect */
 .order-category-btn,
 .layanan-nav-btn {
   transition: transform 0.2s ease-in-out;
@@ -228,7 +222,14 @@ input[type="number"] {
   transform: scale(1.02);
 }
 
-/* Tooltip Styles */
+/* Gaya Tooltip Lama (untuk halaman pemesanan) */
+#process-indicator .tooltip-container {
+  color: #9ca3af; /* Abu-abu default */
+}
+#process-indicator .tooltip-container .icon-wrapper {
+  border-color: #d1d5db; /* Abu-abu border */
+  background-color: #ffffff;
+}
 .tooltip-container {
   position: relative;
   cursor: pointer;
@@ -267,39 +268,30 @@ input[type="number"] {
   opacity: 1;
 }
 
-/* New Process Indicator Styles */
-#process-indicator .step-item {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  text-align: center;
-  transition: color 0.5s ease;
-  color: #9ca3af; /* Warna default (abu-abu) */
+/* Gaya untuk alur pemesanan di Halaman Pemesanan (Gaya Lama) */
+#process-indicator .tooltip-container.active {
+  color: #f97316;
+}
+#process-indicator .tooltip-container.active .icon-wrapper {
+  border-color: #f97316;
+  background-color: #fff7ed;
+}
+#process-indicator .line.active {
+  background-color: #f97316;
 }
 
-#process-indicator .step-item.active {
-  color: #f97316; /* Warna aktif (oranye) */
-  font-weight: 600;
-}
-
-#process-indicator .step-icon-wrapper {
-  width: 40px;
-  height: 40px;
+/* Gaya untuk alur pemesanan di Halaman Beranda (Vertikal) */
+.step-icon-wrapper-beranda {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background-color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid currentColor;
-  margin: 0 auto 8px auto;
-  transition: border-color 0.5s ease;
-}
-
-#process-indicator .step-text {
-  font-size: 12px;
-  font-weight: 500;
-}
-
-#process-path-fg {
-  transition: stroke-dashoffset 0.8s ease-in-out;
+  border: 3px solid #f97316;
+  color: #f97316;
+  flex-shrink: 0;
+  z-index: 10;
+  box-shadow: 0 0 0 4px white;
 }

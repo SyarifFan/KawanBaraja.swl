@@ -1,5 +1,59 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- DATA SETS (GLOBAL) ---
+  // Catatan: Nama klien di testimonialsData akan diubah secara dinamis oleh JavaScript
+  const testimonialsData = [
+    {
+      name: "Admin",
+      message:
+        "Halo kak, draft Bab 4 & 5 nya sudah selesai ya. Silakan dicek dulu sebelum lanjut revisi.",
+    },
+    {
+      name: "Klien",
+      message:
+        "Mantap kak, cepat sekali! Saya cek dulu. Tampilannya rapi banget, langsung di-acc dosen pembimbing nih kayaknya. Recommended!",
+    },
+    {
+      name: "Admin",
+      message:
+        "Alhamdulillah, siap kak. Nanti kalau ada feedback dari dosen, kabari saja ya.",
+    },
+    {
+      name: "Klien",
+      message:
+        "Kak, terima kasih banyak bantuannya! Pengerjaan makalahnya cepat, rapi, dan nilaiku aman. Sangat membantu!",
+    },
+    {
+      name: "Admin",
+      message:
+        "Sama-sama kak! Senang bisa membantu. Sukses selalu ya kuliahnya.",
+    },
+    {
+      name: "Klien",
+      message:
+        "Layanan olah datanya luar biasa. Hasil SPSS nya detail dan penjelasannya mudah dipahami. Hemat waktu banget.",
+    },
+    {
+      name: "Admin",
+      message:
+        "Terima kasih feedbacknya kak. Semoga lancar penelitiannya sampai selesai.",
+    },
+    {
+      name: "Klien",
+      message:
+        "Slide presentasiku jadi keren banget! Desainnya modern dan isinya ringkas tapi kena. Jadi lebih PD buat presentasi. Makasih kak!",
+    },
+    {
+      name: "Admin",
+      message:
+        "You are welcome kak! Semoga presentasinya lancar dan dapat nilai maksimal ya.",
+    },
+    {
+      name: "Klien",
+      message:
+        "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada KawanBaraja. Makasih banyak kak!",
+    },
+  ];
+
   const quotes = [
     "Pendidikan adalah senjata paling ampuh yang bisa kamu gunakan untuk mengubah dunia. - Nelson Mandela",
     "Satu-satunya sumber pengetahuan adalah pengalaman. - Albert Einstein",
@@ -245,59 +299,6 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   ];
 
-  const testimonialsData = [
-    {
-      name: "Admin",
-      message:
-        "Halo kak, draft Bab 4 & 5 nya sudah selesai ya. Silakan dicek dulu sebelum lanjut revisi.",
-    },
-    {
-      name: "Budi - Teknik",
-      message:
-        "Mantap kak, cepat sekali! Saya cek dulu. Tampilannya rapi banget, langsung di-acc dosen pembimbing nih kayaknya. Recommended!",
-    },
-    {
-      name: "Admin",
-      message:
-        "Alhamdulillah, siap kak. Nanti kalau ada feedback dari dosen, kabari saja ya.",
-    },
-    {
-      name: "Anita - Sastra",
-      message:
-        "Kak, terima kasih banyak bantuannya! Pengerjaan makalahnya cepat, rapi, dan nilaiku aman. Sangat membantu!",
-    },
-    {
-      name: "Admin",
-      message:
-        "Sama-sama kak Anita! Senang bisa membantu. Sukses selalu ya kuliahnya.",
-    },
-    {
-      name: "Rian - Ekonomi",
-      message:
-        "Layanan olah datanya luar biasa. Hasil SPSS nya detail dan penjelasannya mudah dipahami. Hemat waktu banget.",
-    },
-    {
-      name: "Admin",
-      message:
-        "Terima kasih feedbacknya kak Rian. Semoga lancar penelitiannya sampai selesai.",
-    },
-    {
-      name: "Sari - Komunikasi",
-      message:
-        "Slide presentasiku jadi keren banget! Desainnya modern dan isinya ringkas tapi kena. Jadi lebih PD buat presentasi. Makasih kak!",
-    },
-    {
-      name: "Admin",
-      message:
-        "You are welcome kak Sari! Semoga presentasinya lancar dan dapat nilai maksimal ya.",
-    },
-    {
-      name: "Joko - Hukum",
-      message:
-        "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada KawanBaraja. Makasih banyak kak!",
-    },
-  ];
-
   let cart = JSON.parse(localStorage.getItem("kawanBarajaCart")) || {};
   let visitorData = { name: "Klien", deadline: "" };
 
@@ -359,42 +360,49 @@ document.addEventListener("DOMContentLoaded", () => {
         span.style.animationDelay = `${idx * 0.05}s`;
         animatedTextEl.appendChild(span);
       });
-      animateCounters();
+      if (document.querySelector(".counter")) {
+        animateCounters();
+      }
     }
+
     let hasCounterAnimated = false;
     function animateCounters() {
       if (hasCounterAnimated) return;
       const counters = document.querySelectorAll(".counter");
+      const duration = 2000;
+      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               const counter = entry.target;
-              counter.textContent = "0";
               const target = +counter.getAttribute("data-target");
-              let current = 0;
-              const duration = 1500;
-              const increment = Math.max(
-                1,
-                Math.ceil(target / (duration / 16))
-              );
-              const update = () => {
-                current += increment;
-                if (current >= target) {
-                  counter.textContent = target.toLocaleString("id-ID");
+              let startTime = null;
+              const step = (timestamp) => {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min(
+                  (timestamp - startTime) / duration,
+                  1
+                );
+                const easedProgress = easeOutCubic(progress);
+                const currentValue = Math.floor(easedProgress * target);
+                counter.textContent = currentValue.toLocaleString("id-ID");
+                if (progress < 1) {
+                  requestAnimationFrame(step);
                 } else {
-                  counter.textContent = current.toLocaleString("id-ID");
-                  requestAnimationFrame(update);
+                  counter.textContent = target.toLocaleString("id-ID");
                 }
               };
-              update();
+              requestAnimationFrame(step);
               observer.unobserve(counter);
             }
           });
         },
         { threshold: 0.5 }
       );
-      counters.forEach((counter) => observer.observe(counter));
+      counters.forEach((counter) => {
+        observer.observe(counter);
+      });
       hasCounterAnimated = true;
     }
     runHomepageAnimation();
@@ -413,16 +421,8 @@ document.addEventListener("DOMContentLoaded", () => {
       layananNavDesktop.innerHTML = servicesData
         .map(
           (s, i) => `
-              <button data-service-slug="${
-                s.slug
-              }" class="layanan-nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-left ${
-            i === 0
-              ? "bg-brand-orange-100 text-brand-orange-800 font-semibold"
-              : "hover:bg-gray-100"
-          }">
-                <i data-lucide="${s.icon}" class="w-6 h-6 text-${
-            s.color
-          } flex-shrink-0"></i>
+              <button data-service-slug="${s.slug}" class="layanan-nav-btn w-full flex items-center gap-4 p-4 rounded-lg text-left hover:bg-gray-100">
+                <i data-lucide="${s.icon}" class="w-6 h-6 text-${s.color} flex-shrink-0"></i>
                 <span class="font-semibold">${s.category}</span>
               </button>
             `
@@ -471,7 +471,8 @@ document.addEventListener("DOMContentLoaded", () => {
           b.classList.remove(
             "active",
             "bg-brand-orange-100",
-            "text-brand-orange-800"
+            "text-brand-orange-800",
+            "font-semibold"
           )
         );
       document
@@ -479,7 +480,11 @@ document.addEventListener("DOMContentLoaded", () => {
         .forEach((b) => {
           b.classList.add("active");
           if (!b.closest("#layanan-accordion-mobile")) {
-            b.classList.add("bg-brand-orange-100", "text-brand-orange-800");
+            b.classList.add(
+              "bg-brand-orange-100",
+              "text-brand-orange-800",
+              "font-semibold"
+            );
           }
         });
       lucide.createIcons();
@@ -499,7 +504,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
     renderLayanan();
-    updateLayananContent("harian");
   }
 
   if (document.getElementById("page-pemesanan")) {
@@ -511,10 +515,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartItemsList = document.getElementById("cart-items-list");
     const subtotalPriceEl = document.getElementById("subtotal-price");
     const discountAmountEl = document.getElementById("discount-amount");
-    const progressUpdateFeeContainer = document.getElementById(
-      "progress-update-fee-container"
-    );
-    const progressUpdateFeeEl = document.getElementById("progress-update-fee");
     const fastTrackFeeContainer = document.getElementById(
       "fast-track-fee-container"
     );
@@ -526,32 +526,78 @@ document.addEventListener("DOMContentLoaded", () => {
     const cancelAllBtn = document.getElementById("cancel-all-btn");
     const discountInput = document.getElementById("discount-request");
     const customerCommentsEl = document.getElementById("customer-comments");
-    const progressUpdateCheckbox = document.getElementById(
-      "progress-update-checkbox"
-    );
     const fastTrackCheckbox = document.getElementById("fast-track-checkbox");
     const userInfoModal = document.getElementById("user-info-modal");
     const confirmOrderBtn = document.getElementById("confirm-order-btn");
     const closeUserInfoModalBtn = document.getElementById(
       "user-info-modal-close"
     );
+    const processIndicatorEl = document.getElementById("process-indicator");
 
+    // --- PERUBAHAN DI SINI: FUNGSI ALUR PEMESANAN LAMA ---
     function updateProcessIndicator(step) {
-      const path = document.getElementById("process-path-fg");
-      const steps = document.querySelectorAll("#process-indicator .step-item");
-      const totalLength = 360;
-      steps.forEach((s, i) => {
-        s.classList.toggle("active", i < step);
+      if (!processIndicatorEl) return;
+      const steps = [
+        {
+          icon: "list-filter",
+          text: "Pilih Kategori",
+          tooltip: "Pilih jenis layanan yang Anda butuhkan.",
+        },
+        {
+          icon: "shopping-basket",
+          text: "Atur Pesanan",
+          tooltip: "Tambahkan item dan atur jumlah pesanan.",
+        },
+        {
+          icon: "send",
+          text: "Kirim Pesanan",
+          tooltip: "Selesaikan dan kirim rincian pesanan via WhatsApp.",
+        },
+      ];
+      processIndicatorEl.innerHTML = steps
+        .map(
+          (s, i) => `
+                <div class="relative tooltip-container ${
+                  i + 1 <= step ? "active" : ""
+                }">
+                    <div class="flex items-center gap-2 text-current">
+                        <div class="rounded-full border-2 p-1.5 icon-wrapper"> <i data-lucide="${
+                          s.icon
+                        }" class="w-4 h-4"></i> </div>
+                        <span class="hidden sm:inline font-semibold text-sm">${
+                          s.text
+                        }</span>
+                    </div>
+                    <span class="tooltip-text">${s.tooltip}</span>
+                </div>
+                ${
+                  i < steps.length - 1
+                    ? `<div class="flex-1 h-0.5 bg-gray-300 line ${
+                        i + 1 < step ? "active" : ""
+                      }"></div>`
+                    : ""
+                }
+            `
+        )
+        .join("");
+      lucide.createIcons();
+    }
+
+    // Event listener untuk tooltip
+    if (processIndicatorEl) {
+      processIndicatorEl.addEventListener("click", (e) => {
+        const clickedContainer = e.target.closest(".tooltip-container");
+        if (!clickedContainer) return;
+
+        document
+          .querySelectorAll("#process-indicator .tooltip-container")
+          .forEach((container) => {
+            if (container !== clickedContainer) {
+              container.classList.remove("tooltip-active");
+            }
+          });
+        clickedContainer.classList.toggle("tooltip-active");
       });
-      let offset = totalLength;
-      if (step === 2) {
-        offset = totalLength / 2;
-      } else if (step >= 3) {
-        offset = 0;
-      }
-      if (path) {
-        path.style.strokeDashoffset = offset;
-      }
     }
 
     function calculateSubtotal() {
@@ -575,38 +621,25 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       return subtotal;
     }
-
     function updateCartUI() {
       localStorage.setItem("kawanBarajaCart", JSON.stringify(cart));
       if (!cartItemsList) return;
       cartItemsList.innerHTML = "";
       const subtotal = calculateSubtotal();
-
-      let progressUpdateFee = 0;
-      if (progressUpdateCheckbox.checked && subtotal > 0) {
-        progressUpdateFee = Math.round(subtotal * 0.1);
-        progressUpdateFeeEl.textContent = formatCurrency(progressUpdateFee);
-        progressUpdateFeeContainer.classList.remove("hidden");
-      } else {
-        progressUpdateFeeContainer.classList.add("hidden");
-      }
-
       let fastTrackFee = 0;
-      if (fastTrackCheckbox.checked && subtotal > 0) {
-        fastTrackFee = Math.round(subtotal * 0.25);
+      if (fastTrackCheckbox && fastTrackCheckbox.checked && subtotal > 0) {
+        fastTrackFee = Math.round(subtotal * 0.15); // Biaya 15%
         fastTrackFeeEl.textContent = formatCurrency(fastTrackFee);
         fastTrackFeeContainer.classList.remove("hidden");
-      } else {
+      } else if (fastTrackFeeContainer) {
         fastTrackFeeContainer.classList.add("hidden");
       }
-
       const maxDiscount = Math.floor(subtotal * 0.1);
       let discount = parseInt(discountInput.value) || 0;
       if (discount > maxDiscount && maxDiscount > 0) {
         discountInput.value = maxDiscount;
         discount = maxDiscount;
       }
-
       const cartKeys = Object.keys(cart);
       const hasItems = cartKeys.some((key) => {
         const item = cart[key];
@@ -614,7 +647,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (item.selectable) return item.chapters && item.chapters.length > 0;
         return true;
       });
-
       for (const itemId of cartKeys) {
         const c = cart[itemId];
         if (c.isCustom) {
@@ -654,22 +686,16 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
       }
-
       emptyCartMessage.style.display = hasItems ? "none" : "block";
       checkoutBtn.disabled = !hasItems;
       adminCopyBtn.disabled = !hasItems;
       cancelAllBtn.disabled = !hasItems;
       updateProcessIndicator(hasItems ? 2 : 1);
-
-      const finalTotal = Math.max(
-        0,
-        subtotal + progressUpdateFee + fastTrackFee - discount
-      );
+      const finalTotal = Math.max(0, subtotal + fastTrackFee - discount);
       subtotalPriceEl.textContent = formatCurrency(subtotal);
       discountAmountEl.textContent = `- ${formatCurrency(discount)}`;
       totalPriceEl.textContent = formatCurrency(finalTotal);
     }
-
     function renderOrderCategoryCards() {
       if (!orderCategoryCardsContainer) return;
       let html = servicesData
@@ -685,7 +711,6 @@ document.addEventListener("DOMContentLoaded", () => {
       html += `<button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent"><i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i><span class="block text-xs font-semibold mt-2">Layanan Lainnya</span></button>`;
       orderCategoryCardsContainer.innerHTML = html;
     }
-
     function renderOrderItems(slug) {
       const s = servicesData.find((v) => v.slug === slug);
       if (!s) return;
@@ -743,7 +768,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       lucide.createIcons();
     }
-
     function renderCustomServiceForm() {
       updateProcessIndicator(1);
       orderPlaceholder.style.display = "none";
@@ -756,7 +780,6 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>`;
       lucide.createIcons();
     }
-
     function renderChapterCheckboxes(itemId, total) {
       const container = document.getElementById(`chapters_${itemId}`);
       if (!container) return;
@@ -770,7 +793,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }> <span class="ml-1.5">BAB ${i}</span> </label>`;
       }
     }
-
     function resetCart() {
       cart = {};
       const active = document.querySelector(".order-category-btn.active");
@@ -784,28 +806,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (discountInput) discountInput.value = "";
       if (customerCommentsEl) customerCommentsEl.value = "";
-      if (progressUpdateCheckbox) progressUpdateCheckbox.checked = false;
       if (fastTrackCheckbox) fastTrackCheckbox.checked = false;
       updateCartUI();
     }
-
     function getOrderMessage(isAdminMessage = false) {
       const subtotal = calculateSubtotal();
       const disc = parseInt(discountInput.value) || 0;
-      let progressUpdateFee = 0;
-      if (progressUpdateCheckbox.checked && subtotal > 0) {
-        progressUpdateFee = Math.round(subtotal * 0.1);
-      }
       let fastTrackFee = 0;
-      if (fastTrackCheckbox.checked && subtotal > 0) {
-        fastTrackFee = Math.round(subtotal * 0.25);
+      if (fastTrackCheckbox && fastTrackCheckbox.checked && subtotal > 0) {
+        fastTrackFee = Math.round(subtotal * 0.15); // Biaya 15%
       }
-      const finalTotal = Math.max(
-        0,
-        subtotal + progressUpdateFee + fastTrackFee - disc
-      );
+      const finalTotal = Math.max(0, subtotal + fastTrackFee - disc);
       const comments = customerCommentsEl.value.trim();
-
       let msg;
       if (isAdminMessage) {
         msg = `Assalamualaikum Kak,\n\nBerikut adalah rincian tagihan untuk pesanan layanan dari KawanBaraja:\n\n`;
@@ -814,10 +826,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (visitorData.deadline)
           msg += `*Estimasi Deadline:* ${visitorData.deadline}\n\n`;
       }
-
       let regular = "";
       let custom = "";
-
       for (const id in cart) {
         const c = cart[id];
         if (c.isCustom) {
@@ -853,34 +863,25 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
       }
-
       if (regular) msg += `*Layanan Dipesan:*\n${regular}`;
       if (custom) {
         if (regular) msg += `--------------------------------------\n`;
         msg += `*Layanan Kustom:*\n${custom}\n`;
       }
-
       msg += "--------------------------------------\n";
       msg += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
-
-      if (progressUpdateFee > 0)
-        msg += `*Biaya Update Progres:* ${formatCurrency(progressUpdateFee)}\n`;
       if (fastTrackFee > 0)
         msg += `*Biaya Fast Track:* ${formatCurrency(fastTrackFee)}\n`;
       if (disc > 0) msg += `*Diskon Diminta:* -${formatCurrency(disc)}\n`;
-
       msg += `*Total Akhir:* ${formatCurrency(finalTotal)}\n\n`;
-
       if (comments)
         msg +=
           "--------------------------------------\n*Catatan Tambahan:*\n" +
           comments +
           "\n\n";
-
       const bsiNumber = "7324408295";
       const danaNumber = "088709650064";
       const accountHolder = "Syariffan";
-
       if (isAdminMessage) {
         msg +=
           "Silakan lakukan pembayaran agar pesanan dapat segera kami proses. Terima kasih atas kepercayaannya! 🙏\n\n*- Tim KawanBaraja*";
@@ -890,7 +891,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       return msg;
     }
-
     if (orderCategoryCardsContainer) {
       orderCategoryCardsContainer.addEventListener("click", (e) => {
         const btn = e.target.closest(".order-category-btn");
@@ -915,7 +915,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateProcessIndicator(1);
       });
     }
-
     if (orderFormItemsContainer) {
       orderFormItemsContainer.addEventListener("click", (e) => {
         const qtyBtn = e.target.closest(".qty-btn");
@@ -1024,7 +1023,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
-
     if (discountInput) {
       discountInput.addEventListener("input", updateCartUI);
       discountInput.addEventListener("blur", () => {
@@ -1036,11 +1034,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
     if (cancelAllBtn) cancelAllBtn.addEventListener("click", resetCart);
-    if (progressUpdateCheckbox)
-      progressUpdateCheckbox.addEventListener("change", updateCartUI);
     if (fastTrackCheckbox)
       fastTrackCheckbox.addEventListener("change", updateCartUI);
-
     function showUserInfoModal() {
       userInfoModal.classList.remove("modal-hidden");
       userInfoModal.classList.add("modal-visible");
@@ -1057,7 +1052,6 @@ document.addEventListener("DOMContentLoaded", () => {
       userInfoModal.addEventListener("click", (e) => {
         if (e.target === userInfoModal) closeUserInfoModal();
       });
-
     if (confirmOrderBtn)
       confirmOrderBtn.addEventListener("click", () => {
         const visitorNameInput = document.getElementById("visitor-name");
@@ -1081,11 +1075,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const msg = getOrderMessage(false);
         closeUserInfoModal();
         window.open(
-          `https://wa.me/6283801343431?text=${encodeURIComponent(msg)}`,
+          `https://wa.me/6288709650064?text=${encodeURIComponent(msg)}`,
           "_blank"
         );
       });
-
     if (adminCopyBtn)
       adminCopyBtn.addEventListener("click", () => {
         const msg = getOrderMessage(true);
@@ -1103,9 +1096,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }, 2000);
         });
       });
-
     renderOrderCategoryCards();
-    updateCartUI();
+    updateCartUI(); // Panggil pertama kali untuk inisialisasi
+    updateProcessIndicator(Object.keys(cart).length > 0 ? 2 : 1); // Panggil setelah UI cart di-load
     const urlParams = new URLSearchParams(window.location.search);
     const categorySlug = urlParams.get("category");
     if (categorySlug) {
@@ -1156,8 +1149,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div class="p-4 flex-1 overflow-y-auto flex flex-col space-y-3 pt-6 pb-6">
                       ${convo
-                        .map(
-                          (chat) => `
+                        .map((chat) => {
+                          const clientName =
+                            chat.name === "Admin"
+                              ? ""
+                              : `<p class="text-xs text-left mt-1 font-bold text-brand-blue-600">Klien ${
+                                  Math.floor(Math.random() * 101) + 100
+                                }</p>`;
+                          return `
                         <div class="flex ${
                           chat.name === "Admin"
                             ? "justify-end"
@@ -1169,15 +1168,11 @@ document.addEventListener("DOMContentLoaded", () => {
                               : "bg-white text-gray-800 rounded-bl-none"
                           }">
                             <p class="text-sm">${chat.message}</p>
-                            ${
-                              chat.name !== "Admin"
-                                ? `<p class="text-xs text-left mt-1 font-bold text-brand-blue-600">${chat.name}</p>`
-                                : ""
-                            }
+                            ${clientName}
                           </div>
                         </div>
-                      `
-                        )
+                      `;
+                        })
                         .join("")}
                     </div>
                     <div class="bg-gray-100 p-2 flex items-center gap-2 flex-shrink-0">
@@ -1271,16 +1266,9 @@ document.addEventListener("DOMContentLoaded", () => {
       iconEl.setAttribute("data-lucide", icon);
       iconEl.className = `w-6 h-6 ${color}`;
       const messageTextarea = document.getElementById("contact-modal-message");
-      let defaultMessage = "";
-      if (type === "whatsapp") {
-        defaultMessage = `Assalamualaikum Kak ${
-          name.split(" ")[0]
-        },\n\nSaya ingin bertanya tentang layanan KawanBaraja...`;
-      } else {
-        defaultMessage = `Halo Kak ${
-          name.split(" ")[0]
-        },\n\nSaya menemukan profil Anda dari website KawanBaraja.`;
-      }
+      let defaultMessage = `Assalamualaikum Kak ${
+        name.split(" ")[0]
+      },\n\nSaya ingin bertanya tentang layanan KawanBaraja...`;
       messageTextarea.value = defaultMessage;
       contactModal.classList.remove("modal-hidden");
       contactModal.classList.add("modal-visible");
@@ -1292,8 +1280,8 @@ document.addEventListener("DOMContentLoaded", () => {
       contactModal.classList.remove("modal-visible");
     }
     document.getElementById("kontak").addEventListener("click", (e) => {
-      const trigger = e.target.closest(".contact-modal-trigger");
-      if (trigger) {
+      const trigger = e.target.closest("a");
+      if (trigger && trigger.dataset.type === "whatsapp") {
         e.preventDefault();
         const contactInfo = {
           type: trigger.dataset.type,
@@ -1301,7 +1289,6 @@ document.addEventListener("DOMContentLoaded", () => {
           id: trigger.dataset.id,
           icon: trigger.dataset.icon,
           color: trigger.dataset.color,
-          url: trigger.dataset.url,
         };
         showContactModal(contactInfo);
       }
@@ -1310,14 +1297,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .getElementById("contact-modal-send")
       .addEventListener("click", () => {
         const message = document.getElementById("contact-modal-message").value;
-        let url = "";
-        if (currentContactInfo.type === "whatsapp") {
-          url = `https://wa.me/${
-            currentContactInfo.id
-          }?text=${encodeURIComponent(message)}`;
-        } else {
-          url = currentContactInfo.url;
-        }
+        let url = `https://wa.me/${
+          currentContactInfo.id
+        }?text=${encodeURIComponent(message)}`;
         if (url) window.open(url, "_blank");
         closeContactModal();
       });

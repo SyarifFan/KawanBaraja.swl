@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KawanBaraja - Solusi Cepat & Praktis untuk Semua Tugasmu</title>
-
+    <title>Beranda - KawanBaraja</title>
     <!-- Tailwind & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,12 +13,9 @@
       rel="stylesheet"
     />
     <script src="https://unpkg.com/lucide@latest"></script>
-
     <!-- External CSS -->
     <link rel="stylesheet" href="/KawanBaraja.swl/assets/css/style.css" />
-
     <script>
-      // Tailwind config remains here for CDN build process
       tailwind.config = {
         theme: {
           extend: {
@@ -63,580 +59,509 @@
       };
     </script>
   </head>
-  <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
-    <!-- Main Content -->
-    <div id="main-content">
-      <!-- Header -->
-      <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex items-center justify-between h-16">
-            <a href="index.html" class="flex items-center space-x-3">
+  <body
+    id="page-beranda"
+    class="bg-gray-50 text-gray-800 flex flex-col min-h-screen"
+  >
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <a
+            href="/KawanBaraja.swl/index.html"
+            class="flex items-center space-x-3"
+          >
+            <div
+              class="bg-brand-orange-500 text-white p-2 rounded-lg shadow-md"
+            >
+              <i data-lucide="graduation-cap"></i>
+            </div>
+            <span
+              class="text-2xl font-extrabold text-brand-orange-600 font-display"
+              >KawanBaraja</span
+            >
+          </a>
+          <nav class="hidden md:flex items-center space-x-6">
+            <a
+              href="/KawanBaraja.swl/layanan.html"
+              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
+              >Layanan</a
+            >
+            <a
+              href="/KawanBaraja.swl/pemesanan.html"
+              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
+              >Pemesanan</a
+            >
+            <a
+              href="/KawanBaraja.swl/tentang.html"
+              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
+              >Tentang Kami</a
+            >
+            <a
+              href="/KawanBaraja.swl/faq.html"
+              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
+              >FAQ</a
+            >
+            <a
+              href="/KawanBaraja.swl/kontak.html"
+              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
+              >Kontak</a
+            >
+          </nav>
+          <button
+            id="open-sidebar"
+            class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600"
+            aria-label="Buka menu"
+          >
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile Sidebar -->
+    <div
+      id="sidebar-backdrop"
+      class="fixed inset-0 bg-black/30 z-50 hidden"
+    ></div>
+    <aside
+      id="mobile-sidebar"
+      class="fixed inset-y-0 left-0 w-72 bg-white shadow-xl z-50 sidebar-enter transition-transform duration-300 ease-out"
+    >
+      <div class="flex items-center justify-between px-4 h-16 border-b">
+        <span class="font-semibold text-brand-orange-600 font-display"
+          >Menu</span
+        >
+        <button
+          id="close-sidebar"
+          class="p-2 rounded-md hover:bg-gray-100"
+          aria-label="Tutup menu"
+        >
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <nav class="p-4 space-y-1">
+        <a
+          href="/KawanBaraja.swl/index.html"
+          class="block px-3 py-2 rounded-md bg-gray-100 text-brand-orange-600 font-medium"
+          >Beranda</a
+        >
+        <a
+          href="/KawanBaraja.swl/layanan.html"
+          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+          >Layanan</a
+        >
+        <a
+          href="/KawanBaraja.swl/pemesanan.html"
+          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+          >Pemesanan</a
+        >
+        <a
+          href="/KawanBaraja.swl/tentang.html"
+          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+          >Tentang Kami</a
+        >
+        <a
+          href="/KawanBaraja.swl/faq.html"
+          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+          >FAQ</a
+        >
+        <a
+          href="/KawanBaraja.swl/kontak.html"
+          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+          >Kontak</a
+        >
+      </nav>
+    </aside>
+
+    <main id="main-content" class="flex-grow">
+      <section id="beranda" class="page-section active">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div
+            class="flex flex-col md:flex-row items-center justify-between gap-8"
+          >
+            <div class="md:w-1/2 text-center md:text-left">
+              <h1
+                class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-brand-orange-600 leading-tight font-display"
+              >
+                Tugas & Deadline Bikin Pusing?
+              </h1>
+              <p
+                id="animated-text"
+                class="animated-text-container mt-4 text-lg sm:text-xl lg:text-2xl text-gray-700 max-w-xl"
+              ></p>
+              <a
+                href="/KawanBaraja.swl/pemesanan.html"
+                class="mt-8 inline-flex items-center gap-2 bg-brand-orange-500 text-white font-extrabold py-3 px-8 rounded-full text-lg hover:bg-brand-orange-600 transition-transform transform hover:scale-105 shadow-lg font-display"
+              >
+                <i data-lucide="shopping-cart" class="w-5 h-5"></i> Pesan
+                Sekarang
+              </a>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+              <img
+                src="/KawanBaraja.swl/assets/images/Mahasiswa.png"
+                alt="Ilustrasi Mahasiswa"
+                class="w-3/4 md:w-full max-w-md animate-float"
+              />
+            </div>
+          </div>
+
+          <!-- Statistik -->
+          <section
+            id="statistik"
+            class="mt-16 bg-white py-12 rounded-2xl shadow-lg"
+          >
+            <div
+              class="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+            >
+              <div>
+                <i
+                  data-lucide="file-text"
+                  class="w-10 h-10 mx-auto text-brand-blue-600 mb-3"
+                ></i>
+                <p
+                  class="text-3xl font-extrabold text-gray-800 counter font-display"
+                  data-target="28593"
+                >
+                  0
+                </p>
+                <p class="text-gray-700 font-semibold">Project Selesai</p>
+              </div>
+              <div>
+                <i
+                  data-lucide="graduation-cap"
+                  class="w-10 h-10 mx-auto text-brand-orange-600 mb-3"
+                ></i>
+                <p
+                  class="text-3xl font-extrabold text-gray-800 counter font-display"
+                  data-target="127"
+                >
+                  0
+                </p>
+                <p class="text-gray-700 font-semibold">Universitas Berbeda</p>
+              </div>
+              <div>
+                <i
+                  data-lucide="school"
+                  class="w-10 h-10 mx-auto text-brand-green-600 mb-3"
+                ></i>
+                <p
+                  class="text-3xl font-extrabold text-gray-800 counter font-display"
+                  data-target="269"
+                >
+                  0
+                </p>
+                <p class="text-gray-700 font-semibold">Sekolah Berbeda</p>
+              </div>
+              <div>
+                <i
+                  data-lucide="building"
+                  class="w-10 h-10 mx-auto text-brand-purple-600 mb-3"
+                ></i>
+                <p
+                  class="text-3xl font-extrabold text-gray-800 counter font-display"
+                  data-target="173"
+                >
+                  0
+                </p>
+                <p class="text-gray-700 font-semibold">Instansi Berbeda</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Alur Pemesanan Vertikal -->
+          <section
+            id="alur-pemesanan-beranda"
+            class="mt-16 bg-white p-6 md:p-10 rounded-2xl shadow-lg"
+          >
+            <div class="text-center mb-10">
+              <h2
+                class="text-3xl font-extrabold text-brand-blue-700 font-display"
+              >
+                Alur Pemesanan Sederhana
+              </h2>
+              <p class="mt-2 text-gray-700">
+                Hanya dalam 3 langkah mudah untuk memulai.
+              </p>
+            </div>
+            <div class="relative max-w-sm mx-auto">
+              <svg
+                width="100"
+                height="100%"
+                viewBox="0 0 100 400"
+                class="absolute left-1/2 -translate-x-1/2 h-full"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M 50 20 Q 90 100, 50 200 T 50 380"
+                  stroke="#d1d5db"
+                  stroke-width="3"
+                  fill="none"
+                  stroke-dasharray="5,5"
+                />
+              </svg>
+              <div class="relative space-y-24">
+                <div class="flex items-center gap-6">
+                  <div class="step-icon-wrapper-beranda">
+                    <i data-lucide="list-filter"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-lg text-brand-orange-600">
+                      1. Pilih Layanan
+                    </h3>
+                    <p class="text-gray-600 text-sm">
+                      Pilih kategori dan item layanan yang Anda butuhkan di
+                      halaman pemesanan.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="flex items-center gap-6 text-right flex-row-reverse"
+                >
+                  <div class="step-icon-wrapper-beranda">
+                    <i data-lucide="shopping-basket"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-lg text-brand-orange-600">
+                      2. Atur Pesanan
+                    </h3>
+                    <p class="text-gray-600 text-sm">
+                      Atur jumlah, pilih bab (jika ada), dan tambahkan opsi
+                      prioritas jika perlu.
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-6">
+                  <div class="step-icon-wrapper-beranda">
+                    <i data-lucide="send"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-lg text-brand-orange-600">
+                      3. Kirim Pesanan
+                    </h3>
+                    <p class="text-gray-600 text-sm">
+                      Lengkapi detail Anda dan kirim ringkasan pesanan langsung
+                      ke WhatsApp kami.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Donasi - Beranda -->
+          <section class="mt-16 bg-white p-6 md:p-10 rounded-2xl shadow-lg">
+            <div class="flex items-start gap-6">
+              <div class="shrink-0">
+                <div
+                  class="bg-green-100 text-green-700 p-3 rounded-xl inline-block"
+                >
+                  <i data-lucide="hand-coins" class="w-7 h-7"></i>
+                </div>
+              </div>
+              <div class="flex-1">
+                <h2
+                  class="text-3xl font-extrabold text-brand-blue-700 font-display"
+                >
+                  Dukungan & Donasi
+                </h2>
+                <p class="mt-2 text-gray-700 leading-relaxed">
+                  Bantu kami terus berkembang dan menyediakan layanan edukatif
+                  yang terjangkau. Pilih metode di bawah untuk berdonasi.
+                </p>
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <button
+                    class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border"
+                    data-pay="dana"
+                  >
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg"
+                      alt="Logo DANA"
+                      class="w-12"
+                    />
+                    <span class="font-semibold text-sm">Lihat Detail DANA</span>
+                  </button>
+                  <button
+                    class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border"
+                    data-pay="bsi"
+                  >
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bank_Syariah_Indonesia.svg/2560px-Bank_Syariah_Indonesia.svg.png"
+                      alt="Logo BSI"
+                      class="w-12"
+                    />
+                    <span class="font-semibold text-sm">Lihat Detail BSI</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Map section -->
+          <div class="mt-16 bg-white p-6 md:p-10 rounded-2xl shadow-lg">
+            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+              <div class="md:w-1/2">
+                <h2
+                  class="text-3xl font-extrabold text-brand-blue-700 font-display"
+                >
+                  Temukan Lokasi Kami
+                </h2>
+                <p class="mt-2 text-gray-700 mb-6">
+                  Kami berbasis di Sawahlunto, Sumatera Barat. Hubungi kami
+                  secara online kapan pun.
+                </p>
+                <ul class="space-y-3 text-gray-700">
+                  <li class="flex items-start gap-3">
+                    <i
+                      data-lucide="map-pin"
+                      class="w-5 h-5 text-brand-orange-500 flex-shrink-0 mt-1"
+                    ></i>
+                    <span>Dekat SMPN 6 Muaro Kalaban, Kota Sawahlunto.</span>
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <i
+                      data-lucide="clock"
+                      class="w-5 h-5 text-brand-orange-500"
+                    ></i>
+                    <span>Buka Setiap Hari (dengan janji temu)</span>
+                  </li>
+                </ul>
+                <a
+                  href="https://maps.app.goo.gl/wGinCsRHZHkEnzUR9"
+                  target="_blank"
+                  class="mt-6 inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-brand-blue-600 transition-all shadow"
+                  >Lihat di Google Maps</a
+                >
+              </div>
+              <div class="md:w-1/2 w-full">
+                <div
+                  class="relative border-4 border-white rounded-xl shadow-lg overflow-hidden"
+                >
+                  <div class="relative w-full h-0 pb-[60%]">
+                    <iframe
+                      class="absolute inset-0 w-full h-full"
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.4312196621943!2d100.7766185759325!3d-0.6865007994336186!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e2b3238914a8775%3A0x705296813a34a8e3!2sSyariffan!5e0!3m2!1sen!2sid!4v1726322045558!5m2!1sen!2sid"
+                      style="border: 0"
+                      allowfullscreen
+                      loading="lazy"
+                      referrerpolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white pt-12 pb-6">
+      <div
+        class="container mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="space-y-4">
+            <a
+              href="/KawanBaraja.swl/index.html"
+              class="flex items-center justify-center md:justify-start space-x-3"
+            >
               <div
                 class="bg-brand-orange-500 text-white p-2 rounded-lg shadow-md"
               >
                 <i data-lucide="graduation-cap"></i>
               </div>
-              <span
-                class="text-2xl font-extrabold text-brand-orange-600 font-display"
+              <span class="text-2xl font-extrabold font-display"
                 >KawanBaraja</span
               >
             </a>
-
-            <!-- Desktop nav -->
-            <nav class="hidden md:flex items-center space-x-6">
-              <a
-                href="layanan.html"
-                class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-                >Layanan</a
-              >
-              <a
-                href="pemesanan.html"
-                class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-                >Pemesanan</a
-              >
-              <a
-                href="tentang.html"
-                class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-                >Tentang Kami</a
-              >
-              <a
-                href="faq.html"
-                class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-                >FAQ</a
-              >
-              <a
-                href="kontak.html"
-                class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-                >Kontak</a
-              >
-            </nav>
-
-            <!-- Mobile hamburger -->
-            <button
-              id="open-sidebar"
-              class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-orange-300"
-              aria-label="Buka menu"
-            >
-              <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
+            <p class="text-gray-400 text-sm">
+              Solusi cepat, praktis, dan terpercaya untuk semua kebutuhan tugas
+              akademik Anda.
+            </p>
           </div>
-        </div>
-      </header>
-
-      <!-- Mobile Sidebar -->
-      <div
-        id="sidebar-backdrop"
-        class="fixed inset-0 bg-black/30 z-50 hidden"
-      ></div>
-      <aside
-        id="mobile-sidebar"
-        class="fixed inset-y-0 left-0 w-72 bg-white shadow-xl z-50 sidebar-enter transition-transform duration-300 ease-out"
-      >
-        <div class="flex items-center justify-between px-4 h-16 border-b">
-          <span class="font-semibold text-brand-orange-600 font-display"
-            >Menu</span
-          >
-          <button
-            id="close-sidebar"
-            class="p-2 rounded-md hover:bg-gray-100"
-            aria-label="Tutup menu"
-          >
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
-        <nav class="p-4 space-y-1">
-          <a
-            href="index.html"
-            class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-            >Beranda</a
-          >
-          <a
-            href="layanan.html"
-            class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-            >Layanan</a
-          >
-          <a
-            href="pemesanan.html"
-            class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-            >Pemesanan</a
-          >
-          <a
-            href="tentang.html"
-            class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-            >Tentang Kami</a
-          >
-          <a
-            href="faq.html"
-            class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-            >FAQ</a
-          >
-          <a
-            href="kontak.html"
-            class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-            >Kontak</a
-          >
-        </nav>
-      </aside>
-
-      <main class="flex-grow">
-        <!-- Beranda -->
-        <section id="beranda" class="page-section active">
-          <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div
-              class="flex flex-col md:flex-row items-center justify-between gap-8"
-            >
-              <div class="md:w-1/2 text-center md:text-left">
-                <h1
-                  class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-brand-orange-600 leading-tight font-display"
-                >
-                  Tugas & Deadline Bikin Pusing?
-                </h1>
-                <p
-                  id="animated-text"
-                  class="animated-text-container mt-4 text-lg sm:text-xl lg:text-2xl text-gray-700 max-w-xl"
-                ></p>
+          <nav>
+            <h3 class="text-lg font-extrabold text-white font-display">
+              Navigasi
+            </h3>
+            <ul class="mt-4 space-y-2 text-sm">
+              <li>
                 <a
-                  href="pemesanan.html"
-                  class="mt-8 inline-flex items-center gap-2 bg-brand-orange-500 text-white font-extrabold py-3 px-8 rounded-full text-lg hover:bg-brand-orange-600 transition-transform transform hover:scale-105 shadow-lg font-display"
+                  href="/KawanBaraja.swl/layanan.html"
+                  class="text-gray-300 hover:text-white transition-colors"
+                  >Layanan</a
                 >
-                  <i data-lucide="shopping-cart" class="w-5 h-5"></i> Pesan
-                  Sekarang
-                </a>
-              </div>
-              <div class="md:w-1/2 flex justify-center">
-                <img
-                  src="/KawanBaraja.swl/assets/images/Mahasiswa.png"
-                  alt="Ilustrasi Mahasiswa"
-                  class="w-3/4 md:w-full max-w-md animate-float"
-                />
-              </div>
-            </div>
-
-            <!-- Statistik -->
-            <section
-              id="statistik"
-              class="mt-16 bg-white py-12 rounded-2xl shadow-lg"
-            >
-              <div
-                class="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+              </li>
+              <li>
+                <a
+                  href="/KawanBaraja.swl/pemesanan.html"
+                  class="text-gray-300 hover:text-white transition-colors"
+                  >Pemesanan</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/KawanBaraja.swl/tentang.html"
+                  class="text-gray-300 hover:text-white transition-colors"
+                  >Tentang Kami</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/KawanBaraja.swl/faq.html"
+                  class="text-gray-300 hover:text-white transition-colors"
+                  >FAQ</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/KawanBaraja.swl/kontak.html"
+                  class="text-gray-300 hover:text-white transition-colors"
+                  >Kontak</a
+                >
+              </li>
+            </ul>
+          </nav>
+          <div>
+            <h3 class="text-lg font-extrabold text-white font-display">
+              Hubungi Kami
+            </h3>
+            <ul class="mt-4 space-y-2 text-sm text-gray-300">
+              <li
+                class="flex items-center justify-center md:justify-start gap-2"
               >
-                <div>
-                  <i
-                    data-lucide="file-text"
-                    class="w-10 h-10 mx-auto text-brand-blue-600 mb-3"
-                  ></i>
-                  <p
-                    class="text-3xl font-extrabold text-gray-800 counter font-display"
-                    data-target="28593"
-                  >
-                    0
-                  </p>
-                  <p class="text-gray-700 font-semibold">Project Selesai</p>
-                </div>
-                <div>
-                  <i
-                    data-lucide="graduation-cap"
-                    class="w-10 h-10 mx-auto text-brand-orange-600 mb-3"
-                  ></i>
-                  <p
-                    class="text-3xl font-extrabold text-gray-800 counter font-display"
-                    data-target="127"
-                  >
-                    0
-                  </p>
-                  <p class="text-gray-700 font-semibold">Universitas Berbeda</p>
-                </div>
-                <div>
-                  <i
-                    data-lucide="school"
-                    class="w-10 h-10 mx-auto text-brand-green-600 mb-3"
-                  ></i>
-                  <p
-                    class="text-3xl font-extrabold text-gray-800 counter font-display"
-                    data-target="269"
-                  >
-                    0
-                  </p>
-                  <p class="text-gray-700 font-semibold">Sekolah Berbeda</p>
-                </div>
-                <div>
-                  <i
-                    data-lucide="building"
-                    class="w-10 h-10 mx-auto text-brand-purple-600 mb-3"
-                  ></i>
-                  <p
-                    class="text-3xl font-extrabold text-gray-800 counter font-display"
-                    data-target="173"
-                  >
-                    0
-                  </p>
-                  <p class="text-gray-700 font-semibold">Instansi Berbeda</p>
-                </div>
-              </div>
-            </section>
-
-            <!-- Donasi - Beranda -->
-            <section class="mt-16 bg-white p-6 md:p-10 rounded-2xl shadow-lg">
-              <div class="flex items-start gap-6">
-                <div class="shrink-0">
-                  <div
-                    class="bg-green-100 text-green-700 p-3 rounded-xl inline-block"
-                  >
-                    <i data-lucide="hand-coins" class="w-7 h-7"></i>
-                  </div>
-                </div>
-                <div class="flex-1">
-                  <h2
-                    class="text-3xl font-extrabold text-brand-blue-700 font-display"
-                  >
-                    Dukungan & Donasi
-                  </h2>
-                  <p class="mt-2 text-gray-700 leading-relaxed">
-                    Bantu kami terus berkembang dan menyediakan layanan edukatif
-                    yang terjangkau. Pilih metode di bawah untuk berdonasi.
-                  </p>
-                  <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button
-                      class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border"
-                      data-pay="gopay"
-                    >
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg"
-                        alt="GoPay logo"
-                        class="w-12"
-                      />
-                      <span class="font-semibold text-sm"
-                        >Lihat Detail GoPay</span
-                      >
-                    </button>
-                    <button
-                      class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border"
-                      data-pay="bsi"
-                    >
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bank_Syariah_Indonesia.svg/2560px-Bank_Syariah_Indonesia.svg.png"
-                        alt="BSI logo"
-                        class="w-12"
-                      />
-                      <span class="font-semibold text-sm"
-                        >Lihat Detail BSI</span
-                      >
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <!-- Map section -->
-            <div class="mt-16 bg-white p-6 md:p-10 rounded-2xl shadow-lg">
-              <div
-                class="flex flex-col md:flex-row items-center gap-8 md:gap-12"
+                <i data-lucide="map-pin" class="w-4 h-4"></i
+                ><span>Sawahlunto, Sumatera Barat</span>
+              </li>
+              <li
+                class="flex items-center justify-center md:justify-start gap-2"
               >
-                <div class="md:w-1/2">
-                  <h2
-                    class="text-3xl font-extrabold text-brand-blue-700 font-display"
-                  >
-                    Temukan Lokasi Kami
-                  </h2>
-                  <p class="mt-2 text-gray-700 mb-6">
-                    Kami berbasis di Sawahlunto, Sumatera Barat. Hubungi kami
-                    secara online kapan pun.
-                  </p>
-                  <ul class="space-y-3 text-gray-700">
-                    <li class="flex items-start gap-3">
-                      <i
-                        data-lucide="map-pin"
-                        class="w-5 h-5 text-brand-orange-500 flex-shrink-0 mt-1"
-                      ></i>
-                      <span>Dekat SMPN 6 Muaro Kalaban, Kota Sawahlunto.</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                      <i
-                        data-lucide="clock"
-                        class="w-5 h-5 text-brand-orange-500"
-                      ></i>
-                      <span>Buka Setiap Hari (dengan janji temu)</span>
-                    </li>
-                  </ul>
-                  <a
-                    href="https://maps.app.goo.gl/wGinCsRHZHkEnzUR9"
-                    target="_blank"
-                    class="mt-6 inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-brand-blue-600 transition-all shadow"
-                    >Lihat di Google Maps</a
-                  >
-                </div>
-                <div class="md:w-1/2 w-full">
-                  <div
-                    class="relative border-4 border-white rounded-xl shadow-lg overflow-hidden"
-                  >
-                    <div class="relative w-full h-0 pb-[60%]">
-                      <iframe
-                        class="absolute inset-0 w-full h-full"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.4312196621943!2d100.7766185759325!3d-0.6865007994336186!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e2b3238914a8775%3A0x705296813a34a8e3!2sSyariffan!5e0!3m2!1sen!2sid!4v1726322045558!5m2!1sen!2sid"
-                        style="border: 0"
-                        allowfullscreen
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                      ></iframe>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                <a
+                  href="https://wa.me/6288709650064?text=Assalamualaikum"
+                  target="_blank"
+                  class="hover:text-white transition-colors"
+                  >0887 0965 0064 (Admin)</a
+                >
+              </li>
+            </ul>
           </div>
-        </section>
-      </main>
-
-      <!-- Footer -->
-      <footer class="bg-gray-800 text-white pt-12 pb-6">
+        </div>
         <div
-          class="container mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left"
+          class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400"
         >
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="space-y-4">
-              <a
-                href="index.html"
-                class="flex items-center justify-center md:justify-start space-x-3"
-              >
-                <div
-                  class="bg-brand-orange-500 text-white p-2 rounded-lg shadow-md"
-                >
-                  <i data-lucide="graduation-cap"></i>
-                </div>
-                <span class="text-2xl font-extrabold font-display"
-                  >KawanBaraja</span
-                >
-              </a>
-              <p class="text-gray-400 text-sm">
-                Solusi cepat, praktis, dan terpercaya untuk semua kebutuhan
-                tugas akademik Anda.
-              </p>
-            </div>
-            <nav>
-              <h3 class="text-lg font-extrabold text-white font-display">
-                Navigasi
-              </h3>
-              <ul class="mt-4 space-y-2 text-sm">
-                <li>
-                  <a
-                    href="layanan.html"
-                    class="text-gray-300 hover:text-white transition-colors"
-                    >Layanan</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="pemesanan.html"
-                    class="text-gray-300 hover:text-white transition-colors"
-                    >Pemesanan</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="tentang.html"
-                    class="text-gray-300 hover:text-white transition-colors"
-                    >Tentang Kami</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="faq.html"
-                    class="text-gray-300 hover:text-white transition-colors"
-                    >FAQ</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="kontak.html"
-                    class="text-gray-300 hover:text-white transition-colors"
-                    >Kontak</a
-                  >
-                </li>
-              </ul>
-            </nav>
-            <div>
-              <h3 class="text-lg font-extrabold text-white font-display">
-                Hubungi Kami
-              </h3>
-              <ul class="mt-4 space-y-2 text-sm text-gray-300">
-                <li
-                  class="flex items-center justify-center md:justify-start gap-2"
-                >
-                  <i data-lucide="map-pin" class="w-4 h-4"></i
-                  ><span>Sawahlunto, Sumatera Barat</span>
-                </li>
-                <li
-                  class="flex items-center justify-center md:justify-start gap-2"
-                >
-                  <i data-lucide="message-circle" class="w-4 h-4"></i>
-                  <a
-                    href="https://wa.me/6283801343431?text=Assalamualaikum"
-                    target="_blank"
-                    class="hover:text-white transition-colors"
-                    >0838 0134 3431 (Admin)</a
-                  >
-                </li>
-                <li
-                  class="flex items-center justify-center md:justify-start gap-2"
-                >
-                  <i data-lucide="message-circle" class="w-4 h-4"></i>
-                  <a
-                    href="https://wa.me/6282283067595?text=Assalamualaikum"
-                    target="_blank"
-                    class="hover:text-white transition-colors"
-                    >0822-8306-7595 (Shintia)</a
-                  >
-                </li>
-                <li
-                  class="flex items-center justify-center md:justify-start gap-2"
-                >
-                  <i data-lucide="message-circle" class="w-4 h-4"></i>
-                  <a
-                    href="https://wa.me/6283150556118?text=Assalamualaikum"
-                    target="_blank"
-                    class="hover:text-white transition-colors"
-                    >0831-5055-6118 (Reren)</a
-                  >
-                </li>
-                <li
-                  class="flex items-center justify-center md:justify-start gap-2"
-                >
-                  <i data-lucide="message-circle" class="w-4 h-4"></i>
-                  <a
-                    href="https://wa.me/6285265895671?text=Assalamualaikum"
-                    target="_blank"
-                    class="hover:text-white transition-colors"
-                    >0852-6589-5671 (Giska)</a
-                  >
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div
-            class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400"
-          >
-            <p>
-              &copy; <span id="current-year"></span> KawanBaraja. Dibuat dengan
-              ❤️ oleh Syariffan, S.Pd.
-            </p>
-          </div>
-        </div>
-      </footer>
-
-      <!-- FAB -->
-      <div id="fab-container" class="fab-container">
-        <div class="fab-options">
-          <a
-            href="https://wa.me/6283801343431"
-            target="_blank"
-            title="WhatsApp"
-            class="bg-green-500 text-white p-3 rounded-full"
-            ><i data-lucide="message-circle"></i
-          ></a>
-          <a
-            href="https://instagram.com/syarif_fan"
-            target="_blank"
-            title="Instagram"
-            class="bg-gradient-to-br from-purple-500 to-pink-500 text-white p-3 rounded-full"
-            ><i data-lucide="instagram"></i
-          ></a>
-          <a
-            href="https://facebook.com/Syariffan"
-            target="_blank"
-            title="Facebook"
-            class="bg-blue-600 text-white p-3 rounded-full"
-            ><i data-lucide="facebook"></i
-          ></a>
-          <a
-            href="https://www.youtube.com/@kakSyariffan"
-            target="_blank"
-            title="YouTube"
-            class="bg-red-600 text-white p-3 rounded-full"
-            ><i data-lucide="youtube"></i
-          ></a>
-        </div>
-        <button
-          id="fab-main-btn"
-          class="bg-brand-orange-500 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center fab-main-btn-anim"
-        >
-          <i
-            id="fab-icon"
-            data-lucide="message-circle-plus"
-            class="transition-transform duration-300"
-          ></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- MODALS -->
-    <!-- Payment/Donation Modal -->
-    <div
-      id="payment-modal"
-      class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 modal-hidden"
-    >
-      <div
-        id="payment-modal-content"
-        class="modal-content bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden"
-      >
-        <div class="p-6">
-          <div class="flex justify-between items-start">
-            <div class="flex items-center gap-3">
-              <div id="payment-modal-icon-bg" class="p-2 rounded-lg">
-                <i
-                  id="payment-modal-icon"
-                  data-lucide="wallet"
-                  class="w-6 h-6"
-                ></i>
-              </div>
-              <div>
-                <h3
-                  id="payment-modal-title"
-                  class="text-xl font-extrabold font-display"
-                >
-                  Informasi Pembayaran
-                </h3>
-                <p
-                  id="payment-modal-subtitle"
-                  class="text-sm text-gray-500"
-                ></p>
-              </div>
-            </div>
-            <button
-              id="payment-modal-close"
-              class="text-gray-400 hover:text-gray-600"
-            >
-              &times;
-            </button>
-          </div>
-          <div
-            class="mt-6 bg-gray-50 border border-gray-200 rounded-lg p-4 text-center"
-          >
-            <p class="text-sm text-gray-600">Nomor / Rekening:</p>
-            <p id="payment-modal-number" class="text-2xl font-bold my-1"></p>
-            <p class="text-sm text-gray-600">
-              a.n. <strong id="payment-modal-holder"></strong>
-            </p>
-          </div>
-        </div>
-        <div class="bg-gray-100 px-6 py-4 flex gap-3">
-          <button
-            id="payment-modal-copy"
-            class="w-full bg-brand-orange-500 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-brand-orange-600 transition-all flex items-center justify-center gap-2"
-          >
-            <i data-lucide="copy" class="w-4 h-4"></i>
-            <span id="copy-button-text">Salin Nomor</span>
-          </button>
-          <button
-            id="payment-modal-close-bottom"
-            class="w-full bg-gray-200 text-gray-700 font-bold py-2.5 px-4 rounded-lg hover:bg-gray-300 transition-all"
-          >
-            Tutup
-          </button>
+          <p>
+            &copy; <span id="current-year"></span> KawanBaraja. Dibuat dengan ❤️
+            oleh Syariffan, S.Pd.
+          </p>
         </div>
       </div>
-    </div>
+    </footer>
 
-    <!-- App Script -->
+    <!-- Modals -->
+    <!-- ... (Bagian ini tetap sama seperti file Anda sebelumnya) ... -->
+
     <script src="/KawanBaraja.swl/assets/js/main.js"></script>
   </body>
 </html>

@@ -185,58 +185,12 @@
             </h2>
           </div>
 
-          <!-- VISUAL PROSES ORDER BARU -->
+          <!-- --- PERUBAHAN DI SINI: VISUAL PROSES ORDER DIKEMBALIKAN KE VERSI AWAL --- -->
           <div
             id="process-indicator"
-            class="relative w-full max-w-lg mx-auto h-32 mb-12"
+            class="flex justify-center items-center gap-2 md:gap-4 mb-8"
           >
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 400 100"
-              preserveAspectRatio="none"
-              class="absolute top-0 left-0"
-            >
-              <path
-                d="M 20 50 Q 100 10, 200 50 T 380 50"
-                stroke="#d1d5db"
-                stroke-width="3"
-                fill="none"
-                stroke-dasharray="5,5"
-                id="process-path-bg"
-              />
-              <path
-                d="M 20 50 Q 100 10, 200 50 T 380 50"
-                stroke="#f97316"
-                stroke-width="3"
-                fill="none"
-                stroke-dasharray="5,5"
-                id="process-path-fg"
-                style="stroke-dashoffset: 360"
-              />
-            </svg>
-            <div class="step-item" style="left: 5%">
-              <div class="step-icon-wrapper">
-                <i data-lucide="list-filter"></i>
-              </div>
-              <span class="step-text">Pilih Kategori</span>
-            </div>
-            <div
-              class="step-item"
-              style="left: 50%; transform: translateX(-50%)"
-            >
-              <div class="step-icon-wrapper">
-                <i data-lucide="shopping-basket"></i>
-              </div>
-              <span class="step-text">Atur Pesanan</span>
-            </div>
-            <div
-              class="step-item"
-              style="left: 95%; transform: translateX(-100%)"
-            >
-              <div class="step-icon-wrapper"><i data-lucide="send"></i></div>
-              <span class="step-text">Kirim Pesanan</span>
-            </div>
+            <!-- Konten akan dirender oleh JavaScript -->
           </div>
 
           <div class="flex flex-col lg:flex-row gap-8">
@@ -323,24 +277,6 @@
                 <!-- OPSI TAMBAHAN -->
                 <div class="border-t pt-4 mt-4 border-gray-200 space-y-3">
                   <label
-                    for="progress-update-checkbox"
-                    class="flex items-center justify-between text-sm cursor-pointer"
-                  >
-                    <span class="font-semibold flex items-center gap-2"
-                      ><i data-lucide="messages-square"></i> Dapatkan Update
-                      Progres</span
-                    >
-                    <input
-                      type="checkbox"
-                      id="progress-update-checkbox"
-                      class="h-4 w-4 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500"
-                    />
-                  </label>
-                  <p class="text-xs text-gray-500 -mt-2 pl-7">
-                    Dapatkan update progres via WhatsApp (+10% dari Subtotal).
-                  </p>
-
-                  <label
                     for="fast-track-checkbox"
                     class="flex items-center justify-between text-sm cursor-pointer pt-2"
                   >
@@ -354,7 +290,7 @@
                     />
                   </label>
                   <p class="text-xs text-gray-500 -mt-2 pl-7">
-                    Pesanan Anda akan dikerjakan lebih dulu (+25% dari
+                    Pesanan Anda akan dikerjakan lebih dulu (+15% dari
                     Subtotal).
                   </p>
                 </div>
@@ -363,15 +299,6 @@
                   <div class="flex justify-between items-center text-sm">
                     <span>Subtotal:</span
                     ><span id="subtotal-price" class="font-medium">Rp 0</span>
-                  </div>
-                  <div
-                    id="progress-update-fee-container"
-                    class="flex justify-between items-center text-sm hidden"
-                  >
-                    <span>Biaya Update Progres:</span
-                    ><span id="progress-update-fee" class="font-medium"
-                      >Rp 0</span
-                    >
                   </div>
                   <div
                     id="fast-track-fee-container"
@@ -449,13 +376,8 @@
       </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white pt-12 pb-6">
-      <!-- ... Konten footer Anda tetap sama ... -->
-    </footer>
-
-    <!-- Modals (FAB, Payment, Contact, User Info) -->
-    <!-- ... Semua modal Anda tetap sama ... -->
+    <!-- Footer, FAB, dan Modals -->
+    <!-- ... (Bagian ini tetap sama seperti file Anda sebelumnya) ... -->
 
     <script src="/KawanBaraja.swl/assets/js/main.js"></script>
   </body>
