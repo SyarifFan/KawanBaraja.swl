@@ -357,7 +357,6 @@ document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
       window.scrollTo({ top: 0, behavior: "smooth" });
 
-      // Kirim event bahwa halaman baru telah dimuat
       const event = new CustomEvent("pageLoaded", { detail: { page, slug } });
       document.dispatchEvent(event);
     } catch (error) {
@@ -370,96 +369,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- EVENT LISTENERS ---
 
-  // SATU LISTENER UTAMA UNTUK SEMUA INTERAKSI
-  document.addEventListener("click", (e) => {
-    const target = e.target;
-
-    // 1. Navigasi SPA (.page-link, .order-from-service-btn)
-    const spaLink = target.closest(".page-link, .order-from-service-btn");
-    if (spaLink) {
-      e.preventDefault();
-      const page = spaLink.dataset.page;
-      const slug = spaLink.dataset.categorySlug || null;
-      loadPage(page, slug);
-      if (spaLink.classList.contains("page-link")) {
-        document
-          .querySelectorAll(".nav-link")
-          .forEach((l) => l.classList.remove("active"));
-        document
-          .querySelectorAll(`.nav-link[data-page="${page}"]`)
-          .forEach((l) => l.classList.add("active"));
-        closeSidebar();
-      }
-      return;
-    }
-
-    // 2. Tombol kategori di halaman LAYANAN
-    const layananNavBtn = target.closest(".layanan-nav-btn");
-    if (layananNavBtn && document.getElementById("layanan-section-container")) {
-      e.preventDefault();
-      const slug = layananNavBtn.dataset.serviceSlug;
-      if (layananNavBtn.closest("#layanan-accordion-mobile")) {
-        const wasActive = layananNavBtn.classList.contains("active");
-        document
-          .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
-          .forEach((b) => b.classList.remove("active"));
-        if (!wasActive) layananNavBtn.classList.add("active");
-      } else {
-        updateLayananContent(slug);
-      }
-      return;
-    }
-
-    // 3. Tombol kategori di halaman PEMESANAN
-    const orderCatBtn = target.closest(".order-category-btn");
-    if (orderCatBtn && document.getElementById("pemesanan-container")) {
-      e.preventDefault();
-      document
-        .querySelectorAll(".order-category-btn")
-        .forEach((b) =>
-          b.classList.remove(
-            "active",
-            "bg-brand-orange-100",
-            "border-brand-orange-500"
-          )
-        );
-      orderCatBtn.classList.add(
-        "active",
-        "bg-brand-orange-100",
-        "border-brand-orange-500"
-      );
-      const categorySlug = orderCatBtn.dataset.categorySlug;
-      if (categorySlug === "custom") renderCustomServiceForm();
-      else renderOrderItems(categorySlug);
-      updateProcessIndicator(1);
-      return;
-    }
-
-    // 4. Pemicu Modal Pembayaran
-    const paymentTrigger = target.closest(".payment-modal-trigger");
-    if (paymentTrigger) {
-      e.preventDefault();
-      showPaymentModal(paymentTrigger.dataset.pay);
-      return;
-    }
-
-    // 5. Pemicu Kontak Admin WA (langsung buka link)
-    const contactTrigger = target.closest(".contact-modal-trigger");
-    if (contactTrigger) {
-      e.preventDefault();
-      const id = contactTrigger.dataset.id;
-      const name = contactTrigger.dataset.name;
-      const message = `Assalamualaikum Kak ${
-        name.split(" ")[0]
-      },\n\nSaya ingin bertanya tentang layanan KawanBaraja...`;
-      window.open(
-        `https://wa.me/${id}?text=${encodeURIComponent(message)}`,
-        "_blank"
-      );
-      return;
-    }
-  });
-
   // Listener yang diaktifkan SETELAH halaman baru dimuat
   document.addEventListener("pageLoaded", (e) => {
     const { page, slug } = e.detail;
@@ -468,6 +377,30 @@ document.addEventListener("DOMContentLoaded", () => {
     if (page === "pemesanan") initPemesanan(slug);
     if (page === "tentang") initTentang();
     if (page === "faq") initFaq();
+  });
+
+  // Listener utama pada body yang stabil untuk semua klik
+  document.body.addEventListener("click", (e) => {
+    const target = e.target;
+
+    // Navigasi SPA
+    const pageLink = target.closest(".page-link, .order-from-service-btn");
+    if (pageLink && !pageLink.getAttribute("href")?.startsWith("http")) {
+      e.preventDefault();
+      const page = pageLink.dataset.page;
+      const slug = pageLink.dataset.categorySlug || null;
+      loadPage(page, slug);
+
+      if (pageLink.classList.contains("page-link")) {
+        document
+          .querySelectorAll(".nav-link")
+          .forEach((l) => l.classList.remove("active"));
+        document
+          .querySelectorAll(`.nav-link[data-page="${page}"]`)
+          .forEach((l) => l.classList.add("active"));
+        closeSidebar();
+      }
+    }
   });
 
   // --- PAGE INITIALIZERS ---
@@ -514,6 +447,16 @@ document.addEventListener("DOMContentLoaded", () => {
       counter.textContent = "0";
       observer.observe(counter);
     });
+
+    document
+      .getElementById("beranda-content")
+      .addEventListener("click", (e) => {
+        if (e.target.closest(".payment-modal-trigger")) {
+          showPaymentModal(
+            e.target.closest(".payment-modal-trigger").dataset.pay
+          );
+        }
+      });
   }
 
   function initLayanan() {
@@ -545,6 +488,23 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
     lucide.createIcons();
     updateLayananContent("harian");
+
+    document
+      .getElementById("layanan-section-container")
+      .addEventListener("click", (e) => {
+        const btn = e.target.closest(".layanan-nav-btn");
+        if (!btn) return;
+        const slug = btn.dataset.serviceSlug;
+        if (btn.closest("#layanan-accordion-mobile")) {
+          const wasActive = btn.classList.contains("active");
+          document
+            .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
+            .forEach((b) => b.classList.remove("active"));
+          if (!wasActive) btn.classList.add("active");
+        } else {
+          updateLayananContent(slug);
+        }
+      });
   }
 
   function updateLayananContent(slug) {
@@ -584,12 +544,30 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("order-category-cards").innerHTML = cardHtml;
     lucide.createIcons();
 
-    // Event listener yang spesifik untuk Halaman Pemesanan
     const pemesananContainer = document.getElementById("pemesanan-container");
 
-    // Listener untuk interaksi di dalam form (kuantitas, tambah custom)
-    const formItemsContainer = document.getElementById("order-form-items");
-    formItemsContainer.addEventListener("click", (e) => {
+    pemesananContainer.addEventListener("click", (e) => {
+      const catBtn = e.target.closest(".order-category-btn");
+      if (catBtn) {
+        document
+          .querySelectorAll(".order-category-btn")
+          .forEach((b) =>
+            b.classList.remove(
+              "active",
+              "bg-brand-orange-100",
+              "border-brand-orange-500"
+            )
+          );
+        catBtn.classList.add(
+          "active",
+          "bg-brand-orange-100",
+          "border-brand-orange-500"
+        );
+        const categorySlug = catBtn.dataset.categorySlug;
+        if (categorySlug === "custom") renderCustomServiceForm();
+        else renderOrderItems(categorySlug);
+        updateProcessIndicator(1);
+      }
       const qtyBtn = e.target.closest(".qty-btn");
       if (qtyBtn) {
         const id = qtyBtn.dataset.id;
@@ -615,7 +593,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    formItemsContainer.addEventListener("change", (e) => {
+    pemesananContainer.addEventListener("change", (e) => {
       const t = e.target;
       if (
         t.type === "checkbox" &&
@@ -685,20 +663,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    formItemsContainer.addEventListener("input", (e) => {
-      if (e.target.classList.contains("total-chapters-input")) {
-        const id = e.target.dataset.id;
-        const total = parseInt(e.target.value) || 1;
-        if (cart[id]) {
-          cart[id].totalChapters = total;
-          renderChapterCheckboxes(id, total);
-          cart[id].chapters = (cart[id].chapters || []).filter(
-            (c) => parseInt(c) <= total
-          );
-          updateCartUI();
+    document
+      .getElementById("order-form-items")
+      .addEventListener("input", (e) => {
+        if (e.target.classList.contains("total-chapters-input")) {
+          const id = e.target.dataset.id;
+          const total = parseInt(e.target.value) || 1;
+          if (cart[id]) {
+            cart[id].totalChapters = total;
+            renderChapterCheckboxes(id, total);
+            cart[id].chapters = (cart[id].chapters || []).filter(
+              (c) => parseInt(c) <= total
+            );
+            updateCartUI();
+          }
         }
-      }
-    });
+      });
 
     document
       .getElementById("discount-request")
