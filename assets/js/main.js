@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // CONFIGURATION
+  // KONFIGURASI UTAMA
   const WA_ADMIN_NUMBER = "6288709650064"; // Nomor WA Admin Utama
   const PAYMENT_DETAILS = {
     dana: { name: "DANA", number: "088709650064", holder: "Syariffan" },
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
 
-  // --- DATA SETS ---
+  // --- KUMPULAN DATA ---
   const quotes = [
     "Pendidikan adalah senjata paling ampuh yang bisa kamu gunakan untuk mengubah dunia. - Nelson Mandela",
     "Satu-satunya sumber pengetahuan adalah pengalaman. - Albert Einstein",
@@ -342,7 +342,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- CORE FUNCTIONS ---
 
-  // SPA Page Loader
   async function loadPage(page, slug = null) {
     try {
       const response = await fetch(`${page}.html`);
@@ -351,7 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const content = await response.text();
       document.getElementById("page-container").innerHTML = content;
 
-      // Post-load actions
       lucide.createIcons();
       window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -367,7 +365,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- EVENT LISTENERS ---
 
-  // Global listener for page changes and dynamic content
   document.addEventListener("click", (e) => {
     const pageLink = e.target.closest(".page-link");
     if (pageLink) {
@@ -388,9 +385,12 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       loadPage("pemesanan", orderFromServiceBtn.dataset.categorySlug);
     }
+
+    if (e.target.closest(".payment-modal-trigger")) {
+      showPaymentModal(e.target.closest(".payment-modal-trigger").dataset.pay);
+    }
   });
 
-  // Listener for actions after a page is loaded
   document.addEventListener("pageLoaded", (e) => {
     const { page, slug } = e.detail;
 
@@ -404,7 +404,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- PAGE INITIALIZERS ---
 
   function initBeranda() {
-    // Animate text and counters
     const animatedTextEl = document.getElementById("animated-text");
     if (animatedTextEl) {
       const textToAnimate = `KawanBaraja siap membantumu!`;
@@ -503,7 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
 
     lucide.createIcons();
-    updateLayananContent("harian"); // Default
+    updateLayananContent("harian");
 
     document
       .getElementById("layanan-section-container")
@@ -568,7 +567,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     const orderFormItemsContainer = document.getElementById("order-form-items");
 
-    // Render category cards
     let cardHtml = servicesData
       .map(
         (s) => `
@@ -587,7 +585,6 @@ document.addEventListener("DOMContentLoaded", () => {
     orderCategoryCardsContainer.innerHTML = cardHtml;
     lucide.createIcons();
 
-    // Event listener for category selection
     orderCategoryCardsContainer.addEventListener("click", (e) => {
       const btn = e.target.closest(".order-category-btn");
       if (!btn) return;
@@ -611,7 +608,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateProcessIndicator(1);
     });
 
-    // Event listeners for item interaction (checkbox, quantity)
     orderFormItemsContainer.addEventListener("change", (e) => {
       const t = e.target;
       if (
@@ -660,9 +656,22 @@ document.addEventListener("DOMContentLoaded", () => {
       if (t.classList.contains("chapter-check")) {
         const id = t.dataset.id;
         const chapter = t.dataset.chapter;
+        const boxContainer = t.closest(`#chapters_${id}`);
+
+        // Logic khusus untuk Bab 4 & 5
+        if (cart[id] && cart[id].totalChapters === 5) {
+          if (chapter === "4") {
+            const c5 = boxContainer.querySelector('[data-chapter="5"]');
+            if (c5) c5.checked = t.checked;
+          }
+          if (chapter === "5") {
+            const c4 = boxContainer.querySelector('[data-chapter="4"]');
+            if (c4) c4.checked = t.checked;
+          }
+        }
+
         if (cart[id]) {
           const sel = [];
-          const boxContainer = t.closest(`#chapters_${id}`);
           boxContainer
             .querySelectorAll(".chapter-check:checked")
             .forEach((cb) => sel.push(cb.dataset.chapter));
@@ -714,7 +723,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Listeners for summary box interactions
     document
       .getElementById("fast-track-checkbox")
       .addEventListener("change", updateCartUI);
@@ -741,7 +749,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .getElementById("copy-summary-btn")
       .addEventListener("click", copyOrderSummary);
 
-    // Initial state
     updateProcessIndicator(Object.keys(cart).length > 0 ? 2 : 1);
     updateCartUI();
     if (slug) {
@@ -937,6 +944,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- CART & TOTALS LOGIC ---
 
+  function getBillableChapters(cartItem) {
+    if (!cartItem || !cartItem.chapters || cartItem.chapters.length === 0) {
+      return new Set();
+    }
+    const billable = new Set(cartItem.chapters);
+    if (
+      cartItem.totalChapters === 5 &&
+      billable.has("4") &&
+      billable.has("5")
+    ) {
+      billable.delete("5");
+    }
+    return billable;
+  }
+
   function calculateSubtotal() {
     let subtotal = 0;
     for (const itemId in cart) {
@@ -947,7 +969,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .find((i) => i.id === itemId);
       if (item) {
         if (item.selectable) {
-          subtotal += item.price * (c.chapters?.length || 0);
+          const billableChapters = getBillableChapters(c);
+          subtotal += item.price * billableChapters.size;
         } else {
           subtotal += item.price * c.quantity;
         }
@@ -969,7 +992,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const discountInput = document.getElementById("discount-request");
     const fastTrackCheckbox = document.getElementById("fast-track-checkbox");
 
-    if (!cartItemsList) return; // Exit if elements not on page
+    if (!cartItemsList) return;
 
     cartItemsList.innerHTML = "";
     const subtotal = calculateSubtotal();
@@ -993,19 +1016,22 @@ document.addEventListener("DOMContentLoaded", () => {
           .flatMap((s) => s.items)
           .find((i) => i.id === itemId);
         if (item) {
-          if (item.selectable && (!c.chapters || c.chapters.length === 0))
-            continue;
+          const billableChapters = getBillableChapters(c);
+          if (item.selectable && billableChapters.size === 0) continue;
+
           hasItems = true;
           const el = document.createElement("div");
           el.className = "flex justify-between items-center text-sm";
           let name = item.name;
           let priceText = "";
           let itemTotal = 0;
+
           if (item.selectable) {
-            const numChapters = c.chapters?.length || 0;
             name += ` (BAB ${c.chapters.join(", ")})`;
-            priceText = `${numChapters} x ${formatCurrency(item.price)}`;
-            itemTotal = item.price * numChapters;
+            priceText = `${billableChapters.size} x ${formatCurrency(
+              item.price
+            )}`;
+            itemTotal = item.price * billableChapters.size;
           } else {
             priceText = `${c.quantity} x ${formatCurrency(item.price)}`;
             itemTotal = item.price * c.quantity;
@@ -1054,11 +1080,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .find((i) => i.id === id);
       if (item) {
         if (item.selectable) {
-          const n = c.chapters?.length || 0;
-          if (n > 0)
+          const billableChapters = getBillableChapters(c);
+          if (billableChapters.size > 0) {
             summary += `- ${item.name} (BAB ${c.chapters.join(
               ", "
-            )}): *${formatCurrency(item.price * n)}*\n`;
+            )}): *${formatCurrency(item.price * billableChapters.size)}*\n`;
+          }
         } else {
           summary += `- ${item.name} (${c.quantity} ${
             item.unit
@@ -1101,7 +1128,6 @@ document.addEventListener("DOMContentLoaded", () => {
         (convo) => `
       <div class="testimonial-slide flex-shrink-0 w-full">
         <div class="w-full h-full flex flex-col bg-cover" style="background-image: url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg');">
-          <!-- Header -->
           <div class="bg-[#005E54] text-white pt-10 pb-2 px-2 flex items-center gap-3 shadow-md">
               <i data-lucide="arrow-left" class="w-5 h-5"></i>
               <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center border-2 border-white/50"><i data-lucide="user" class="w-6 h-6 text-white"></i></div>
@@ -1112,7 +1138,6 @@ document.addEventListener("DOMContentLoaded", () => {
               <i data-lucide="video" class="w-5 h-5"></i>
               <i data-lucide="phone" class="w-5 h-5"></i>
           </div>
-          <!-- Chat Area -->
           <div class="p-4 flex-1 overflow-y-auto flex flex-col space-y-3 pt-6 pb-6">
             ${convo.chats
               .map(
@@ -1132,7 +1157,6 @@ document.addEventListener("DOMContentLoaded", () => {
               )
               .join("")}
           </div>
-          <!-- Input area -->
           <div class="bg-gray-100 p-2 flex items-center gap-2">
               <i data-lucide="smile" class="w-6 h-6 text-gray-500"></i>
               <div class="flex-1 bg-white rounded-full p-2 text-sm text-gray-400">Ketik pesan...</div>
@@ -1176,7 +1200,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- MODALS & UI HELPERS ---
 
-  // User Info Modal (Checkout)
   function showUserInfoModal() {
     const modal = document.getElementById("user-info-modal");
     if (modal) {
@@ -1252,11 +1275,14 @@ document.addEventListener("DOMContentLoaded", () => {
           .find((i) => i.id === id);
         if (item) {
           if (item.selectable) {
-            const n = c.chapters?.length || 0;
-            if (n > 0)
+            const billableChapters = getBillableChapters(c);
+            if (billableChapters.size > 0) {
               msg += `- *${item.name}* (BAB ${c.chapters.join(
                 ", "
-              )}): ${formatCurrency(item.price * n)}\n`;
+              )} | Terhitung: ${billableChapters.size} bab): ${formatCurrency(
+                item.price * billableChapters.size
+              )}\n`;
+            }
           } else {
             msg += `- *${item.name}* (${c.quantity} ${
               item.unit
@@ -1276,7 +1302,9 @@ document.addEventListener("DOMContentLoaded", () => {
         msg += `\n*Catatan Tambahan:*\n${comments}\n`;
       }
 
-      msg += `\n--------------------------------------\n`;
+      msg += `\n--------------------------------------\n*Metode Pembayaran:*\n\n`;
+      msg += `*${PAYMENT_DETAILS.dana.name}*\nNo: ${PAYMENT_DETAILS.dana.number}\nA/n: ${PAYMENT_DETAILS.dana.holder}\n\n`;
+      msg += `*${PAYMENT_DETAILS.bsi.name}*\nNo: ${PAYMENT_DETAILS.bsi.number}\nA/n: ${PAYMENT_DETAILS.bsi.holder}\n\n`;
       msg += `Mohon konfirmasi dan informasinya. Terima kasih!`;
 
       closeUserInfoModal();
@@ -1286,7 +1314,6 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
 
-  // Payment Modal
   function showPaymentModal(kind) {
     const data = {
       dana: {
@@ -1318,34 +1345,38 @@ document.addEventListener("DOMContentLoaded", () => {
       .setAttribute("data-lucide", data.icon);
     lucide.createIcons();
     document.getElementById("payment-modal-copy").dataset.number = data.number;
+
+    const copyBtn = document.getElementById("payment-modal-copy");
+    const closeBtn = document.getElementById("payment-modal-close");
+    const closeBottomBtn = document.getElementById(
+      "payment-modal-close-bottom"
+    );
+
+    const handleCopy = () => {
+      navigator.clipboard.writeText(copyBtn.dataset.number).then(() => {
+        showToast("Nomor berhasil disalin!");
+      });
+    };
+    const handleClose = () => {
+      modal.classList.add("modal-hidden");
+      copyBtn.removeEventListener("click", handleCopy);
+      closeBtn.removeEventListener("click", handleClose);
+      closeBottomBtn.removeEventListener("click", handleClose);
+      modal.removeEventListener("click", handleBackdropClose);
+    };
+    const handleBackdropClose = (e) => {
+      if (e.target === modal) handleClose();
+    };
+
+    copyBtn.addEventListener("click", handleCopy);
+    closeBtn.addEventListener("click", handleClose);
+    closeBottomBtn.addEventListener("click", handleClose);
+    modal.addEventListener("click", handleBackdropClose);
+
     modal.classList.remove("modal-hidden");
     modal.classList.add("modal-visible");
   }
 
-  function closePaymentModal() {
-    document.getElementById("payment-modal").classList.add("modal-hidden");
-  }
-
-  document.body.addEventListener("click", (e) => {
-    if (e.target.closest(".payment-modal-trigger")) {
-      showPaymentModal(e.target.closest(".payment-modal-trigger").dataset.pay);
-    }
-    if (
-      e.target.closest("#payment-modal-close") ||
-      e.target.closest("#payment-modal-close-bottom") ||
-      e.target.id === "payment-modal"
-    ) {
-      closePaymentModal();
-    }
-    if (e.target.closest("#payment-modal-copy")) {
-      const btn = e.target.closest("#payment-modal-copy");
-      navigator.clipboard.writeText(btn.dataset.number).then(() => {
-        showToast("Nomor berhasil disalin!");
-      });
-    }
-  });
-
-  // Sidebar (Mobile)
   const sidebar = document.getElementById("mobile-sidebar");
   const sidebarBackdrop = document.getElementById("sidebar-backdrop");
   function openSidebar() {
@@ -1364,7 +1395,6 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", closeSidebar);
   sidebarBackdrop.addEventListener("click", closeSidebar);
 
-  // FAB (Floating Action Button)
   const fabContainer = document.getElementById("fab-container");
   const fabMainBtn = document.getElementById("fab-main-btn");
   const fabIcon = document.getElementById("fab-icon");
@@ -1395,7 +1425,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 
-  // --- INITIALIZATION ---
+  // --- INISIALISASI ---
   document.getElementById("current-year").textContent =
     new Date().getFullYear();
   loadPage("beranda").then(() => {
