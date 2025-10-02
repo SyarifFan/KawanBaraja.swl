@@ -1,13 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- STATE & DATA MANAGEMENT ---
+  // CONFIGURATION
+  const WA_ADMIN_NUMBER = "6288709650064"; // Nomor WA Admin Utama
+  const PAYMENT_DETAILS = {
+    dana: { name: "DANA", number: "088709650064", holder: "Syariffan" },
+    bsi: {
+      name: "Bank Syariah Indonesia (BSI)",
+      number: "7324408295",
+      holder: "Syariffan",
+    },
+  };
 
-  // User and Cart Data
-  let visitorData = { name: "Klien", deadline: "" };
-  let cart = {};
-  let isFastTrack = false;
-  let hasCounterAnimated = false;
-
-  // Static Data Sets
+  // --- DATA SETS ---
   const quotes = [
     "Pendidikan adalah senjata paling ampuh yang bisa kamu gunakan untuk mengubah dunia. - Nelson Mandela",
     "Satu-satunya sumber pengetahuan adalah pengalaman. - Albert Einstein",
@@ -223,21 +226,18 @@ document.addEventListener("DOMContentLoaded", () => {
           name: "Buat Artikel/Jurnal",
           price: 5000,
           unit: "halaman",
-          selectable: false,
         },
         {
           id: "artikel_buat_skripsi",
           name: "Buat Artikel/Jurnal Penelitian Skripsi",
           price: 10000,
           unit: "halaman",
-          selectable: false,
         },
         {
           id: "artikel_publish_non_sinta",
           name: "Publish Artikel Non Sinta/OJS",
           price: 300000,
           unit: "per-artikel",
-          selectable: false,
         },
         {
           id: "artikel_publish_sinta",
@@ -245,14 +245,12 @@ document.addEventListener("DOMContentLoaded", () => {
           price: 0,
           unit: "nego",
           note: "Disesuaikan dengan prediket sinta dan Publisher Jurnal Keilmuan",
-          selectable: false,
         },
         {
           id: "artikel_submit",
           name: "Submit Artikel Non Sinta/Prediket Sinta",
           price: 50000,
           unit: "per-file",
-          selectable: false,
         },
       ],
     },
@@ -260,99 +258,81 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const testimonialsData = [
     {
-      clientName: "Budi - Teknik",
+      client: "Budi - Teknik",
       chats: [
         {
-          from: "Admin",
-          message:
-            "Halo kak, draft Bab 4 & 5 nya sudah selesai ya. Silakan dicek dulu sebelum lanjut revisi.",
+          from: "admin",
+          text: "Halo kak, draft Bab 4 & 5 nya sudah selesai ya. Silakan dicek dulu sebelum lanjut revisi.",
         },
         {
           from: "client",
-          message:
-            "Mantap kak, cepat sekali! Saya cek dulu. Tampilannya rapi banget, langsung di-acc dosen pembimbing nih kayaknya. Recommended!",
+          text: "Mantap kak, cepat sekali! Saya cek dulu. Tampilannya rapi banget, langsung di-acc dosen pembimbing nih kayaknya. Recommended!",
         },
         {
-          from: "Admin",
-          message:
-            "Alhamdulillah, siap kak. Nanti kalau ada feedback dari dosen, kabari saja ya.",
+          from: "admin",
+          text: "Alhamdulillah, siap kak. Nanti kalau ada feedback dari dosen, kabari saja ya.",
         },
       ],
     },
     {
-      clientName: "Anita - Sastra",
+      client: "Anita - Sastra",
       chats: [
         {
           from: "client",
-          message:
-            "Kak, terima kasih banyak bantuannya! Pengerjaan makalahnya cepat, rapi, dan nilaiku aman. Sangat membantu!",
+          text: "Kak, terima kasih banyak bantuannya! Pengerjaan makalahnya cepat, rapi, dan nilaiku aman. Sangat membantu!",
         },
         {
-          from: "Admin",
-          message:
-            "Sama-sama kak Anita! Senang bisa membantu. Sukses selalu ya kuliahnya.",
+          from: "admin",
+          text: "Sama-sama kak Anita! Senang bisa membantu. Sukses selalu ya kuliahnya.",
         },
       ],
     },
     {
-      clientName: "Rian - Ekonomi",
+      client: "Rian - Ekonomi",
       chats: [
         {
           from: "client",
-          message:
-            "Layanan olah datanya luar biasa. Hasil SPSS nya detail dan penjelasannya mudah dipahami. Hemat waktu banget.",
+          text: "Layanan olah datanya luar biasa. Hasil SPSS nya detail dan penjelasannya mudah dipahami. Hemat waktu banget.",
         },
         {
-          from: "Admin",
-          message:
-            "Terima kasih feedbacknya kak Rian. Semoga lancar penelitiannya sampai selesai.",
+          from: "admin",
+          text: "Terima kasih feedbacknya kak Rian. Semoga lancar penelitiannya sampai selesai.",
         },
       ],
     },
     {
-      clientName: "Sari - Komunikasi",
+      client: "Sari - Komunikasi",
       chats: [
         {
           from: "client",
-          message:
-            "Slide presentasiku jadi keren banget! Desainnya modern dan isinya ringkas tapi kena. Jadi lebih PD buat presentasi. Makasih kak!",
+          text: "Slide presentasiku jadi keren banget! Desainnya modern dan isinya ringkas tapi kena. Jadi lebih PD buat presentasi. Makasih kak!",
         },
         {
-          from: "Admin",
-          message:
-            "You are welcome kak Sari! Semoga presentasinya lancar dan dapat nilai maksimal ya.",
+          from: "admin",
+          text: "You are welcome kak Sari! Semoga presentasinya lancar dan dapat nilai maksimal ya.",
         },
       ],
     },
     {
-      clientName: "Joko - Hukum",
+      client: "Joko - Hukum",
       chats: [
         {
           from: "client",
-          message:
-            "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada KawanBaraja. Makasih banyak kak!",
+          text: "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada Kadijokian. Makasih banyak kak!",
         },
         {
-          from: "Admin",
-          message:
-            "Siap kak Joko, sama-sama! Jangan ragu hubungi lagi kalau butuh bantuan.",
+          from: "admin",
+          text: "Siap kak Joko! Kami selalu usahakan yang terbaik.",
         },
       ],
     },
   ];
 
-  // --- DOM REFERENCES ---
-  const mainContent = document.getElementById("main-content");
-  const pageContainer = document.getElementById("page-container");
-  const fabContainer = document.getElementById("fab-container");
-  const fabMainBtn = document.getElementById("fab-main-btn");
-  const fabIcon = document.getElementById("fab-icon");
-  const sidebar = document.getElementById("mobile-sidebar");
-  const sidebarBackdrop = document.getElementById("sidebar-backdrop");
-  const openSidebarBtn = document.getElementById("open-sidebar");
-  const closeSidebarBtn = document.getElementById("close-sidebar");
+  // --- STATE MANAGEMENT ---
+  let cart = {};
+  let visitorData = { name: "Klien", deadline: "" };
+  let hasCounterAnimated = false;
 
-  // --- UTILITY FUNCTIONS ---
   const formatCurrency = (amount) =>
     new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -362,72 +342,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- CORE FUNCTIONS ---
 
-  // SPA Navigation: Loads page content from HTML files
-  async function showPage(page, slug = null) {
+  // SPA Page Loader
+  async function loadPage(page, slug = null) {
     try {
-      const targetSection = pageContainer.querySelector(`#${page}`);
-      // If page already exists, just show it
-      if (targetSection) {
-        document.querySelectorAll("#page-container > section").forEach((s) => {
-          s.style.display = "none";
-        });
-        targetSection.style.display = "block";
-        if (typeof window[`setup_${page}`] === "function") {
-          window[`setup_${page}`](slug);
-        }
-      } else {
-        // Fetch and load new page
-        const response = await fetch(`${page}.html`);
-        if (!response.ok) {
-          pageContainer.innerHTML = `<p class="text-center p-8">Halaman tidak ditemukan.</p>`;
-          return;
-        }
-        const html = await response.text();
-        document
-          .querySelectorAll("#page-container > section")
-          .forEach((s) => (s.style.display = "none"));
+      const response = await fetch(`${page}.html`);
+      if (!response.ok)
+        throw new Error(`Halaman tidak ditemukan: ${page}.html`);
+      const content = await response.text();
+      document.getElementById("page-container").innerHTML = content;
 
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = html;
-        const newPageElement = tempDiv.firstElementChild;
-        pageContainer.appendChild(newPageElement);
-
-        if (typeof window[`setup_${page}`] === "function") {
-          window[`setup_${page}`](slug);
-        }
-      }
-
-      // Update active nav links
-      document
-        .querySelectorAll(".nav-link")
-        .forEach((a) => a.classList.remove("active"));
-      document
-        .querySelector(`.nav-link[data-page="${page}"]`)
-        ?.classList.add("active");
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      closeSidebar();
+      // Post-load actions
       lucide.createIcons();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      const event = new CustomEvent("pageLoaded", { detail: { page, slug } });
+      document.dispatchEvent(event);
     } catch (error) {
       console.error("Gagal memuat halaman:", error);
-      pageContainer.innerHTML = `<p class="text-center p-8">Terjadi kesalahan saat memuat halaman.</p>`;
+      document.getElementById(
+        "page-container"
+      ).innerHTML = `<div class="text-center p-8"><p>Maaf, terjadi kesalahan saat memuat konten.</p></div>`;
     }
   }
 
-  // --- PAGE SETUP FUNCTIONS ---
+  // --- EVENT LISTENERS ---
 
-  window.setup_beranda = function () {
+  // Global listener for page changes and dynamic content
+  document.addEventListener("click", (e) => {
+    const pageLink = e.target.closest(".page-link");
+    if (pageLink) {
+      e.preventDefault();
+      const page = pageLink.dataset.page;
+      loadPage(page);
+      document
+        .querySelectorAll(".nav-link")
+        .forEach((l) => l.classList.remove("active"));
+      document
+        .querySelectorAll(`.nav-link[data-page="${page}"]`)
+        .forEach((l) => l.classList.add("active"));
+      closeSidebar();
+    }
+
+    const orderFromServiceBtn = e.target.closest(".order-from-service-btn");
+    if (orderFromServiceBtn) {
+      e.preventDefault();
+      loadPage("pemesanan", orderFromServiceBtn.dataset.categorySlug);
+    }
+  });
+
+  // Listener for actions after a page is loaded
+  document.addEventListener("pageLoaded", (e) => {
+    const { page, slug } = e.detail;
+
+    if (page === "beranda") initBeranda();
+    if (page === "layanan") initLayanan();
+    if (page === "pemesanan") initPemesanan(slug);
+    if (page === "tentang") initTentang();
+    if (page === "faq") initFaq();
+  });
+
+  // --- PAGE INITIALIZERS ---
+
+  function initBeranda() {
+    // Animate text and counters
     const animatedTextEl = document.getElementById("animated-text");
-    if (animatedTextEl.textContent.length > 0) return; // Prevent re-animation
-
-    const textToAnimate = `KawanBaraja siap membantumu!`;
-    animatedTextEl.innerHTML = "";
-    textToAnimate.split("").forEach((char, idx) => {
-      const span = document.createElement("span");
-      span.textContent = char === " " ? "\u00A0" : char;
-      span.style.animationDelay = `${idx * 0.05}s`;
-      animatedTextEl.appendChild(span);
-    });
+    if (animatedTextEl) {
+      const textToAnimate = `KawanBaraja siap membantumu!`;
+      animatedTextEl.innerHTML = "";
+      textToAnimate.split("").forEach((char, idx) => {
+        const span = document.createElement("span");
+        span.textContent = char === " " ? "\u00A0" : char;
+        span.style.animationDelay = `${idx * 0.05}s`;
+        animatedTextEl.appendChild(span);
+      });
+    }
 
     if (!hasCounterAnimated) {
       const counters = document.querySelectorAll(".counter");
@@ -463,15 +451,10 @@ document.addEventListener("DOMContentLoaded", () => {
       counters.forEach((counter) => observer.observe(counter));
       hasCounterAnimated = true;
     }
-  };
+  }
 
-  window.setup_layanan = function () {
+  function initLayanan() {
     const layananNavDesktop = document.getElementById("layanan-nav-desktop");
-    if (layananNavDesktop.innerHTML.length > 0) return; // Already setup
-
-    const layananContentDesktop = document.getElementById(
-      "layanan-content-desktop"
-    );
     const layananAccordionMobile = document.getElementById(
       "layanan-accordion-mobile"
     );
@@ -497,7 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     layananAccordionMobile.innerHTML = servicesData
       .map(
-        (s, i) => `
+        (s) => `
       <div class="bg-white rounded-lg shadow-sm">
         <button data-service-slug="${s.slug}" class="layanan-nav-btn w-full flex justify-between items-center gap-4 p-4 text-left">
           <div class="flex items-center gap-4">
@@ -519,402 +502,92 @@ document.addEventListener("DOMContentLoaded", () => {
       )
       .join("");
 
-    function updateLayananContent(slug) {
-      const s = servicesData.find((v) => v.slug === slug);
-      if (!s) return;
-      layananContentDesktop.innerHTML = `
-        <div style="animation:fadeInPage .5s">
-          <h3 class="text-2xl font-extrabold text-brand-blue-700 mb-2 font-display">${s.category}</h3>
-          <p class="text-gray-700 mb-6 leading-relaxed">${s.description}</p>
-          <div class="border-t pt-4">
-            <button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-brand-blue-600 transition-all shadow">
-              <i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini
-            </button>
-          </div>
-        </div>`;
+    lucide.createIcons();
+    updateLayananContent("harian"); // Default
 
-      document
-        .querySelectorAll(".layanan-nav-btn")
-        .forEach((b) =>
-          b.classList.remove(
-            "active",
-            "bg-brand-orange-100",
-            "text-brand-orange-800"
-          )
-        );
-      document
-        .querySelectorAll(`.layanan-nav-btn[data-service-slug="${slug}"]`)
-        .forEach((b) => {
-          b.classList.add("active");
-          if (!b.closest("#layanan-accordion-mobile")) {
-            b.classList.add("bg-brand-orange-100", "text-brand-orange-800");
-          }
-        });
-      lucide.createIcons();
-    }
+    document
+      .getElementById("layanan-section-container")
+      .addEventListener("click", (e) => {
+        const btn = e.target.closest(".layanan-nav-btn");
+        if (!btn) return;
+        const slug = btn.dataset.serviceSlug;
 
-    const layananSection = document.getElementById("layanan");
-    layananSection.addEventListener("click", (e) => {
-      const btn = e.target.closest(".layanan-nav-btn");
-      if (!btn) return;
+        if (btn.closest("#layanan-accordion-mobile")) {
+          const wasActive = btn.classList.contains("active");
+          document
+            .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
+            .forEach((b) => b.classList.remove("active"));
+          if (!wasActive) btn.classList.add("active");
+        } else {
+          updateLayananContent(slug);
+        }
+      });
+  }
 
-      const slug = btn.dataset.serviceSlug;
-      if (btn.closest("#layanan-accordion-mobile")) {
-        const wasActive = btn.classList.contains("active");
-        document
-          .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
-          .forEach((b) => b.classList.remove("active"));
-        if (!wasActive) btn.classList.add("active");
-      } else {
-        updateLayananContent(slug);
-      }
-    });
+  function updateLayananContent(slug) {
+    const s = servicesData.find((v) => v.slug === slug);
+    if (!s) return;
+    const layananContentDesktop = document.getElementById(
+      "layanan-content-desktop"
+    );
 
-    updateLayananContent("harian");
-  };
+    layananContentDesktop.innerHTML = `
+      <div style="animation:fadeInPage .5s">
+        <h3 class="text-2xl font-extrabold text-brand-blue-700 mb-2 font-display">${s.category}</h3>
+        <p class="text-gray-700 mb-6 leading-relaxed">${s.description}</p>
+        <div class="border-t pt-4">
+          <button data-page="pemesanan" data-category-slug="${s.slug}" class="order-from-service-btn inline-flex items-center gap-2 bg-brand-blue-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-brand-blue-600 transition-all shadow">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> Pesan Layanan Ini
+          </button>
+        </div>
+      </div>`;
 
-  window.setup_pemesanan = function (slug) {
+    document
+      .querySelectorAll(".layanan-nav-btn")
+      .forEach((b) =>
+        b.classList.remove(
+          "active",
+          "bg-brand-orange-100",
+          "text-brand-orange-800"
+        )
+      );
+    document
+      .querySelectorAll(`.layanan-nav-btn[data-service-slug="${slug}"]`)
+      .forEach((b) => {
+        b.classList.add("active");
+        if (!b.closest("#layanan-accordion-mobile")) {
+          b.classList.add("bg-brand-orange-100", "text-brand-orange-800");
+        }
+      });
+    lucide.createIcons();
+  }
+
+  function initPemesanan(slug) {
     const orderCategoryCardsContainer = document.getElementById(
       "order-category-cards"
     );
     const orderFormItemsContainer = document.getElementById("order-form-items");
-    const processIndicator = document.getElementById("process-indicator");
-    const fastTrackCheckbox = document.getElementById("fast-track-checkbox");
-    const copyOrderBtn = document.getElementById("copy-order-btn");
 
-    function updateProcessIndicator(step) {
-      const steps = [
-        {
-          icon: "list-filter",
-          text: "Pilih Kategori",
-          tooltip: "Pilih jenis layanan yang Anda butuhkan.",
-        },
-        {
-          icon: "shopping-basket",
-          text: "Atur Pesanan",
-          tooltip: "Tambahkan item dan atur jumlah pesanan.",
-        },
-        {
-          icon: "send",
-          text: "Kirim Pesanan",
-          tooltip: "Selesaikan dan kirim rincian pesanan via WhatsApp.",
-        },
-      ];
-      processIndicator.innerHTML = steps
-        .map(
-          (s, i) => `
-              <div class="relative tooltip-container">
-                  <div class="flex items-center gap-2 ${
-                    i + 1 <= step ? "text-brand-orange-600" : "text-gray-400"
-                  }">
-                      <div class="rounded-full border-2 ${
-                        i + 1 <= step
-                          ? "border-brand-orange-500 bg-brand-orange-50"
-                          : "border-gray-300"
-                      } p-1.5"> <i data-lucide="${
-            s.icon
-          }" class="w-4 h-4"></i> </div>
-                      <span class="hidden sm:inline font-semibold text-sm">${
-                        s.text
-                      }</span>
-                  </div>
-                  <span class="tooltip-text">${s.tooltip}</span>
-              </div>
-              ${
-                i < steps.length - 1
-                  ? `<div class="flex-1 h-0.5 ${
-                      i + 1 < step ? "bg-brand-orange-500" : "bg-gray-300"
-                    }"></div>`
-                  : ""
-              }
-          `
-        )
-        .join("");
-      lucide.createIcons();
-    }
+    // Render category cards
+    let cardHtml = servicesData
+      .map(
+        (s) => `
+      <button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+        <i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i>
+        <span class="block text-xs font-semibold mt-2">${s.category}</span>
+      </button>
+    `
+      )
+      .join("");
+    cardHtml += `
+      <button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+        <i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i>
+        <span class="block text-xs font-semibold mt-2">Layanan Lainnya</span>
+      </button>`;
+    orderCategoryCardsContainer.innerHTML = cardHtml;
+    lucide.createIcons();
 
-    function renderOrderItems(slug) {
-      const s = servicesData.find((v) => v.slug === slug);
-      if (!s) return;
-      orderFormItemsContainer.innerHTML = `<div id="order-placeholder" style="display:none;"></div><div class="space-y-3" style="animation:fadeInPage .5s"></div>`;
-      const container = orderFormItemsContainer.querySelector(".space-y-3");
-      s.items.forEach((item) => {
-        const wrap = document.createElement("div");
-        wrap.className =
-          "bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-colors";
-        let inner = `<div class="flex items-center justify-between"> <div class="flex items-center flex-1 min-w-0"> <input type="checkbox" id="check_${
-          item.id
-        }" data-id="${
-          item.id
-        }" class="h-5 w-5 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500 flex-shrink-0" ${
-          cart[item.id] ? "checked" : ""
-        }> <label for="check_${
-          item.id
-        }" class="ml-3 text-sm sm:text-base cursor-pointer font-medium">${
-          item.name
-        } <span class="text-xs text-gray-500">(${
-          item.price > 0
-            ? formatCurrency(item.price) + "/" + item.unit
-            : item.note || ""
-        })</span></label> </div>`;
-        if (!item.selectable) {
-          inner += `<div id="qty_${item.id}" class="${
-            cart[item.id] ? "flex" : "hidden"
-          } items-center space-x-2"> <button data-id="${
-            item.id
-          }" data-change="-1" class="qty-btn bg-gray-200 w-7 h-7 rounded-full font-bold hover:bg-gray-300" aria-label="Kurangi">-</button> <span id="qty_val_${
-            item.id
-          }" class="font-bold w-8 text-center">${
-            cart[item.id] ? cart[item.id].quantity : 1
-          }</span> <button data-id="${
-            item.id
-          }" data-change="1" class="qty-btn bg-gray-200 w-7 h-7 rounded-full font-bold hover:bg-gray-300" aria-label="Tambah">+</button> </div>`;
-        }
-        inner += `</div>`;
-        wrap.innerHTML = inner;
-        if (item.selectable) {
-          const sel = document.createElement("div");
-          sel.id = `selection_container_${item.id}`;
-          sel.className = `pl-8 pt-2 space-y-2 ${
-            cart[item.id] ? "" : "hidden"
-          }`;
-          const cartItem = cart[item.id] || {};
-          const totalChapters = cartItem.totalChapters || 5;
-          sel.innerHTML = `<div class="flex items-center gap-2"> <label for="total_chapters_${item.id}" class="text-sm font-semibold">Jumlah BAB:</label> <input id="total_chapters_${item.id}" data-id="${item.id}" type="number" value="${totalChapters}" min="1" class="total-chapters-input w-16 rounded-md border-gray-300 shadow-sm sm:text-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200"> </div> <div id="chapters_${item.id}" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 pt-2"></div>`;
-          wrap.appendChild(sel);
-        }
-        container.appendChild(wrap);
-        if (item.selectable && cart[item.id])
-          renderChapterCheckboxes(item.id, cart[item.id].totalChapters || 5);
-      });
-    }
-
-    function renderCustomServiceForm() {
-      updateProcessIndicator(1);
-      orderFormItemsContainer.innerHTML = `
-          <div id="order-placeholder" style="display:none;"></div>
-          <div class="space-y-4" style="animation:fadeInPage .5s">
-            <h4 class="font-bold text-gray-800">Buat Pesanan Kustom</h4>
-            <p class="text-sm text-gray-600">Jelaskan kebutuhan Anda di bawah ini. Harga akan didiskusikan lebih lanjut melalui WhatsApp.</p>
-            <div>
-              <label for="custom-service-name" class="block text-sm font-semibold text-gray-700">Nama Layanan/Tugas</label>
-              <input id="custom-service-name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm" placeholder="Contoh: Review jurnal internasional">
-            </div>
-            <button id="add-custom-service-btn" class="inline-flex items-center gap-2 bg-brand-orange-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-brand-orange-600 transition-all shadow">
-              <i data-lucide="plus" class="w-4 h-4"></i> Tambahkan ke Pesanan
-            </button>
-          </div>`;
-      lucide.createIcons();
-    }
-
-    function renderChapterCheckboxes(itemId, total) {
-      const container = document.getElementById(`chapters_${itemId}`);
-      if (!container) return;
-      container.innerHTML = "";
-      const cartItem = cart[itemId] || { chapters: [] };
-      for (let i = 1; i <= total; i++) {
-        const isChecked =
-          cartItem.chapters && cartItem.chapters.includes(String(i));
-        container.innerHTML += `<label class="inline-flex items-center text-sm"> <input type="checkbox" data-id="${itemId}" data-chapter="${i}" class="chapter-check h-4 w-4 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500" ${
-          isChecked ? "checked" : ""
-        }> <span class="ml-1.5">BAB ${i}</span> </label>`;
-      }
-    }
-
-    function calculateTotals() {
-      let subtotal = 0;
-      for (const itemId in cart) {
-        const c = cart[itemId];
-        if (c.isCustom) continue;
-        const item = servicesData
-          .flatMap((s) => s.items)
-          .find((i) => i.id === itemId);
-        if (item) {
-          if (item.selectable) {
-            let bill = new Set(c.chapters || []);
-            if (c.chapters?.includes("4") && c.chapters?.includes("5"))
-              bill.delete("5");
-            subtotal += item.price * bill.size;
-          } else {
-            subtotal += item.price * c.quantity;
-          }
-        }
-      }
-
-      const maxDiscount = Math.floor(subtotal * 0.1);
-      let discount =
-        parseInt(document.getElementById("discount-request").value) || 0;
-      if (discount > maxDiscount && maxDiscount > 0) {
-        document.getElementById("discount-request").value = maxDiscount;
-        discount = maxDiscount;
-      }
-
-      let totalAfterDiscount = subtotal - discount;
-      let fastTrackFee = isFastTrack ? totalAfterDiscount * 0.15 : 0;
-      let finalTotal = totalAfterDiscount + fastTrackFee;
-
-      return { subtotal, discount, fastTrackFee, finalTotal };
-    }
-
-    function updateCartUI() {
-      const cartItemsList = document.getElementById("cart-items-list");
-      const emptyCartMessage = document.getElementById("empty-cart-message");
-      const checkoutBtn = document.getElementById("checkout-btn");
-      const cancelAllBtn = document.getElementById("cancel-all-btn");
-      const copyOrderBtn = document.getElementById("copy-order-btn");
-
-      cartItemsList.innerHTML = "";
-      const { subtotal, discount, fastTrackFee, finalTotal } =
-        calculateTotals();
-
-      const hasItems = Object.keys(cart).some((key) => {
-        const item = cart[key];
-        if (item.isCustom) return true;
-        if (item.selectable) return item.chapters && item.chapters.length > 0;
-        return true;
-      });
-
-      Object.keys(cart).forEach((itemId) => {
-        const c = cart[itemId];
-        const item = c.isCustom
-          ? null
-          : servicesData.flatMap((s) => s.items).find((i) => i.id === itemId);
-        if (c.isCustom) {
-          cartItemsList.innerHTML += `<div class="flex justify-between items-center text-sm"><p class="font-semibold">${c.name}</p><p class="font-bold text-brand-blue-500">Nego</p></div>`;
-        } else if (item) {
-          if (item.selectable && (!c.chapters || c.chapters.length === 0))
-            return;
-          let name = item.name;
-          let priceText = "";
-          let itemTotal = 0;
-          if (item.selectable) {
-            const bill = new Set(c.chapters);
-            if (c.totalChapters === 5 && bill.has("4") && bill.has("5"))
-              bill.delete("5");
-            name += ` (BAB ${c.chapters.join(", ")})`;
-            priceText = `${bill.size} x ${formatCurrency(item.price)}`;
-            itemTotal = item.price * bill.size;
-          } else {
-            priceText = `${c.quantity} x ${formatCurrency(item.price)}`;
-            itemTotal = item.price * c.quantity;
-          }
-          cartItemsList.innerHTML += `<div class="flex justify-between items-center text-sm"><div><p class="font-semibold">${name}</p><p class="text-xs text-gray-500">${priceText}</p></div><p class="font-bold">${formatCurrency(
-            itemTotal
-          )}</p></div>`;
-        }
-      });
-
-      document.getElementById("subtotal-price").textContent =
-        formatCurrency(subtotal);
-      document.getElementById(
-        "discount-amount"
-      ).textContent = `- ${formatCurrency(discount)}`;
-      document.getElementById(
-        "fast-track-fee"
-      ).textContent = `+ ${formatCurrency(fastTrackFee)}`;
-      document.getElementById("fast-track-row").style.display = isFastTrack
-        ? "flex"
-        : "none";
-      document.getElementById("total-price").textContent =
-        formatCurrency(finalTotal);
-
-      if (hasItems) {
-        emptyCartMessage.style.display = "none";
-        checkoutBtn.disabled = false;
-        cancelAllBtn.disabled = false;
-        copyOrderBtn.disabled = false;
-        updateProcessIndicator(2);
-      } else {
-        emptyCartMessage.style.display = "block";
-        checkoutBtn.disabled = true;
-        cancelAllBtn.disabled = true;
-        copyOrderBtn.disabled = true;
-        isFastTrack = false;
-        fastTrackCheckbox.checked = false;
-        document.getElementById("fast-track-row").style.display = "none";
-        updateProcessIndicator(1);
-      }
-    }
-
-    function resetCart() {
-      cart = {};
-      const active = document.querySelector(".order-category-btn.active");
-      if (active) {
-        const slug = active.dataset.categorySlug;
-        if (slug === "custom") renderCustomServiceForm();
-        else renderOrderItems(slug);
-      }
-      document.getElementById("discount-request").value = "";
-      document.getElementById("customer-comments").value = "";
-      fastTrackCheckbox.checked = false;
-      isFastTrack = false;
-      updateCartUI();
-    }
-
-    function getOrderText() {
-      const { subtotal, discount, fastTrackFee, finalTotal } =
-        calculateTotals();
-      const comments = document
-        .getElementById("customer-comments")
-        .value.trim();
-
-      let msg = `PESANAN KLIEN\n--------------------------\n`;
-      let regular = "";
-      let custom = "";
-
-      Object.keys(cart).forEach((id) => {
-        const c = cart[id];
-        if (c.isCustom) {
-          custom += `- ${c.name} (Harga Nego)\n`;
-        } else {
-          const item = servicesData
-            .flatMap((s) => s.items)
-            .find((i) => i.id === id);
-          if (item) {
-            if (item.selectable) {
-              if ((c.chapters?.length || 0) > 0) {
-                regular += `- ${item.name} (BAB ${c.chapters.join(", ")})\n`;
-              }
-            } else {
-              regular += `- ${item.name} (Jumlah: ${c.quantity})\n`;
-            }
-          }
-        }
-      });
-
-      if (regular) msg += `Layanan:\n${regular}\n`;
-      if (custom) msg += `Layanan Kustom:\n${custom}\n`;
-
-      msg += "--------------------------\n";
-      msg += `Subtotal: ${formatCurrency(subtotal)}\n`;
-      if (discount > 0) msg += `Diskon: -${formatCurrency(discount)}\n`;
-      if (isFastTrack)
-        msg += `Biaya Fast Track: +${formatCurrency(fastTrackFee)}\n`;
-      msg += `TOTAL: ${formatCurrency(finalTotal)}\n\n`;
-      if (comments) msg += `Catatan: ${comments}\n`;
-
-      return msg;
-    }
-
-    if (!orderCategoryCardsContainer.innerHTML.trim()) {
-      orderCategoryCardsContainer.innerHTML =
-        servicesData
-          .map(
-            (s) => `
-          <button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
-            <i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i>
-            <span class="block text-xs font-semibold mt-2">${s.category}</span>
-          </button>
-        `
-          )
-          .join("") +
-        `
-          <button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
-            <i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i>
-            <span class="block text-xs font-semibold mt-2">Layanan Lainnya</span>
-          </button>`;
-    }
-
+    // Event listener for category selection
     orderCategoryCardsContainer.addEventListener("click", (e) => {
       const btn = e.target.closest(".order-category-btn");
       if (!btn) return;
@@ -932,75 +605,97 @@ document.addEventListener("DOMContentLoaded", () => {
         "bg-brand-orange-100",
         "border-brand-orange-500"
       );
-      const slug = btn.dataset.categorySlug;
-      if (slug === "custom") renderCustomServiceForm();
-      else renderOrderItems(slug);
+      const categorySlug = btn.dataset.categorySlug;
+      if (categorySlug === "custom") renderCustomServiceForm();
+      else renderOrderItems(categorySlug);
       updateProcessIndicator(1);
     });
 
-    orderFormItemsContainer.addEventListener("click", (e) => {
-      if (e.target.closest(".qty-btn")) {
-        const btn = e.target.closest(".qty-btn");
-        const id = btn.dataset.id;
-        const change = parseInt(btn.dataset.change, 10);
-        cart[id].quantity = Math.max(1, cart[id].quantity + change);
-        updateCartUI();
-        renderOrderItems(
-          document.querySelector(".order-category-btn.active").dataset
-            .categorySlug
-        );
-      }
-      if (e.target.id === "add-custom-service-btn") {
-        const input = document.getElementById("custom-service-name");
-        if (!input.value.trim()) return;
-        cart[`custom_${Date.now()}`] = {
-          name: input.value.trim(),
-          isCustom: true,
-        };
-        updateCartUI();
-        input.value = "";
-      }
-    });
-
+    // Event listeners for item interaction (checkbox, quantity)
     orderFormItemsContainer.addEventListener("change", (e) => {
       const t = e.target;
-      if (t.type === "checkbox" && !t.classList.contains("chapter-check")) {
+      if (
+        t.type === "checkbox" &&
+        !t.classList.contains("chapter-check") &&
+        !t.id.includes("fast-track")
+      ) {
         const id = t.dataset.id;
         const item = servicesData
           .flatMap((s) => s.items)
           .find((i) => i.id === id);
+        const parentService = servicesData.find((s) =>
+          s.items.some((i) => i.id === id)
+        );
         if (t.checked) {
-          cart[id] = {
-            quantity: 1,
-            chapters: item.selectable ? [] : undefined,
-            totalChapters: item.selectable ? 5 : undefined,
-          };
+          const cartItem = { category: parentService.category };
+          if (item.selectable) {
+            cartItem.chapters = [];
+            cartItem.totalChapters = 5;
+            document
+              .getElementById(`selection_container_${id}`)
+              ?.classList.remove("hidden");
+            renderChapterCheckboxes(id, 5);
+          } else {
+            cartItem.quantity = 1;
+            const qtyEl = document.getElementById(`qty_${id}`);
+            if (qtyEl) {
+              qtyEl.classList.remove("hidden");
+              qtyEl.classList.add("flex");
+              document.getElementById(`qty_val_${id}`).textContent = "1";
+            }
+          }
+          cart[id] = cartItem;
         } else {
           delete cart[id];
+          if (item.selectable) {
+            document
+              .getElementById(`selection_container_${id}`)
+              ?.classList.add("hidden");
+          } else {
+            document.getElementById(`qty_${id}`)?.classList.add("hidden");
+          }
         }
-        renderOrderItems(
-          document.querySelector(".order-category-btn.active").dataset
-            .categorySlug
-        );
         updateCartUI();
-      } else if (t.classList.contains("chapter-check")) {
+      }
+      if (t.classList.contains("chapter-check")) {
         const id = t.dataset.id;
         const chapter = t.dataset.chapter;
-        if (cart[id].totalChapters === 5) {
-          const isChecked = t.checked;
-          const container = t.closest(`#chapters_${id}`);
-          if (chapter === "4")
-            container.querySelector('[data-chapter="5"]').checked = isChecked;
-          if (chapter === "5")
-            container.querySelector('[data-chapter="4"]').checked = isChecked;
-        }
-        const sel = Array.from(
-          t
-            .closest(`#chapters_${id}`)
+        if (cart[id]) {
+          const sel = [];
+          const boxContainer = t.closest(`#chapters_${id}`);
+          boxContainer
             .querySelectorAll(".chapter-check:checked")
-        ).map((cb) => cb.dataset.chapter);
-        cart[id].chapters = sel.sort((a, b) => parseInt(a) - parseInt(b));
+            .forEach((cb) => sel.push(cb.dataset.chapter));
+          cart[id].chapters = sel.sort((a, b) => parseInt(a) - parseInt(b));
+        }
         updateCartUI();
+      }
+    });
+
+    orderFormItemsContainer.addEventListener("click", (e) => {
+      const qtyBtn = e.target.closest(".qty-btn");
+      if (qtyBtn) {
+        const id = qtyBtn.dataset.id;
+        const change = parseInt(qtyBtn.dataset.change, 10);
+        const cur = cart[id] ? cart[id].quantity : 0;
+        const next = Math.max(1, cur + change);
+        cart[id].quantity = next;
+        document.getElementById(`qty_val_${id}`).textContent = next;
+        updateCartUI();
+      }
+
+      if (e.target.id === "add-custom-service-btn") {
+        const input = document.getElementById("custom-service-name");
+        const val = input.value.trim();
+        if (!val) {
+          input.focus();
+          return;
+        }
+        const id = `custom_${Date.now()}`;
+        cart[id] = { name: val, isCustom: true };
+        updateCartUI();
+        input.value = "";
+        input.focus();
       }
     });
 
@@ -1008,106 +703,441 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target.classList.contains("total-chapters-input")) {
         const id = e.target.dataset.id;
         const total = parseInt(e.target.value) || 1;
-        cart[id].totalChapters = total;
-        cart[id].chapters = (cart[id].chapters || []).filter(
-          (c) => parseInt(c) <= total
-        );
-        renderChapterCheckboxes(id, total);
-        updateCartUI();
+        if (cart[id]) {
+          cart[id].totalChapters = total;
+          renderChapterCheckboxes(id, total);
+          cart[id].chapters = (cart[id].chapters || []).filter(
+            (c) => parseInt(c) <= total
+          );
+          updateCartUI();
+        }
       }
     });
 
+    // Listeners for summary box interactions
+    document
+      .getElementById("fast-track-checkbox")
+      .addEventListener("change", updateCartUI);
     document
       .getElementById("discount-request")
       .addEventListener("input", updateCartUI);
-    document
-      .getElementById("cancel-all-btn")
-      .addEventListener("click", resetCart);
-
-    fastTrackCheckbox.addEventListener("change", (e) => {
-      isFastTrack = e.target.checked;
+    document.getElementById("cancel-all-btn").addEventListener("click", () => {
+      cart = {};
+      document.getElementById("discount-request").value = "";
+      document.getElementById("customer-comments").value = "";
+      document.getElementById("fast-track-checkbox").checked = false;
+      const active = document.querySelector(".order-category-btn.active");
+      if (active) {
+        const categorySlug = active.dataset.categorySlug;
+        if (categorySlug === "custom") renderCustomServiceForm();
+        else renderOrderItems(categorySlug);
+      }
       updateCartUI();
     });
+    document
+      .getElementById("checkout-btn")
+      .addEventListener("click", showUserInfoModal);
+    document
+      .getElementById("copy-summary-btn")
+      .addEventListener("click", copyOrderSummary);
 
-    copyOrderBtn.addEventListener("click", () => {
-      const orderText = getOrderText();
-      navigator.clipboard.writeText(orderText).then(() => {
-        const icon = copyOrderBtn.querySelector("i");
-        copyOrderBtn.title = "Pesanan disalin!";
-        icon.setAttribute("data-lucide", "check");
-        lucide.createIcons();
-        setTimeout(() => {
-          copyOrderBtn.title = "Salin detail pesanan";
-          icon.setAttribute("data-lucide", "copy");
-          lucide.createIcons();
-        }, 2000);
-      });
-    });
-
-    if (slug) {
-      setTimeout(
-        () =>
-          document
-            .querySelector(`.order-category-btn[data-category-slug="${slug}"]`)
-            ?.click(),
-        50
-      );
-    } else if (!document.querySelector(".order-category-btn.active")) {
-      document.querySelector(".order-category-btn")?.click();
-    }
+    // Initial state
+    updateProcessIndicator(Object.keys(cart).length > 0 ? 2 : 1);
     updateCartUI();
-  };
+    if (slug) {
+      setTimeout(() => {
+        document
+          .querySelector(`.order-category-btn[data-category-slug="${slug}"]`)
+          ?.click();
+      }, 100);
+    }
+  }
 
-  window.setup_tentang = function () {
-    if (document.getElementById("testimonial-slider").innerHTML.length > 0)
-      return; // Already setup
-
+  function initTentang() {
     const rotatingQuoteEl = document.getElementById("rotating-quote");
     if (rotatingQuoteEl) {
       rotatingQuoteEl.textContent = `"${
         quotes[Math.floor(Math.random() * quotes.length)]
       }"`;
     }
+    renderTestimonials();
+  }
 
+  function initFaq() {
+    const faqContainer = document.getElementById("faq-container");
+    faqContainer.innerHTML = faqData
+      .map(
+        (item) => `
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <button class="faq-question w-full flex justify-between items-center text-left p-4 font-semibold">
+          <span>${item.question}</span>
+          <i data-lucide="chevron-down" class="transition-transform duration-300 w-5 h-5"></i>
+        </button>
+        <div class="faq-answer px-4"><div class="pb-4 text-gray-700">${item.answer}</div></div>
+      </div>`
+      )
+      .join("");
+    lucide.createIcons();
+
+    faqContainer.addEventListener("click", (e) => {
+      const btn = e.target.closest(".faq-question");
+      if (!btn) return;
+      const answer = btn.nextElementSibling;
+      const icon = btn.querySelector("i");
+      if (!answer || !icon) return;
+
+      const wasOpen =
+        answer.style.maxHeight && answer.style.maxHeight !== "0px";
+
+      document
+        .querySelectorAll(".faq-answer")
+        .forEach((ans) => (ans.style.maxHeight = null));
+      document
+        .querySelectorAll(".faq-question i")
+        .forEach((ic) => (ic.style.transform = "rotate(0deg)"));
+
+      if (!wasOpen) {
+        answer.style.maxHeight = answer.scrollHeight + "px";
+        icon.style.transform = "rotate(180deg)";
+      }
+    });
+  }
+
+  // --- PEMESANAN RENDER FUNCTIONS ---
+
+  function renderOrderItems(slug) {
+    const orderFormItemsContainer = document.getElementById("order-form-items");
+    const orderPlaceholder = document.getElementById("order-placeholder");
+    const s = servicesData.find((v) => v.slug === slug);
+    if (!s) return;
+
+    orderPlaceholder.style.display = "none";
+    const container = document.createElement("div");
+    container.className = "space-y-3";
+    container.style.animation = "fadeInPage .5s";
+
+    s.items.forEach((item) => {
+      const wrap = document.createElement("div");
+      wrap.className =
+        "bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-colors";
+      let inner = `<div class="flex items-center justify-between"> <div class="flex items-center flex-1 min-w-0"> <input type="checkbox" id="check_${
+        item.id
+      }" data-id="${
+        item.id
+      }" class="h-5 w-5 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500 flex-shrink-0" ${
+        cart[item.id] ? "checked" : ""
+      }> <label for="check_${
+        item.id
+      }" class="ml-3 text-sm sm:text-base cursor-pointer font-medium">${
+        item.name
+      } <span class="text-xs text-gray-500">(${
+        item.price > 0
+          ? formatCurrency(item.price) + "/" + item.unit
+          : item.note || "Nego"
+      })</span></label> </div>`;
+      if (!item.selectable) {
+        inner += `<div id="qty_${item.id}" class="${
+          cart[item.id] ? "flex" : "hidden"
+        } items-center space-x-2"> <button data-id="${
+          item.id
+        }" data-change="-1" class="qty-btn bg-gray-200 w-7 h-7 rounded-full font-bold hover:bg-gray-300">-</button> <span id="qty_val_${
+          item.id
+        }" class="font-bold w-8 text-center">${
+          cart[item.id] ? cart[item.id].quantity : 1
+        }</span> <button data-id="${
+          item.id
+        }" data-change="1" class="qty-btn bg-gray-200 w-7 h-7 rounded-full font-bold hover:bg-gray-300">+</button> </div>`;
+      }
+      inner += `</div>`;
+      wrap.innerHTML = inner;
+      if (item.selectable) {
+        const sel = document.createElement("div");
+        sel.id = `selection_container_${item.id}`;
+        sel.className = `pl-8 pt-2 space-y-2 ${cart[item.id] ? "" : "hidden"}`;
+        const cartItem = cart[item.id] || {};
+        const totalChapters = cartItem.totalChapters || 5;
+        sel.innerHTML = `<div class="flex items-center gap-2"> <label for="total_chapters_${item.id}" class="text-sm font-semibold">Jumlah BAB:</label> <input id="total_chapters_${item.id}" data-id="${item.id}" type="number" value="${totalChapters}" min="1" class="total-chapters-input w-16 rounded-md border-gray-300 shadow-sm sm:text-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200"> </div> <div id="chapters_${item.id}" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 pt-2"></div>`;
+        wrap.appendChild(sel);
+        if (cart[item.id]) renderChapterCheckboxes(item.id, totalChapters);
+      }
+      container.appendChild(wrap);
+    });
+    orderFormItemsContainer.innerHTML = "";
+    orderFormItemsContainer.appendChild(container);
+  }
+
+  function renderCustomServiceForm() {
+    const orderFormItemsContainer = document.getElementById("order-form-items");
+    const orderPlaceholder = document.getElementById("order-placeholder");
+    orderPlaceholder.style.display = "none";
+    orderFormItemsContainer.innerHTML = `
+      <div class="space-y-4" style="animation:fadeInPage .5s">
+        <h4 class="font-bold text-gray-800">Buat Pesanan Kustom</h4>
+        <p class="text-sm text-gray-600">Jelaskan kebutuhan Anda di bawah ini. Harga akan didiskusikan lebih lanjut melalui WhatsApp.</p>
+        <div>
+          <label for="custom-service-name" class="block text-sm font-semibold text-gray-700">Nama Layanan/Tugas</label>
+          <input id="custom-service-name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm" placeholder="Contoh: Review jurnal internasional">
+        </div>
+        <button id="add-custom-service-btn" class="inline-flex items-center gap-2 bg-brand-orange-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-brand-orange-600 transition-all shadow">
+          <i data-lucide="plus" class="w-4 h-4"></i> Tambahkan ke Pesanan
+        </button>
+      </div>`;
+    lucide.createIcons();
+  }
+
+  function renderChapterCheckboxes(itemId, total) {
+    const container = document.getElementById(`chapters_${itemId}`);
+    if (!container) return;
+    container.innerHTML = "";
+    const cartItem = cart[itemId] || { chapters: [] };
+    for (let i = 1; i <= total; i++) {
+      const isChecked =
+        cartItem.chapters && cartItem.chapters.includes(String(i));
+      container.innerHTML += `<label class="inline-flex items-center text-sm"> <input type="checkbox" data-id="${itemId}" data-chapter="${i}" class="chapter-check h-4 w-4 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500" ${
+        isChecked ? "checked" : ""
+      }> <span class="ml-1.5">BAB ${i}</span> </label>`;
+    }
+  }
+
+  function updateProcessIndicator(step) {
+    const processIndicator = document.getElementById("process-indicator");
+    if (!processIndicator) return;
+    const steps = [
+      { icon: "list-filter", text: "Pilih Kategori" },
+      { icon: "shopping-basket", text: "Atur Pesanan" },
+      { icon: "send", text: "Kirim Pesanan" },
+    ];
+    processIndicator.innerHTML = steps
+      .map(
+        (s, i) => `
+      <div class="flex items-center gap-2 ${
+        i + 1 <= step ? "text-brand-orange-600" : "text-gray-400"
+      }">
+        <div class="rounded-full border-2 ${
+          i + 1 <= step
+            ? "border-brand-orange-500 bg-brand-orange-50"
+            : "border-gray-300"
+        } p-1.5">
+          <i data-lucide="${s.icon}" class="w-4 h-4"></i>
+        </div>
+        <span class="hidden sm:inline font-semibold text-sm">${s.text}</span>
+      </div>
+      ${
+        i < steps.length - 1
+          ? `<div class="flex-1 h-0.5 ${
+              i + 1 < step ? "bg-brand-orange-500" : "bg-gray-300"
+            }"></div>`
+          : ""
+      }
+    `
+      )
+      .join("");
+    lucide.createIcons();
+  }
+
+  // --- CART & TOTALS LOGIC ---
+
+  function calculateSubtotal() {
+    let subtotal = 0;
+    for (const itemId in cart) {
+      const c = cart[itemId];
+      if (c.isCustom) continue;
+      const item = servicesData
+        .flatMap((s) => s.items)
+        .find((i) => i.id === itemId);
+      if (item) {
+        if (item.selectable) {
+          subtotal += item.price * (c.chapters?.length || 0);
+        } else {
+          subtotal += item.price * c.quantity;
+        }
+      }
+    }
+    return subtotal;
+  }
+
+  function updateCartUI() {
+    const cartItemsList = document.getElementById("cart-items-list");
+    const subtotalPriceEl = document.getElementById("subtotal-price");
+    const fastTrackFeeEl = document.getElementById("fast-track-fee");
+    const discountAmountEl = document.getElementById("discount-amount");
+    const totalPriceEl = document.getElementById("total-price");
+    const emptyCartMessage = document.getElementById("empty-cart-message");
+    const checkoutBtn = document.getElementById("checkout-btn");
+    const copySummaryBtn = document.getElementById("copy-summary-btn");
+    const cancelAllBtn = document.getElementById("cancel-all-btn");
+    const discountInput = document.getElementById("discount-request");
+    const fastTrackCheckbox = document.getElementById("fast-track-checkbox");
+
+    if (!cartItemsList) return; // Exit if elements not on page
+
+    cartItemsList.innerHTML = "";
+    const subtotal = calculateSubtotal();
+    const isFastTrack = fastTrackCheckbox.checked;
+    const fastTrackFee = isFastTrack ? subtotal * 0.15 : 0;
+
+    let discount = parseInt(discountInput.value) || 0;
+    const finalTotal = Math.max(0, subtotal + fastTrackFee - discount);
+
+    let hasItems = false;
+    for (const itemId of Object.keys(cart)) {
+      const c = cart[itemId];
+      if (c.isCustom) {
+        hasItems = true;
+        const el = document.createElement("div");
+        el.className = "flex justify-between items-center text-sm";
+        el.innerHTML = `<div><p class="font-semibold">${c.name}</p><p class="text-xs text-gray-500">Layanan Kustom</p></div><p class="font-bold text-brand-blue-500">Nego</p>`;
+        cartItemsList.appendChild(el);
+      } else {
+        const item = servicesData
+          .flatMap((s) => s.items)
+          .find((i) => i.id === itemId);
+        if (item) {
+          if (item.selectable && (!c.chapters || c.chapters.length === 0))
+            continue;
+          hasItems = true;
+          const el = document.createElement("div");
+          el.className = "flex justify-between items-center text-sm";
+          let name = item.name;
+          let priceText = "";
+          let itemTotal = 0;
+          if (item.selectable) {
+            const numChapters = c.chapters?.length || 0;
+            name += ` (BAB ${c.chapters.join(", ")})`;
+            priceText = `${numChapters} x ${formatCurrency(item.price)}`;
+            itemTotal = item.price * numChapters;
+          } else {
+            priceText = `${c.quantity} x ${formatCurrency(item.price)}`;
+            itemTotal = item.price * c.quantity;
+          }
+          el.innerHTML = `<div><p class="font-semibold">${name}</p><p class="text-xs text-gray-500">${priceText}</p></div><p class="font-bold">${formatCurrency(
+            itemTotal
+          )}</p>`;
+          cartItemsList.appendChild(el);
+        }
+      }
+    }
+
+    emptyCartMessage.style.display = hasItems ? "none" : "block";
+    checkoutBtn.disabled = !hasItems;
+    copySummaryBtn.disabled = !hasItems;
+    cancelAllBtn.disabled = !hasItems;
+
+    subtotalPriceEl.textContent = formatCurrency(subtotal);
+    fastTrackFeeEl.textContent = formatCurrency(fastTrackFee);
+    discountAmountEl.textContent = `- ${formatCurrency(discount)}`;
+    totalPriceEl.textContent = formatCurrency(finalTotal);
+
+    updateProcessIndicator(hasItems ? 2 : 1);
+  }
+
+  function copyOrderSummary() {
+    const fastTrackCheckbox = document.getElementById("fast-track-checkbox");
+    const discountInput = document.getElementById("discount-request");
+
+    const subtotal = calculateSubtotal();
+    const isFastTrack = fastTrackCheckbox.checked;
+    const fastTrackFee = isFastTrack ? subtotal * 0.15 : 0;
+    const discount = parseInt(discountInput.value) || 0;
+    const finalTotal = Math.max(0, subtotal + fastTrackFee - discount);
+
+    let summary = `*HARGA LAYANAN*\n\n`;
+
+    for (const id in cart) {
+      const c = cart[id];
+      if (c.isCustom) {
+        summary += `- ${c.name}: *Nego*\n`;
+        continue;
+      }
+      const item = servicesData
+        .flatMap((s) => s.items)
+        .find((i) => i.id === id);
+      if (item) {
+        if (item.selectable) {
+          const n = c.chapters?.length || 0;
+          if (n > 0)
+            summary += `- ${item.name} (BAB ${c.chapters.join(
+              ", "
+            )}): *${formatCurrency(item.price * n)}*\n`;
+        } else {
+          summary += `- ${item.name} (${c.quantity} ${
+            item.unit
+          }): *${formatCurrency(item.price * c.quantity)}*\n`;
+        }
+      }
+    }
+
+    summary += `\n--------------------------------------\n`;
+    summary += `Subtotal: ${formatCurrency(subtotal)}\n`;
+    if (isFastTrack)
+      summary += `Biaya Fast Track: ${formatCurrency(fastTrackFee)}\n`;
+    if (discount > 0) summary += `Diskon: -${formatCurrency(discount)}\n`;
+    summary += `*Total Akhir: ${formatCurrency(finalTotal)}*\n`;
+    summary += `--------------------------------------\n\n`;
+    summary += `*Metode Pembayaran:*\n\n`;
+    summary += `*${PAYMENT_DETAILS.dana.name}*\nNo: ${PAYMENT_DETAILS.dana.number}\nA/n: ${PAYMENT_DETAILS.dana.holder}\n\n`;
+    summary += `*${PAYMENT_DETAILS.bsi.name}*\nNo: ${PAYMENT_DETAILS.bsi.number}\nA/n: ${PAYMENT_DETAILS.bsi.holder}\n\n`;
+    summary += `Terima kasih!`;
+
+    navigator.clipboard
+      .writeText(summary)
+      .then(() => {
+        showToast("Rincian harga berhasil disalin!");
+      })
+      .catch((err) => {
+        console.error("Gagal menyalin:", err);
+        showToast("Gagal menyalin rincian.", true);
+      });
+  }
+
+  // --- TESTIMONIALS ---
+  function renderTestimonials() {
     const slider = document.getElementById("testimonial-slider");
     const dotsContainer = document.getElementById("testimonial-dots");
+    if (!slider || !dotsContainer) return;
 
     slider.innerHTML = testimonialsData
       .map(
         (convo) => `
       <div class="testimonial-slide flex-shrink-0 w-full">
-        <div class="w-full h-full flex flex-col" style="background-image: url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg'); background-size: cover;">
-          <div class="bg-[#005E54] text-white pt-10 pb-2 px-2 flex items-center gap-3 shadow-md flex-shrink-0">
+        <div class="w-full h-full flex flex-col bg-cover" style="background-image: url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg');">
+          <!-- Header -->
+          <div class="bg-[#005E54] text-white pt-10 pb-2 px-2 flex items-center gap-3 shadow-md">
               <i data-lucide="arrow-left" class="w-5 h-5"></i>
               <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center border-2 border-white/50"><i data-lucide="user" class="w-6 h-6 text-white"></i></div>
-              <div class="flex-1"><h4 class="font-bold">${
-                convo.clientName
-              }</h4><p class="text-xs">online</p></div>
-              <i data-lucide="video" class="w-5 h-5"></i><i data-lucide="phone" class="w-5 h-5"></i>
+              <div class="flex-1">
+                  <h4 class="font-bold">${convo.client}</h4>
+                  <p class="text-xs">online</p>
+              </div>
+              <i data-lucide="video" class="w-5 h-5"></i>
+              <i data-lucide="phone" class="w-5 h-5"></i>
           </div>
+          <!-- Chat Area -->
           <div class="p-4 flex-1 overflow-y-auto flex flex-col space-y-3 pt-6 pb-6">
             ${convo.chats
               .map(
                 (chat) => `
               <div class="flex ${
-                chat.from === "Admin" ? "justify-end" : "justify-start"
+                chat.from === "admin" ? "justify-end" : "justify-start"
               }">
                 <div class="max-w-[80%] p-2.5 rounded-xl shadow-sm ${
-                  chat.from === "Admin"
-                    ? "bg-[#E2FFC7] rounded-br-none"
-                    : "bg-white rounded-bl-none"
+                  chat.from === "admin"
+                    ? "bg-[#E2FFC7] text-gray-800 rounded-br-none"
+                    : "bg-white text-gray-800 rounded-bl-none"
                 }">
-                  <p class="text-sm">${chat.message}</p>
+                  <p class="text-sm">${chat.text}</p>
                 </div>
               </div>
             `
               )
               .join("")}
           </div>
-          <div class="bg-gray-100 p-2 flex items-center gap-2 flex-shrink-0">
+          <!-- Input area -->
+          <div class="bg-gray-100 p-2 flex items-center gap-2">
               <i data-lucide="smile" class="w-6 h-6 text-gray-500"></i>
               <div class="flex-1 bg-white rounded-full p-2 text-sm text-gray-400">Ketik pesan...</div>
-              <i data-lucide="paperclip" class="w-6 h-6 text-gray-500"></i><i data-lucide="camera" class="w-6 h-6 text-gray-500"></i>
+              <i data-lucide="paperclip" class="w-6 h-6 text-gray-500"></i>
+              <i data-lucide="camera" class="w-6 h-6 text-gray-500"></i>
           </div>
         </div>
       </div>
@@ -1126,7 +1156,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dots = dotsContainer.querySelectorAll(".testimonial-dot");
     slider.addEventListener("scroll", () => {
-      const activeIndex = Math.round(slider.scrollLeft / slider.offsetWidth);
+      const slideWidth = slider.offsetWidth;
+      const activeIndex = Math.round(slider.scrollLeft / slideWidth);
       dots.forEach((dot, i) =>
         dot.classList.toggle("bg-brand-orange-500", i === activeIndex)
       );
@@ -1140,53 +1171,183 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
-  };
+    lucide.createIcons();
+  }
 
-  window.setup_faq = function () {
-    const faqContainer = document.getElementById("faq-container");
-    if (faqContainer.innerHTML.length > 0) return; // Already setup
+  // --- MODALS & UI HELPERS ---
 
-    faqContainer.innerHTML = faqData
-      .map(
-        (item) => `
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <button class="faq-question w-full flex justify-between items-center text-left p-4 font-semibold">
-          <span>${item.question}</span>
-          <i data-lucide="chevron-down" class="transition-transform duration-300"></i>
-        </button>
-        <div class="faq-answer px-4"><div class="pb-4 text-gray-700">${item.answer}</div></div>
-      </div>`
-      )
-      .join("");
+  // User Info Modal (Checkout)
+  function showUserInfoModal() {
+    const modal = document.getElementById("user-info-modal");
+    if (modal) {
+      modal.classList.remove("modal-hidden");
+      modal.classList.add("modal-visible");
+      document.getElementById("visitor-name").focus();
+    }
+  }
 
-    faqContainer.addEventListener("click", (e) => {
-      const btn = e.target.closest(".faq-question");
-      if (!btn) return;
-      const answer = btn.nextElementSibling;
-      const icon = btn.querySelector("i");
-      const wasOpen =
-        answer.style.maxHeight && answer.style.maxHeight !== "0px";
+  function closeUserInfoModal() {
+    const modal = document.getElementById("user-info-modal");
+    if (modal) {
+      modal.classList.add("modal-hidden");
+      modal.classList.remove("modal-visible");
+    }
+  }
 
-      document
-        .querySelectorAll(".faq-answer")
-        .forEach((ans) => (ans.style.maxHeight = null));
-      document
-        .querySelectorAll(".faq-question i")
-        .forEach((ic) => (ic.style.transform = "rotate(0deg)"));
-
-      if (!wasOpen) {
-        answer.style.maxHeight = answer.scrollHeight + "px";
-        icon.style.transform = "rotate(180deg)";
+  document
+    .getElementById("user-info-modal-close")
+    ?.addEventListener("click", closeUserInfoModal);
+  document.getElementById("user-info-modal")?.addEventListener("click", (e) => {
+    if (e.target.id === "user-info-modal") closeUserInfoModal();
+  });
+  document
+    .getElementById("confirm-order-btn")
+    ?.addEventListener("click", () => {
+      const visitorNameInput = document.getElementById("visitor-name");
+      const visitorName = visitorNameInput.value.trim();
+      if (!visitorName) {
+        visitorNameInput.focus();
+        visitorNameInput.classList.add("border-red-500", "ring-red-500");
+        return;
       }
+      visitorNameInput.classList.remove("border-red-500", "ring-red-500");
+
+      visitorData.name = visitorName;
+      const deadlineValue = document
+        .getElementById("visitor-deadline-value")
+        .value.trim();
+      const deadlineUnit = document.getElementById(
+        "visitor-deadline-unit"
+      ).value;
+      visitorData.deadline = deadlineValue
+        ? `${deadlineValue} ${deadlineUnit}`
+        : "Tidak ditentukan";
+
+      updateProcessIndicator(3);
+
+      const subtotal = calculateSubtotal();
+      const isFastTrack = document.getElementById(
+        "fast-track-checkbox"
+      ).checked;
+      const fastTrackFee = isFastTrack ? subtotal * 0.15 : 0;
+      const disc =
+        parseInt(document.getElementById("discount-request").value) || 0;
+      const finalTotal = Math.max(0, subtotal + fastTrackFee - disc);
+      const comments = document
+        .getElementById("customer-comments")
+        .value.trim();
+
+      let msg = `Halo KawanBaraja, saya *${visitorData.name}*. Saya tertarik untuk memesan layanan berikut:\n\n`;
+      if (visitorData.deadline !== "Tidak ditentukan")
+        msg += `*Estimasi Deadline:* ${visitorData.deadline}\n\n`;
+
+      for (const id in cart) {
+        const c = cart[id];
+        if (c.isCustom) {
+          msg += `- ${c.name}: *Nego*\n`;
+          continue;
+        }
+        const item = servicesData
+          .flatMap((s) => s.items)
+          .find((i) => i.id === id);
+        if (item) {
+          if (item.selectable) {
+            const n = c.chapters?.length || 0;
+            if (n > 0)
+              msg += `- *${item.name}* (BAB ${c.chapters.join(
+                ", "
+              )}): ${formatCurrency(item.price * n)}\n`;
+          } else {
+            msg += `- *${item.name}* (${c.quantity} ${
+              item.unit
+            }): ${formatCurrency(item.price * c.quantity)}\n`;
+          }
+        }
+      }
+
+      msg += `\n--------------------------------------\n`;
+      msg += `Subtotal: ${formatCurrency(subtotal)}\n`;
+      if (isFastTrack)
+        msg += `Biaya Fast Track: ${formatCurrency(fastTrackFee)}\n`;
+      if (disc > 0) msg += `Diskon: -${formatCurrency(disc)}\n`;
+      msg += `*Total Akhir: ${formatCurrency(finalTotal)}*\n`;
+
+      if (comments) {
+        msg += `\n*Catatan Tambahan:*\n${comments}\n`;
+      }
+
+      msg += `\n--------------------------------------\n`;
+      msg += `Mohon konfirmasi dan informasinya. Terima kasih!`;
+
+      closeUserInfoModal();
+      window.open(
+        `https://wa.me/${WA_ADMIN_NUMBER}?text=${encodeURIComponent(msg)}`,
+        "_blank"
+      );
     });
-  };
 
-  window.setup_kontak = function () {
-    // No specific JS needed for this page, event listeners are global.
-  };
+  // Payment Modal
+  function showPaymentModal(kind) {
+    const data = {
+      dana: {
+        title: "DANA",
+        number: PAYMENT_DETAILS.dana.number,
+        holder: PAYMENT_DETAILS.dana.holder,
+        icon: "smartphone",
+        color: "bg-blue-100 text-blue-600",
+      },
+      bsi: {
+        title: "Bank Syariah Indonesia",
+        number: PAYMENT_DETAILS.bsi.number,
+        holder: PAYMENT_DETAILS.bsi.holder,
+        icon: "banknote",
+        color: "bg-green-100 text-green-700",
+      },
+    }[kind];
+    if (!data) return;
 
-  // --- GLOBAL EVENT LISTENERS & INITIALIZATION ---
+    const modal = document.getElementById("payment-modal");
+    document.getElementById("payment-modal-subtitle").textContent = data.title;
+    document.getElementById("payment-modal-number").textContent = data.number;
+    document.getElementById("payment-modal-holder").textContent = data.holder;
+    document.getElementById(
+      "payment-modal-icon-bg"
+    ).className = `p-2 rounded-lg ${data.color}`;
+    document
+      .getElementById("payment-modal-icon")
+      .setAttribute("data-lucide", data.icon);
+    lucide.createIcons();
+    document.getElementById("payment-modal-copy").dataset.number = data.number;
+    modal.classList.remove("modal-hidden");
+    modal.classList.add("modal-visible");
+  }
 
+  function closePaymentModal() {
+    document.getElementById("payment-modal").classList.add("modal-hidden");
+  }
+
+  document.body.addEventListener("click", (e) => {
+    if (e.target.closest(".payment-modal-trigger")) {
+      showPaymentModal(e.target.closest(".payment-modal-trigger").dataset.pay);
+    }
+    if (
+      e.target.closest("#payment-modal-close") ||
+      e.target.closest("#payment-modal-close-bottom") ||
+      e.target.id === "payment-modal"
+    ) {
+      closePaymentModal();
+    }
+    if (e.target.closest("#payment-modal-copy")) {
+      const btn = e.target.closest("#payment-modal-copy");
+      navigator.clipboard.writeText(btn.dataset.number).then(() => {
+        showToast("Nomor berhasil disalin!");
+      });
+    }
+  });
+
+  // Sidebar (Mobile)
+  const sidebar = document.getElementById("mobile-sidebar");
+  const sidebarBackdrop = document.getElementById("sidebar-backdrop");
   function openSidebar() {
     sidebar.classList.add("sidebar-open");
     sidebarBackdrop.classList.remove("hidden");
@@ -1195,10 +1356,18 @@ document.addEventListener("DOMContentLoaded", () => {
     sidebar.classList.remove("sidebar-open");
     sidebarBackdrop.classList.add("hidden");
   }
-  openSidebarBtn.addEventListener("click", openSidebar);
-  closeSidebarBtn.addEventListener("click", closeSidebar);
+  document
+    .getElementById("open-sidebar")
+    .addEventListener("click", openSidebar);
+  document
+    .getElementById("close-sidebar")
+    .addEventListener("click", closeSidebar);
   sidebarBackdrop.addEventListener("click", closeSidebar);
 
+  // FAB (Floating Action Button)
+  const fabContainer = document.getElementById("fab-container");
+  const fabMainBtn = document.getElementById("fab-main-btn");
+  const fabIcon = document.getElementById("fab-icon");
   fabMainBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     fabContainer.classList.toggle("open");
@@ -1211,220 +1380,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  document.body.addEventListener("click", (e) => {
-    const pageLink = e.target.closest(".page-link, .order-from-service-btn");
-    if (pageLink) {
-      e.preventDefault();
-      const page = pageLink.dataset.page;
-      const slug = pageLink.dataset.categorySlug;
-      showPage(page, slug);
-    }
-  });
-
-  const modals = {
-    userInfo: {
-      element: document.getElementById("user-info-modal"),
-      closeBtn: document.getElementById("user-info-modal-close"),
-    },
-    payment: {
-      element: document.getElementById("payment-modal"),
-      closeBtn: document.getElementById("payment-modal-close"),
-    },
-  };
-
-  function showModal(modalName) {
-    if (modals[modalName]) {
-      modals[modalName].element.classList.remove("modal-hidden");
-      modals[modalName].element.classList.add("modal-visible");
-    }
+  function showToast(message, isError = false) {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    toast.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-lg text-white font-semibold z-50 transition-transform duration-300 transform translate-y-20`;
+    toast.classList.add(isError ? "bg-red-500" : "bg-gray-800");
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.remove("translate-y-20");
+    }, 100);
+    setTimeout(() => {
+      toast.classList.add("translate-y-20");
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
   }
 
-  function closeModal(modalName) {
-    if (modals[modalName]) {
-      modals[modalName].element.classList.add("hidden");
-      modals[modalName].element.classList.remove("visible");
-    }
-  }
-
-  Object.keys(modals).forEach((key) => {
-    const modal = modals[key];
-    if (modal.element)
-      modal.element.addEventListener("click", (e) => {
-        if (e.target === modal.element) closeModal(key);
-      });
-    if (modal.closeBtn)
-      modal.closeBtn.addEventListener("click", () => closeModal(key));
-  });
-
-  document.body.addEventListener("click", (e) => {
-    if (e.target.closest("#checkout-btn")) showModal("userInfo");
-  });
-
-  document.getElementById("confirm-order-btn").addEventListener("click", () => {
-    const nameInput = document.getElementById("visitor-name");
-    if (!nameInput.value.trim()) {
-      nameInput.focus();
-      nameInput.classList.add("border-red-500", "ring-red-500");
-      return;
-    }
-    nameInput.classList.remove("border-red-500", "ring-red-500");
-
-    visitorData.name = nameInput.value.trim();
-    const deadlineVal = document
-      .getElementById("visitor-deadline-value")
-      .value.trim();
-    visitorData.deadline = deadlineVal
-      ? `${deadlineVal} ${
-          document.getElementById("visitor-deadline-unit").value
-        }`
-      : "Tidak ditentukan";
-
-    const { subtotal, discount, fastTrackFee, finalTotal } = calculateTotals();
-    const comments = document.getElementById("customer-comments").value.trim();
-
-    const adminWA = "088709650064";
-    const danaNumber = "088709650064";
-    const bsiNumber = "7324408295";
-    const accountHolder = "Syariffan";
-
-    let msg = `Halo KawanBaraja, saya ${visitorData.name}. Saya tertarik untuk memesan layanan berikut:\n\n`;
-    if (visitorData.deadline !== "Tidak ditentukan") {
-      msg += `*Estimasi Deadline:* ${visitorData.deadline}\n\n`;
-    }
-
-    let regular = "";
-    let custom = "";
-
-    for (const id in cart) {
-      const c = cart[id];
-      if (c.isCustom) {
-        custom += `- ${c.name}\n  _(Harga akan didiskusikan)_\n`;
-        continue;
-      }
-      const item = servicesData
-        .flatMap((s) => s.items)
-        .find((i) => i.id === id);
-      if (item) {
-        if (item.selectable) {
-          const n = c.chapters?.length || 0;
-          if (n > 0) {
-            let bill = new Set(c.chapters);
-            if (c.totalChapters === 5 && bill.has("4") && bill.has("5"))
-              bill.delete("5");
-            const total = item.price * bill.size;
-            const parentService = servicesData.find((s) =>
-              s.items.some((i) => i.id === id)
-            );
-            regular += `*- ${item.name} (${
-              parentService.category
-            })* (BAB ${c.chapters.join(", ")})\n  Jumlah terhitung: ${
-              bill.size
-            } bab\n  Harga: ${formatCurrency(total)}\n\n`;
-          }
-        } else {
-          const total = item.price * c.quantity;
-          if (item.price === 0) {
-            regular += `*- ${item.name}*\n  Harga: ${item.note}\n\n`;
-          } else {
-            regular += `*- ${item.name}*\n  Jumlah: ${c.quantity} ${
-              item.unit
-            }\n  Harga: ${formatCurrency(total)}\n\n`;
-          }
-        }
-      }
-    }
-
-    if (regular) msg += `*Layanan Utama:*\n${regular}`;
-    if (custom) {
-      if (regular) msg += `--------------------------------------\n`;
-      msg += `*Layanan Kustom:*\n${custom}\n`;
-    }
-
-    msg += "--------------------------------------\n";
-    msg += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
-    if (discount > 0) msg += `*Diskon Diminta:* -${formatCurrency(discount)}\n`;
-    if (isFastTrack)
-      msg += `*Biaya Fast Track:* +${formatCurrency(fastTrackFee)}\n`;
-    msg += `*Total Akhir:* ${formatCurrency(finalTotal)}\n\n`;
-
-    if (comments) {
-      msg +=
-        "--------------------------------------\n*Catatan Tambahan:*\n" +
-        comments +
-        "\n\n";
-    }
-
-    msg += `--------------------------------------\n*Informasi Pembayaran:*\nSilakan lakukan pembayaran ke salah satu rekening di bawah ini:\n\n*Bank Syariah Indonesia (BSI)*\nNo. Rek: ${bsiNumber}\nA/n: ${accountHolder}\n\n*DANA*\nNo. HP: ${danaNumber}\nA/n: ${accountHolder}\n\n`;
-    msg += "Mohon konfirmasi dan informasinya. Terima kasih!";
-
-    closeModal("userInfo");
-    window.open(
-      `https://wa.me/62${adminWA.substring(1)}?text=${encodeURIComponent(msg)}`,
-      "_blank"
-    );
-  });
-
-  const paymentMeta = {
-    dana: {
-      title: "DANA",
-      number: "088709650064",
-      holder: "Syariffan",
-      icon: "smartphone",
-      color: "bg-blue-100 text-blue-600",
-    },
-    bsi: {
-      title: "Bank Syariah Indonesia (BSI)",
-      number: "7324408295",
-      holder: "Syariffan",
-      icon: "banknote",
-      color: "bg-green-100 text-green-700",
-    },
-  };
-
-  document.body.addEventListener("click", (e) => {
-    const trigger = e.target.closest(".payment-modal-trigger");
-    if (trigger) {
-      const data = paymentMeta[trigger.dataset.pay];
-      if (!data) return;
-      document.getElementById("payment-modal-subtitle").textContent =
-        data.title;
-      document.getElementById("payment-modal-number").textContent = data.number;
-      document.getElementById("payment-modal-holder").textContent = data.holder;
-      document.getElementById(
-        "payment-modal-icon-bg"
-      ).className = `p-2 rounded-lg ${data.color}`;
-      document
-        .getElementById("payment-modal-icon")
-        .setAttribute("data-lucide", data.icon);
-      document.getElementById("payment-modal-copy").dataset.number =
-        data.number;
-      lucide.createIcons();
-      showModal("payment");
-    }
+  // --- INITIALIZATION ---
+  document.getElementById("current-year").textContent =
+    new Date().getFullYear();
+  loadPage("beranda").then(() => {
+    document.getElementById("main-content").style.opacity = 1;
   });
   document
-    .getElementById("payment-modal-close-bottom")
-    .addEventListener("click", () => closeModal("payment"));
-  document
-    .getElementById("payment-modal-copy")
-    .addEventListener("click", function () {
-      navigator.clipboard.writeText(this.dataset.number).then(() => {
-        document.getElementById("copy-button-text").textContent =
-          "Berhasil Disalin!";
-        setTimeout(() => {
-          document.getElementById("copy-button-text").textContent =
-            "Salin Nomor";
-        }, 2000);
-      });
-    });
-
-  // Initial Load
-  function init() {
-    showPage("beranda");
-    document.getElementById("current-year").textContent =
-      new Date().getFullYear();
-    mainContent.style.opacity = 1;
-  }
-
-  init();
+    .querySelector('.nav-link[data-page="beranda"]')
+    ?.classList.add("active");
 });
