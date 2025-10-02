@@ -5,25 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KawanBaraja - Solusi Cepat & Praktis untuk Semua Tugasmu</title>
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind, Fonts, and Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="assets/css/style.css" />
 
     <script>
-      // Tailwind Config
       tailwind.config = {
         theme: {
           extend: {
@@ -68,11 +61,7 @@
     </script>
   </head>
   <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
-    <div
-      id="main-content"
-      style="opacity: 0; transition: opacity 400ms ease-in-out"
-      class="loaded"
-    >
+    <div id="main-content" style="opacity: 0">
       <!-- Header -->
       <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -93,8 +82,14 @@
               >
             </a>
 
-            <!-- Desktop Navigation -->
+            <!-- Desktop nav -->
             <nav class="hidden md:flex items-center space-x-6">
+              <a
+                href="#"
+                data-page="beranda"
+                class="nav-link page-link hover:text-brand-orange-500 transition-colors font-semibold"
+                >Beranda</a
+              >
               <a
                 href="#"
                 data-page="layanan"
@@ -127,7 +122,7 @@
               >
             </nav>
 
-            <!-- Mobile Hamburger Menu -->
+            <!-- Mobile hamburger -->
             <button
               id="open-sidebar"
               class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-orange-300"
@@ -164,45 +159,44 @@
           <a
             href="#"
             data-page="beranda"
-            class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+            class="page-link nav-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
             >Beranda</a
           >
           <a
             href="#"
             data-page="layanan"
-            class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+            class="page-link nav-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
             >Layanan</a
           >
           <a
             href="#"
             data-page="pemesanan"
-            class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+            class="page-link nav-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
             >Pemesanan</a
           >
           <a
             href="#"
             data-page="tentang"
-            class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+            class="page-link nav-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
             >Tentang Kami</a
           >
           <a
             href="#"
             data-page="faq"
-            class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+            class="page-link nav-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
             >FAQ</a
           >
           <a
             href="#"
             data-page="kontak"
-            class="page-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
+            class="page-link nav-link block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
             >Kontak</a
           >
         </nav>
       </aside>
 
-      <!-- Main Content Area - Pages will be loaded here -->
       <main id="page-container" class="flex-grow">
-        <!-- Konten dinamis dari beranda.html, layanan.html, etc. akan dimuat di sini oleh main.js -->
+        <!-- Konten halaman dinamis akan dimuat di sini -->
       </main>
 
       <!-- Footer -->
@@ -294,10 +288,43 @@
                 >
                   <i data-lucide="message-circle" class="w-4 h-4"></i>
                   <a
-                    href="https://wa.me/6288709650064?text=Assalamualaikum"
+                    href="https://wa.me/6288709650064"
                     target="_blank"
                     class="hover:text-white transition-colors"
                     >0887 0965 0064 (Admin)</a
+                  >
+                </li>
+                <li
+                  class="flex items-center justify-center md:justify-start gap-2"
+                >
+                  <i data-lucide="message-circle" class="w-4 h-4"></i>
+                  <a
+                    href="https://wa.me/6282283067595"
+                    target="_blank"
+                    class="hover:text-white transition-colors"
+                    >0822-8306-7595 (Shintia)</a
+                  >
+                </li>
+                <li
+                  class="flex items-center justify-center md:justify-start gap-2"
+                >
+                  <i data-lucide="message-circle" class="w-4 h-4"></i>
+                  <a
+                    href="https://wa.me/6283150556118"
+                    target="_blank"
+                    class="hover:text-white transition-colors"
+                    >0831-5055-6118 (Reren)</a
+                  >
+                </li>
+                <li
+                  class="flex items-center justify-center md:justify-start gap-2"
+                >
+                  <i data-lucide="message-circle" class="w-4 h-4"></i>
+                  <a
+                    href="https://wa.me/6285265895671"
+                    target="_blank"
+                    class="hover:text-white transition-colors"
+                    >0852-6589-5671 (Giska)</a
                   >
                 </li>
               </ul>
@@ -314,7 +341,7 @@
         </div>
       </footer>
 
-      <!-- Floating Action Button (FAB) -->
+      <!-- FAB -->
       <div id="fab-container" class="fab-container">
         <div class="fab-options">
           <a
@@ -359,8 +386,7 @@
       </div>
     </div>
 
-    <!-- Modals -->
-    <!-- User Info Modal (Checkout) -->
+    <!-- User Info Modal -->
     <div
       id="user-info-modal"
       class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 modal-hidden"
@@ -502,7 +528,6 @@
       </div>
     </div>
 
-    <!-- App Script -->
     <script src="assets/js/main.js"></script>
   </body>
 </html>

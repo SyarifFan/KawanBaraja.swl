@@ -260,54 +260,84 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const testimonialsData = [
     {
-      name: "Admin",
-      message:
-        "Halo kak, draft Bab 4 & 5 nya sudah selesai ya. Silakan dicek dulu sebelum lanjut revisi.",
+      clientName: "Budi - Teknik",
+      chats: [
+        {
+          from: "Admin",
+          message:
+            "Halo kak, draft Bab 4 & 5 nya sudah selesai ya. Silakan dicek dulu sebelum lanjut revisi.",
+        },
+        {
+          from: "client",
+          message:
+            "Mantap kak, cepat sekali! Saya cek dulu. Tampilannya rapi banget, langsung di-acc dosen pembimbing nih kayaknya. Recommended!",
+        },
+        {
+          from: "Admin",
+          message:
+            "Alhamdulillah, siap kak. Nanti kalau ada feedback dari dosen, kabari saja ya.",
+        },
+      ],
     },
     {
-      name: `Klien ${Math.floor(Math.random() * (400 - 200 + 1)) + 200}`,
-      message:
-        "Mantap kak, cepat sekali! Saya cek dulu. Tampilannya rapi banget, langsung di-acc dosen pembimbing nih kayaknya. Recommended!",
+      clientName: "Anita - Sastra",
+      chats: [
+        {
+          from: "client",
+          message:
+            "Kak, terima kasih banyak bantuannya! Pengerjaan makalahnya cepat, rapi, dan nilaiku aman. Sangat membantu!",
+        },
+        {
+          from: "Admin",
+          message:
+            "Sama-sama kak Anita! Senang bisa membantu. Sukses selalu ya kuliahnya.",
+        },
+      ],
     },
     {
-      name: "Admin",
-      message:
-        "Alhamdulillah, siap kak. Nanti kalau ada feedback dari dosen, kabari saja ya.",
+      clientName: "Rian - Ekonomi",
+      chats: [
+        {
+          from: "client",
+          message:
+            "Layanan olah datanya luar biasa. Hasil SPSS nya detail dan penjelasannya mudah dipahami. Hemat waktu banget.",
+        },
+        {
+          from: "Admin",
+          message:
+            "Terima kasih feedbacknya kak Rian. Semoga lancar penelitiannya sampai selesai.",
+        },
+      ],
     },
     {
-      name: `Klien ${Math.floor(Math.random() * (400 - 200 + 1)) + 200}`,
-      message:
-        "Kak, terima kasih banyak bantuannya! Pengerjaan makalahnya cepat, rapi, dan nilaiku aman. Sangat membantu!",
+      clientName: "Sari - Komunikasi",
+      chats: [
+        {
+          from: "client",
+          message:
+            "Slide presentasiku jadi keren banget! Desainnya modern dan isinya ringkas tapi kena. Jadi lebih PD buat presentasi. Makasih kak!",
+        },
+        {
+          from: "Admin",
+          message:
+            "You are welcome kak Sari! Semoga presentasinya lancar dan dapat nilai maksimal ya.",
+        },
+      ],
     },
     {
-      name: "Admin",
-      message:
-        "Sama-sama kak! Senang bisa membantu. Sukses selalu ya kuliahnya.",
-    },
-    {
-      name: `Klien ${Math.floor(Math.random() * (400 - 200 + 1)) + 200}`,
-      message:
-        "Layanan olah datanya luar biasa. Hasil SPSS nya detail dan penjelasannya mudah dipahami. Hemat waktu banget.",
-    },
-    {
-      name: "Admin",
-      message:
-        "Terima kasih feedbacknya kak. Semoga lancar penelitiannya sampai selesai.",
-    },
-    {
-      name: `Klien ${Math.floor(Math.random() * (400 - 200 + 1)) + 200}`,
-      message:
-        "Slide presentasiku jadi keren banget! Desainnya modern dan isinya ringkas tapi kena. Jadi lebih PD buat presentasi. Makasih kak!",
-    },
-    {
-      name: "Admin",
-      message:
-        "You are welcome kak! Semoga presentasinya lancar dan dapat nilai maksimal ya.",
-    },
-    {
-      name: `Klien ${Math.floor(Math.random() * (400 - 200 + 1)) + 200}`,
-      message:
-        "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada KawanBaraja. Makasih banyak kak!",
+      clientName: "Joko - Hukum",
+      chats: [
+        {
+          from: "client",
+          message:
+            "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada KawanBaraja. Makasih banyak kak!",
+        },
+        {
+          from: "Admin",
+          message:
+            "Siap kak Joko, sama-sama! Jangan ragu hubungi lagi kalau butuh bantuan.",
+        },
+      ],
     },
   ];
 
@@ -335,37 +365,37 @@ document.addEventListener("DOMContentLoaded", () => {
   // SPA Navigation: Loads page content from HTML files
   async function showPage(page, slug = null) {
     try {
-      // If the page is already loaded, don't refetch
-      const currentSection = pageContainer.querySelector(`#${page}`);
-      if (currentSection) {
-        // If it's the pemesanan page and a slug is passed, re-run setup
-        if (page === "pemesanan" && slug) {
-          if (typeof window[`setup_pemesanan`] === "function") {
-            window[`setup_pemesanan`](slug);
-          }
+      const targetSection = pageContainer.querySelector(`#${page}`);
+      // If page already exists, just show it
+      if (targetSection) {
+        document.querySelectorAll("#page-container > section").forEach((s) => {
+          s.style.display = "none";
+        });
+        targetSection.style.display = "block";
+        if (typeof window[`setup_${page}`] === "function") {
+          window[`setup_${page}`](slug);
         }
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        closeSidebar();
-        return;
+      } else {
+        // Fetch and load new page
+        const response = await fetch(`${page}.html`);
+        if (!response.ok) {
+          pageContainer.innerHTML = `<p class="text-center p-8">Halaman tidak ditemukan.</p>`;
+          return;
+        }
+        const html = await response.text();
+        document
+          .querySelectorAll("#page-container > section")
+          .forEach((s) => (s.style.display = "none"));
+
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = html;
+        const newPageElement = tempDiv.firstElementChild;
+        pageContainer.appendChild(newPageElement);
+
+        if (typeof window[`setup_${page}`] === "function") {
+          window[`setup_${page}`](slug);
+        }
       }
-
-      const response = await fetch(`${page}.html`);
-      if (!response.ok) {
-        pageContainer.innerHTML = `<p class="text-center p-8">Halaman tidak ditemukan.</p>`;
-        return;
-      }
-      const html = await response.text();
-
-      // Hide all sections before showing the new one
-      Array.from(pageContainer.children).forEach(
-        (child) => (child.style.display = "none")
-      );
-
-      // Add new page content
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = html;
-      const newPageElement = tempDiv.firstElementChild;
-      pageContainer.appendChild(newPageElement);
 
       // Update active nav links
       document
@@ -374,11 +404,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document
         .querySelector(`.nav-link[data-page="${page}"]`)
         ?.classList.add("active");
-
-      // Execute page-specific setup
-      if (typeof window[`setup_${page}`] === "function") {
-        window[`setup_${page}`](slug);
-      }
 
       window.scrollTo({ top: 0, behavior: "smooth" });
       closeSidebar();
@@ -390,11 +415,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- PAGE SETUP FUNCTIONS ---
-  // Each function will be called after its corresponding HTML is loaded
 
   window.setup_beranda = function () {
-    // Animated Text
     const animatedTextEl = document.getElementById("animated-text");
+    if (animatedTextEl.textContent.length > 0) return; // Prevent re-animation
+
     const textToAnimate = `KawanBaraja siap membantumu!`;
     animatedTextEl.innerHTML = "";
     textToAnimate.split("").forEach((char, idx) => {
@@ -404,7 +429,6 @@ document.addEventListener("DOMContentLoaded", () => {
       animatedTextEl.appendChild(span);
     });
 
-    // Counter Animation
     if (!hasCounterAnimated) {
       const counters = document.querySelectorAll(".counter");
       const observer = new IntersectionObserver(
@@ -443,6 +467,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.setup_layanan = function () {
     const layananNavDesktop = document.getElementById("layanan-nav-desktop");
+    if (layananNavDesktop.innerHTML.length > 0) return; // Already setup
+
     const layananContentDesktop = document.getElementById(
       "layanan-content-desktop"
     );
@@ -870,22 +896,24 @@ document.addEventListener("DOMContentLoaded", () => {
       return msg;
     }
 
-    orderCategoryCardsContainer.innerHTML =
-      servicesData
-        .map(
-          (s) => `
-        <button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
-          <i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i>
-          <span class="block text-xs font-semibold mt-2">${s.category}</span>
-        </button>
-      `
-        )
-        .join("") +
-      `
-        <button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
-          <i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i>
-          <span class="block text-xs font-semibold mt-2">Layanan Lainnya</span>
-        </button>`;
+    if (!orderCategoryCardsContainer.innerHTML.trim()) {
+      orderCategoryCardsContainer.innerHTML =
+        servicesData
+          .map(
+            (s) => `
+          <button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+            <i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i>
+            <span class="block text-xs font-semibold mt-2">${s.category}</span>
+          </button>
+        `
+          )
+          .join("") +
+        `
+          <button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+            <i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i>
+            <span class="block text-xs font-semibold mt-2">Layanan Lainnya</span>
+          </button>`;
+    }
 
     orderCategoryCardsContainer.addEventListener("click", (e) => {
       const btn = e.target.closest(".order-category-btn");
@@ -1022,13 +1050,18 @@ document.addEventListener("DOMContentLoaded", () => {
           document
             .querySelector(`.order-category-btn[data-category-slug="${slug}"]`)
             ?.click(),
-        100
+        50
       );
+    } else if (!document.querySelector(".order-category-btn.active")) {
+      document.querySelector(".order-category-btn")?.click();
     }
     updateCartUI();
   };
 
   window.setup_tentang = function () {
+    if (document.getElementById("testimonial-slider").innerHTML.length > 0)
+      return; // Already setup
+
     const rotatingQuoteEl = document.getElementById("rotating-quote");
     if (rotatingQuoteEl) {
       rotatingQuoteEl.textContent = `"${
@@ -1039,22 +1072,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const slider = document.getElementById("testimonial-slider");
     const dotsContainer = document.getElementById("testimonial-dots");
 
-    let conversations = [];
-    let currentConversation = [];
-    testimonialsData.forEach((item) => {
-      currentConversation.push(item);
-      if (
-        item.name !== "Admin" &&
-        testimonialsData.indexOf(item) < testimonialsData.length - 1 &&
-        testimonialsData[testimonialsData.indexOf(item) + 1].name === "Admin"
-      ) {
-        conversations.push(currentConversation);
-        currentConversation = [];
-      }
-    });
-    if (currentConversation.length > 0) conversations.push(currentConversation);
-
-    slider.innerHTML = conversations
+    slider.innerHTML = testimonialsData
       .map(
         (convo) => `
       <div class="testimonial-slide flex-shrink-0 w-full">
@@ -1062,27 +1080,24 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="bg-[#005E54] text-white pt-10 pb-2 px-2 flex items-center gap-3 shadow-md flex-shrink-0">
               <i data-lucide="arrow-left" class="w-5 h-5"></i>
               <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center border-2 border-white/50"><i data-lucide="user" class="w-6 h-6 text-white"></i></div>
-              <div class="flex-1"><h4 class="font-bold">Klien</h4><p class="text-xs">online</p></div>
+              <div class="flex-1"><h4 class="font-bold">${
+                convo.clientName
+              }</h4><p class="text-xs">online</p></div>
               <i data-lucide="video" class="w-5 h-5"></i><i data-lucide="phone" class="w-5 h-5"></i>
           </div>
           <div class="p-4 flex-1 overflow-y-auto flex flex-col space-y-3 pt-6 pb-6">
-            ${convo
+            ${convo.chats
               .map(
                 (chat) => `
               <div class="flex ${
-                chat.name === "Admin" ? "justify-end" : "justify-start"
+                chat.from === "Admin" ? "justify-end" : "justify-start"
               }">
                 <div class="max-w-[80%] p-2.5 rounded-xl shadow-sm ${
-                  chat.name === "Admin"
+                  chat.from === "Admin"
                     ? "bg-[#E2FFC7] rounded-br-none"
                     : "bg-white rounded-bl-none"
                 }">
                   <p class="text-sm">${chat.message}</p>
-                  ${
-                    chat.name !== "Admin"
-                      ? `<p class="text-xs text-left mt-1 font-bold text-brand-blue-600">${chat.name}</p>`
-                      : ""
-                  }
                 </div>
               </div>
             `
@@ -1100,7 +1115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       )
       .join("");
 
-    dotsContainer.innerHTML = conversations
+    dotsContainer.innerHTML = testimonialsData
       .map(
         (_, i) =>
           `<button data-slide-to="${i}" class="testimonial-dot h-2 w-2 rounded-full transition-colors ${
@@ -1129,6 +1144,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.setup_faq = function () {
     const faqContainer = document.getElementById("faq-container");
+    if (faqContainer.innerHTML.length > 0) return; // Already setup
+
     faqContainer.innerHTML = faqData
       .map(
         (item) => `
@@ -1165,7 +1182,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   window.setup_kontak = function () {
-    // Event listeners for payment modals are handled globally
+    // No specific JS needed for this page, event listeners are global.
   };
 
   // --- GLOBAL EVENT LISTENERS & INITIALIZATION ---
@@ -1200,29 +1217,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const page = pageLink.dataset.page;
       const slug = pageLink.dataset.categorySlug;
-      const targetSection = document.getElementById(page);
-
-      // Hide all sections, show the target one
-      document
-        .querySelectorAll("#page-container > section")
-        .forEach((s) => (s.style.display = "none"));
-      if (targetSection) {
-        targetSection.style.display = "block";
-      } else {
-        // If section doesn't exist, load it
-        showPage(page, slug);
-      }
-
-      // Update active nav links
-      document
-        .querySelectorAll(".nav-link")
-        .forEach((a) => a.classList.remove("active"));
-      document
-        .querySelector(`.nav-link[data-page="${page}"]`)
-        ?.classList.add("active");
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      closeSidebar();
+      showPage(page, slug);
     }
   });
 
@@ -1246,8 +1241,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function closeModal(modalName) {
     if (modals[modalName]) {
-      modals[modalName].element.classList.add("modal-hidden");
-      modals[modalName].element.classList.remove("modal-visible");
+      modals[modalName].element.classList.add("hidden");
+      modals[modalName].element.classList.remove("visible");
     }
   }
 
@@ -1262,10 +1257,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.body.addEventListener("click", (e) => {
-    if (e.target.id === "checkout-btn") showModal("userInfo");
+    if (e.target.closest("#checkout-btn")) showModal("userInfo");
   });
 
-  // *** THIS IS THE CORRECTED PART ***
   document.getElementById("confirm-order-btn").addEventListener("click", () => {
     const nameInput = document.getElementById("visitor-name");
     if (!nameInput.value.trim()) {
@@ -1364,7 +1358,6 @@ document.addEventListener("DOMContentLoaded", () => {
     msg += "Mohon konfirmasi dan informasinya. Terima kasih!";
 
     closeModal("userInfo");
-    // Correctly format WA number by removing leading '0'
     window.open(
       `https://wa.me/62${adminWA.substring(1)}?text=${encodeURIComponent(msg)}`,
       "_blank"
@@ -1426,23 +1419,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   // Initial Load
-  async function init() {
-    await showPage("beranda");
-    await showPage("layanan");
-    await showPage("pemesanan");
-    await showPage("tentang");
-    await showPage("faq");
-    await showPage("kontak");
-
-    // After all pages are loaded, show beranda by default
-    document
-      .querySelectorAll("#page-container > section")
-      .forEach((s) => (s.style.display = "none"));
-    document.getElementById("beranda").style.display = "block";
-    document
-      .querySelector('.nav-link[data-page="beranda"]')
-      ?.classList.add("active");
-
+  function init() {
+    showPage("beranda");
     document.getElementById("current-year").textContent =
       new Date().getFullYear();
     mainContent.style.opacity = 1;
