@@ -375,7 +375,9 @@ document.addEventListener("DOMContentLoaded", () => {
       animateCounters();
     }
 
+    let hasCounterAnimated = false;
     function animateCounters() {
+      if (hasCounterAnimated) return;
       const counters = document.querySelectorAll(".counter");
       const observer = new IntersectionObserver(
         (entries) => {
@@ -408,6 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { threshold: 0.5 }
       );
       counters.forEach((counter) => observer.observe(counter));
+      hasCounterAnimated = true;
     }
     runHomepageAnimation();
   }
@@ -630,7 +633,43 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       for (const itemId of cartKeys) {
-        /* ... UI update logic for each cart item ... */
+        const c = cart[itemId];
+        if (c.isCustom) {
+          const el = document.createElement("div");
+          el.className = "flex justify-between items-center text-sm";
+          el.innerHTML = `<div><p class="font-semibold">${c.name}</p><p class="text-xs text-gray-500">Layanan Kustom</p></div><p class="font-bold text-brand-blue-500">Nego</p>`;
+          cartItemsList.appendChild(el);
+        } else {
+          const item = servicesData
+            .flatMap((s) => s.items)
+            .find((i) => i.id === itemId);
+          if (item) {
+            if (item.selectable && (!c.chapters || c.chapters.length === 0))
+              continue;
+            const el = document.createElement("div");
+            el.className = "flex justify-between items-center text-sm";
+            let name = item.name;
+            let priceText = "";
+            let itemTotal = 0;
+            if (item.selectable) {
+              const selectedChapters = c.chapters || [];
+              let bill = new Set(selectedChapters);
+              if (c.totalChapters === 5 && bill.has("4") && bill.has("5")) {
+                bill.delete("5");
+              }
+              name += ` (BAB ${selectedChapters.join(", ")})`;
+              priceText = `${bill.size} x ${formatCurrency(item.price)}`;
+              itemTotal = item.price * bill.size;
+            } else {
+              priceText = `${c.quantity} x ${formatCurrency(item.price)}`;
+              itemTotal = item.price * c.quantity;
+            }
+            el.innerHTML = `<div><p class="font-semibold">${name}</p><p class="text-xs text-gray-500">${priceText}</p></div><p class="font-bold">${formatCurrency(
+              itemTotal
+            )}</p>`;
+            cartItemsList.appendChild(el);
+          }
+        }
       }
 
       emptyCartMessage.style.display = hasItems ? "none" : "block";
@@ -646,19 +685,225 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderOrderCategoryCards() {
-      /* ... Function to render service categories ... */
+      if (!orderCategoryCardsContainer) return;
+      let html = servicesData
+        .map(
+          (s) => `
+              <button data-category-slug="${s.slug}" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+                <i data-lucide="${s.icon}" class="mx-auto w-8 h-8 text-${s.color}"></i>
+                <span class="block text-xs font-semibold mt-2">${s.category}</span>
+              </button>
+            `
+        )
+        .join("");
+      html += `
+              <button data-category-slug="custom" class="order-category-btn p-3 rounded-lg shadow-sm text-center bg-white border border-transparent">
+                <i data-lucide="plus-square" class="mx-auto w-8 h-8 text-brand-orange-500"></i>
+                <span class="block text-xs font-semibold mt-2">Layanan Lainnya</span>
+              </button>`;
+      orderCategoryCardsContainer.innerHTML = html;
     }
+
     function renderOrderItems(slug) {
-      /* ... Function to render items for a selected category ... */
+      const s = servicesData.find((v) => v.slug === slug);
+      if (!s) return;
+      orderPlaceholder.style.display = "none";
+      orderFormItemsContainer.innerHTML = `<div class="space-y-3" style="animation:fadeInPage .5s"></div>`;
+      const container = orderFormItemsContainer.querySelector(".space-y-3");
+      s.items.forEach((item) => {
+        const wrap = document.createElement("div");
+        wrap.className =
+          "bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-colors";
+        let inner = `<div class="flex items-center justify-between"> <div class="flex items-center flex-1 min-w-0"> <input type="checkbox" id="check_${
+          item.id
+        }" data-id="${
+          item.id
+        }" class="h-5 w-5 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500 flex-shrink-0" ${
+          cart[item.id] ? "checked" : ""
+        }> <label for="check_${
+          item.id
+        }" class="ml-3 text-sm sm:text-base cursor-pointer font-medium">${
+          item.name
+        } <span class="text-xs text-gray-500">(${
+          item.price > 0
+            ? formatCurrency(item.price) + "/" + item.unit
+            : item.note || ""
+        })</span></label> </div>`;
+        if (!item.selectable) {
+          inner += `<div id="qty_${item.id}" class="${
+            cart[item.id] ? "flex" : "hidden"
+          } items-center space-x-2"> <button data-id="${
+            item.id
+          }" data-change="-1" class="qty-btn bg-gray-200 w-7 h-7 rounded-full font-bold hover:bg-gray-300" aria-label="Kurangi">-</button> <span id="qty_val_${
+            item.id
+          }" class="font-bold w-8 text-center">${
+            cart[item.id] ? cart[item.id].quantity : 1
+          }</span> <button data-id="${
+            item.id
+          }" data-change="1" class="qty-btn bg-gray-200 w-7 h-7 rounded-full font-bold hover:bg-gray-300" aria-label="Tambah">+</button> </div>`;
+        }
+        inner += `</div>`;
+        wrap.innerHTML = inner;
+        if (item.selectable) {
+          const sel = document.createElement("div");
+          sel.id = `selection_container_${item.id}`;
+          sel.className = `pl-8 pt-2 space-y-2 ${
+            cart[item.id] ? "" : "hidden"
+          }`;
+          const cartItem = cart[item.id] || {};
+          const totalChapters = cartItem.totalChapters || 5;
+          sel.innerHTML = `<div class="flex items-center gap-2"> <label for="total_chapters_${item.id}" class="text-sm font-semibold">Jumlah BAB:</label> <input id="total_chapters_${item.id}" data-id="${item.id}" type="number" value="${totalChapters}" min="1" class="total-chapters-input w-16 rounded-md border-gray-300 shadow-sm sm:text-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200"> </div> <div id="chapters_${item.id}" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 pt-2"></div>`;
+          wrap.appendChild(sel);
+        }
+        container.appendChild(wrap);
+        if (item.selectable && cart[item.id])
+          renderChapterCheckboxes(item.id, cart[item.id].totalChapters || 5);
+      });
+      lucide.createIcons();
     }
+
     function renderCustomServiceForm() {
-      /* ... Function to render the custom service form ... */
+      updateProcessIndicator(1);
+      orderPlaceholder.style.display = "none";
+      orderFormItemsContainer.innerHTML = `
+              <div class="space-y-4" style="animation:fadeInPage .5s">
+                <h4 class="font-bold text-gray-800">Buat Pesanan Kustom</h4>
+                <p class="text-sm text-gray-600">Jelaskan kebutuhan Anda di bawah ini. Harga akan didiskusikan lebih lanjut melalui WhatsApp.</p>
+                <div>
+                  <label for="custom-service-name" class="block text-sm font-semibold text-gray-700">Nama Layanan/Tugas</label>
+                  <input id="custom-service-name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm" placeholder="Contoh: Review jurnal internasional">
+                </div>
+                <button id="add-custom-service-btn" class="inline-flex items-center gap-2 bg-brand-orange-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-brand-orange-600 transition-all shadow">
+                  <i data-lucide="plus" class="w-4 h-4"></i> Tambahkan ke Pesanan
+                </button>
+              </div>`;
+      lucide.createIcons();
     }
+
     function renderChapterCheckboxes(itemId, total) {
-      /* ... Function to render chapter checkboxes ... */
+      const container = document.getElementById(`chapters_${itemId}`);
+      if (!container) return;
+      container.innerHTML = "";
+      const cartItem = cart[itemId] || { chapters: [] };
+      for (let i = 1; i <= total; i++) {
+        const isChecked =
+          cartItem.chapters && cartItem.chapters.includes(String(i));
+        container.innerHTML += `<label class="inline-flex items-center text-sm"> <input type="checkbox" data-id="${itemId}" data-chapter="${i}" class="chapter-check h-4 w-4 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500" ${
+          isChecked ? "checked" : ""
+        }> <span class="ml-1.5">BAB ${i}</span> </label>`;
+      }
     }
+
     function resetCart() {
-      /* ... Function to clear the cart ... */
+      cart = {};
+      const active = document.querySelector(".order-category-btn.active");
+      if (active) {
+        const slug = active.dataset.categorySlug;
+        if (slug === "custom") {
+          renderCustomServiceForm();
+        } else {
+          renderOrderItems(slug);
+        }
+      }
+      discountInput.value = "";
+      customerCommentsEl.value = "";
+      trackOrderCheckbox.checked = false;
+      updateCartUI();
+    }
+
+    function getOrderMessage(isAdminMessage = false) {
+      const subtotal = calculateSubtotal();
+      const disc = parseInt(discountInput.value) || 0;
+      let trackOrderFee = 0;
+      if (trackOrderCheckbox.checked && subtotal > 0) {
+        trackOrderFee = Math.round(subtotal * 0.1);
+      }
+      const finalTotal = Math.max(0, subtotal + trackOrderFee - disc);
+      const comments = customerCommentsEl.value.trim();
+
+      let msg;
+      if (isAdminMessage) {
+        msg = `Assalamualaikum Kak,\n\nBerikut adalah rincian tagihan untuk pesanan layanan dari KawanBaraja:\n\n`;
+      } else {
+        msg = `Halo KawanBaraja, saya ${visitorData.name}. Saya tertarik untuk memesan layanan berikut:\n\n`;
+        if (visitorData.deadline)
+          msg += `*Estimasi Deadline:* ${visitorData.deadline}\n\n`;
+      }
+
+      let regular = "";
+      let custom = "";
+
+      for (const id in cart) {
+        const c = cart[id];
+        if (c.isCustom) {
+          custom += `- ${c.name}\n  _(Harga akan didiskusikan)_\n`;
+          continue;
+        }
+        const item = servicesData
+          .flatMap((s) => s.items)
+          .find((i) => i.id === id);
+        if (item) {
+          if (item.selectable) {
+            const n = c.chapters?.length || 0;
+            if (n > 0) {
+              let bill = new Set(c.chapters);
+              if (c.totalChapters === 5 && bill.has("4") && bill.has("5"))
+                bill.delete("5");
+              const total = item.price * bill.size;
+              regular += `*- ${item.name} (${
+                c.category
+              })* (BAB ${c.chapters.join(", ")})\n  Jumlah terhitung: ${
+                bill.size
+              } bab\n  Harga: ${formatCurrency(total)}\n\n`;
+            }
+          } else {
+            const total = item.price * c.quantity;
+            if (item.price === 0) {
+              regular += `*- ${item.name}*\n  Harga: ${item.note}\n\n`;
+            } else {
+              regular += `*- ${item.name}*\n  Jumlah: ${c.quantity} ${
+                item.unit
+              }\n  Harga: ${formatCurrency(total)}\n\n`;
+            }
+          }
+        }
+      }
+
+      if (regular) msg += `*Layanan Dipesan:*\n${regular}`;
+      if (custom) {
+        if (regular) msg += `--------------------------------------\n`;
+        msg += `*Layanan Kustom:*\n${custom}\n`;
+      }
+
+      msg += "--------------------------------------\n";
+      msg += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
+      if (trackOrderFee > 0) {
+        msg += `*Biaya Lacak Progres:* ${formatCurrency(trackOrderFee)}\n`;
+      }
+      if (disc > 0) {
+        msg += `*Diskon Diminta:* -${formatCurrency(disc)}\n`;
+      }
+      msg += `*Total Akhir:* ${formatCurrency(finalTotal)}\n\n`;
+
+      if (comments) {
+        msg +=
+          "--------------------------------------\n*Catatan Tambahan:*\n" +
+          comments +
+          "\n\n";
+      }
+
+      const bsiNumber = "7324408295";
+      const danaNumber = "088709650064";
+      const accountHolder = "Syariffan";
+
+      if (isAdminMessage) {
+        msg +=
+          "Silakan lakukan pembayaran agar pesanan dapat segera kami proses. Terima kasih atas kepercayaannya! 🙏\n\n*- Tim KawanBaraja*";
+      } else {
+        msg += `--------------------------------------\n*Informasi Pembayaran:*\nSilakan lakukan pembayaran ke salah satu rekening di bawah ini:\n\n*Bank Syariah Indonesia (BSI)*\nNo. Rek: ${bsiNumber}\nA/n: ${accountHolder}\n\n*DANA*\nNo. HP: ${danaNumber}\nA/n: ${accountHolder}\n\n`;
+        msg += "Mohon konfirmasi dan informasinya. Terima kasih!";
+      }
+      return msg;
     }
 
     // --- EVENT LISTENERS FOR PEMESANAN PAGE ---
@@ -688,15 +933,128 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (orderFormItemsContainer) {
-      // Logic for checkbox, quantity buttons, chapter selection etc.
+      orderFormItemsContainer.addEventListener("click", (e) => {
+        const qtyBtn = e.target.closest(".qty-btn");
+        if (qtyBtn) {
+          const id = qtyBtn.dataset.id;
+          const change = parseInt(qtyBtn.dataset.change, 10);
+          const cur = cart[id] ? cart[id].quantity : 0;
+          const next = Math.max(1, cur + change);
+          cart[id].quantity = next;
+          document.getElementById(`qty_val_${id}`).textContent = next;
+          updateCartUI();
+        }
+        if (e.target.id === "add-custom-service-btn") {
+          const input = document.getElementById("custom-service-name");
+          const val = input.value.trim();
+          if (!val) {
+            input.focus();
+            return;
+          }
+          const id = `custom_${Date.now()}`;
+          cart[id] = { name: val, isCustom: true };
+          updateCartUI();
+          input.value = "";
+          input.focus();
+        }
+      });
+      orderFormItemsContainer.addEventListener("change", (e) => {
+        const t = e.target;
+        if (t.type === "checkbox" && !t.classList.contains("chapter-check")) {
+          const id = t.dataset.id;
+          const item = servicesData
+            .flatMap((s) => s.items)
+            .find((i) => i.id === id);
+          const parentService = servicesData.find((s) =>
+            s.items.some((i) => i.id === id)
+          );
+          if (t.checked) {
+            const cartItem = { category: parentService.category };
+            if (item.selectable) {
+              const total = cart[id]?.totalChapters || 5;
+              cartItem.chapters = [];
+              cartItem.totalChapters = total;
+              document
+                .getElementById(`selection_container_${id}`)
+                ?.classList.remove("hidden");
+              renderChapterCheckboxes(id, total);
+            } else {
+              cartItem.quantity = 1;
+              const qtyEl = document.getElementById(`qty_${id}`);
+              if (qtyEl) {
+                qtyEl.classList.remove("hidden");
+                qtyEl.classList.add("flex");
+                document.getElementById(`qty_val_${id}`).textContent = "1";
+              }
+            }
+            cart[id] = cartItem;
+          } else {
+            delete cart[id];
+            if (item.selectable) {
+              document
+                .getElementById(`selection_container_${id}`)
+                ?.classList.add("hidden");
+            } else {
+              document.getElementById(`qty_${id}`)?.classList.add("hidden");
+            }
+          }
+          updateCartUI();
+        }
+        if (t.classList.contains("chapter-check")) {
+          const id = t.dataset.id;
+          const chapter = t.dataset.chapter;
+          if (cart[id] && cart[id].totalChapters === 5) {
+            const boxContainer = t.closest(`#chapters_${id}`);
+            if (chapter === "4") {
+              const c5 = boxContainer.querySelector('[data-chapter="5"]');
+              if (c5) c5.checked = t.checked;
+            }
+            if (chapter === "5") {
+              const c4 = boxContainer.querySelector('[data-chapter="4"]');
+              if (c4) c4.checked = t.checked;
+            }
+          }
+          if (cart[id]) {
+            const sel = [];
+            const boxContainer = t.closest(`#chapters_${id}`);
+            boxContainer
+              .querySelectorAll(".chapter-check:checked")
+              .forEach((cb) => sel.push(cb.dataset.chapter));
+            cart[id].chapters = sel.sort((a, b) => parseInt(a) - parseInt(b));
+          }
+          updateCartUI();
+        }
+      });
+      orderFormItemsContainer.addEventListener("input", (e) => {
+        if (e.target.classList.contains("total-chapters-input")) {
+          const id = e.target.dataset.id;
+          const total = parseInt(e.target.value) || 1;
+          if (cart[id]) {
+            cart[id].totalChapters = total;
+            renderChapterCheckboxes(id, total);
+            cart[id].chapters = (cart[id].chapters || []).filter(
+              (c) => parseInt(c) <= total
+            );
+            updateCartUI();
+          }
+        }
+      });
     }
 
-    if (discountInput) discountInput.addEventListener("input", updateCartUI);
+    if (discountInput) {
+      discountInput.addEventListener("input", updateCartUI);
+      discountInput.addEventListener("blur", () => {
+        let cur = parseInt(discountInput.value) || 0;
+        const rounded = Math.round(cur / 1000) * 1000;
+        if (discountInput.value !== "") discountInput.value = rounded;
+        if (rounded === 0) discountInput.value = "";
+        updateCartUI();
+      });
+    }
     if (cancelAllBtn) cancelAllBtn.addEventListener("click", resetCart);
     if (trackOrderCheckbox)
       trackOrderCheckbox.addEventListener("change", updateCartUI);
 
-    // Checkout logic
     function showUserInfoModal() {
       userInfoModal.classList.remove("modal-hidden");
       userInfoModal.classList.add("modal-visible");
@@ -716,11 +1074,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (confirmOrderBtn)
       confirmOrderBtn.addEventListener("click", () => {
-        /* ... Logic to generate and open WhatsApp message ... */
+        const visitorNameInput = document.getElementById("visitor-name");
+        const visitorName = visitorNameInput.value.trim();
+        if (!visitorName) {
+          visitorNameInput.focus();
+          visitorNameInput.classList.add("border-red-500", "ring-red-500");
+          return;
+        }
+        visitorNameInput.classList.remove("border-red-500", "ring-red-500");
+        visitorData.name = visitorName;
+        const deadlineValue = document
+          .getElementById("visitor-deadline-value")
+          .value.trim();
+        const deadlineUnit = document.getElementById(
+          "visitor-deadline-unit"
+        ).value;
+        visitorData.deadline = deadlineValue
+          ? `${deadlineValue} ${deadlineUnit}`
+          : "Tidak ditentukan";
+        const msg = getOrderMessage(false);
+        closeUserInfoModal();
+        window.open(
+          `https://wa.me/6283801343431?text=${encodeURIComponent(msg)}`,
+          "_blank"
+        );
       });
+
     if (adminCopyBtn)
       adminCopyBtn.addEventListener("click", () => {
-        /* ... Logic to generate and copy admin message ... */
+        const msg = getOrderMessage(true);
+        navigator.clipboard.writeText(msg).then(() => {
+          const icon = adminCopyBtn.querySelector("i");
+          icon.setAttribute("data-lucide", "check");
+          lucide.createIcons();
+          adminCopyBtn.classList.remove("bg-brand-blue-500");
+          adminCopyBtn.classList.add("bg-brand-green-500");
+          setTimeout(() => {
+            icon.setAttribute("data-lucide", "clipboard-copy");
+            lucide.createIcons();
+            adminCopyBtn.classList.add("bg-brand-blue-500");
+            adminCopyBtn.classList.remove("bg-brand-green-500");
+          }, 2000);
+        });
       });
 
     // INITIALIZE PEMESANAN PAGE
@@ -738,30 +1133,164 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // TENTANG PAGE
   if (document.getElementById("page-tentang")) {
-    /* ... Logic for testimonials and rotating quote ... */
+    const rotatingQuoteEl = document.getElementById("rotating-quote");
+    if (rotatingQuoteEl) {
+      rotatingQuoteEl.textContent = `"${
+        quotes[Math.floor(Math.random() * quotes.length)]
+      }"`;
+    }
+    function renderTestimonials() {
+      const slider = document.getElementById("testimonial-slider");
+      const dotsContainer = document.getElementById("testimonial-dots");
+      if (!slider || !dotsContainer) return;
+      let currentConversation = [];
+      const conversations = [];
+      testimonialsData.forEach((item) => {
+        currentConversation.push(item);
+        if (
+          item.name !== "Admin" &&
+          testimonialsData.indexOf(item) < testimonialsData.length - 1 &&
+          testimonialsData[testimonialsData.indexOf(item) + 1].name === "Admin"
+        ) {
+          conversations.push(currentConversation);
+          currentConversation = [];
+        }
+      });
+      if (currentConversation.length > 0)
+        conversations.push(currentConversation);
+
+      slider.innerHTML = conversations.map((convo) => `...`).join(""); // Content redacted for brevity
+      dotsContainer.innerHTML = conversations
+        .map(
+          (_, i) =>
+            `<button data-slide-to="${i}" class="testimonial-dot h-2 w-2 rounded-full transition-colors ${
+              i === 0 ? "bg-brand-orange-500" : "bg-gray-300"
+            }"></button>`
+        )
+        .join("");
+      const dots = document.querySelectorAll(".testimonial-dot");
+      slider.addEventListener("scroll", () => {
+        const slideWidth = slider.offsetWidth;
+        const activeIndex = Math.round(slider.scrollLeft / slideWidth);
+        dots.forEach((dot, i) => {
+          dot.classList.toggle("bg-brand-orange-500", i === activeIndex);
+          dot.classList.toggle("bg-gray-300", i !== activeIndex);
+        });
+      });
+      dotsContainer.addEventListener("click", (e) => {
+        if (e.target.matches(".testimonial-dot")) {
+          const slideIndex = e.target.dataset.slideTo;
+          slider.scrollTo({
+            left: slider.offsetWidth * slideIndex,
+            behavior: "smooth",
+          });
+        }
+      });
+    }
+    renderTestimonials();
   }
 
   // FAQ PAGE
   if (document.getElementById("page-faq")) {
-    /* ... Logic for FAQ accordion ... */
+    const faqContainer = document.getElementById("faq-container");
+    function renderFaq() {
+      if (!faqContainer) return;
+      faqContainer.innerHTML = faqData
+        .map(
+          (item) => `
+              <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <button class="faq-question w-full flex justify-between items-center text-left p-4 font-semibold">
+                  <span>${item.question}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down transition-transform duration-300"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="faq-answer px-4"><div class="pb-4 text-gray-700">${item.answer}</div></div>
+              </div>`
+        )
+        .join("");
+    }
+    faqContainer.addEventListener("click", (e) => {
+      const btn = e.target.closest(".faq-question");
+      if (!btn) return;
+      const answer = btn.nextElementSibling;
+      const icon = btn.querySelector("svg");
+      if (!answer || !icon) return;
+      const wasOpen =
+        answer.style.maxHeight && answer.style.maxHeight !== "0px";
+      document
+        .querySelectorAll(".faq-answer")
+        .forEach((ans) => (ans.style.maxHeight = null));
+      document
+        .querySelectorAll(".faq-question svg")
+        .forEach((ic) => (ic.style.transform = "rotate(0deg)"));
+      if (!wasOpen) {
+        answer.style.maxHeight = answer.scrollHeight + "px";
+        icon.style.transform = "rotate(180deg)";
+      }
+    });
+    renderFaq();
   }
 
   // KONTAK PAGE
   if (document.getElementById("page-kontak")) {
-    /* ... Logic for contact modal ... */
+    const contactModal = document.getElementById("contact-modal");
+    let currentContactInfo = {};
+    function showContactModal(contactInfo) {
+      /* ... function to show contact modal ... */
+    }
+    function closeContactModal() {
+      /* ... function to close contact modal ... */
+    }
+    document.getElementById("kontak").addEventListener("click", (e) => {
+      /* ... listener for contact triggers ... */
+    });
+    document
+      .getElementById("contact-modal-send")
+      .addEventListener("click", () => {
+        /* ... listener for sending message ... */
+      });
+    // ... listeners for closing contact modal
   }
 
   // --- GLOBAL MODAL LOGIC (Payment) ---
   const paymentModal = document.getElementById("payment-modal");
   if (paymentModal) {
     const paymentMeta = {
-      /* ... payment data ... */
+      dana: {
+        title: "DANA",
+        number: "088709650064",
+        holder: "Syariffan",
+        icon: "wallet",
+        color: "bg-blue-100 text-blue-600",
+      },
+      bsi: {
+        title: "Bank Syariah Indonesia (BSI)",
+        number: "7324408295",
+        holder: "Syariffan",
+        icon: "banknote",
+        color: "bg-green-100 text-green-700",
+      },
     };
     function showPaymentModal(kind) {
-      /* ... function to show modal ... */
+      const data = paymentMeta[kind];
+      if (!data) return;
+      document.getElementById("payment-modal-subtitle").textContent =
+        data.title;
+      document.getElementById("payment-modal-number").textContent = data.number;
+      document.getElementById("payment-modal-holder").textContent = data.holder;
+      const iconContainer = document.getElementById("payment-modal-icon-bg");
+      iconContainer.className = `p-2 rounded-lg ${data.color}`;
+      document
+        .getElementById("payment-modal-icon")
+        .setAttribute("data-lucide", data.icon);
+      document.getElementById("payment-modal-copy").dataset.number =
+        data.number;
+      paymentModal.classList.remove("modal-hidden");
+      paymentModal.classList.add("modal-visible");
+      lucide.createIcons();
     }
     function closePaymentModal() {
-      /* ... function to close modal ... */
+      paymentModal.classList.add("modal-hidden");
+      paymentModal.classList.remove("modal-visible");
     }
 
     document.querySelectorAll(".payment-modal-trigger").forEach((trigger) => {
@@ -770,12 +1299,32 @@ document.addEventListener("DOMContentLoaded", () => {
         showPaymentModal(paymentType);
       });
     });
-    // ... other listeners for close and copy buttons
+    document
+      .getElementById("payment-modal-close")
+      .addEventListener("click", closePaymentModal);
+    document
+      .getElementById("payment-modal-close-bottom")
+      .addEventListener("click", closePaymentModal);
+    paymentModal.addEventListener("click", (e) => {
+      if (e.target === paymentModal) closePaymentModal();
+    });
+    document
+      .getElementById("payment-modal-copy")
+      .addEventListener("click", function () {
+        const numberToCopy = this.dataset.number;
+        navigator.clipboard.writeText(numberToCopy).then(() => {
+          const btnText = document.getElementById("copy-button-text");
+          btnText.textContent = "Berhasil Disalin!";
+          setTimeout(() => {
+            btnText.textContent = "Salin Nomor";
+          }, 2000);
+        });
+      });
   }
 
   // --- FINAL INITIALIZATION ---
-  document.getElementById("current-year").textContent =
-    new Date().getFullYear();
+  const currentYear = document.getElementById("current-year");
+  if (currentYear) currentYear.textContent = new Date().getFullYear();
   lucide.createIcons();
   const mainContent = document.getElementById("main-content");
   if (mainContent) mainContent.classList.add("loaded");
