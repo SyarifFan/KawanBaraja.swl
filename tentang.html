@@ -1,315 +1,110 @@
-<!DOCTYPE html>
-<html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tentang Kami - KawanBaraja</title>
-    <!-- Tailwind & Fonts -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- External CSS -->
-    <link rel="stylesheet" href="/KawanBaraja.swl/assets/css/style.css" />
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Inter", "sans-serif"],
-              display: ["Poppins", "sans-serif"],
-            },
-            colors: {
-              "brand-orange": {
-                50: "#fff7ed",
-                100: "#ffedd5",
-                200: "#fed7aa",
-                300: "#fdba74",
-                400: "#fb923c",
-                500: "#f97316",
-                600: "#ea580c",
-                700: "#c2410c",
-                800: "#9a3412",
-                900: "#7c2d12",
-              },
-              "brand-blue": {
-                50: "#eff6ff",
-                100: "#dbeafe",
-                200: "#bfdbfe",
-                300: "#93c5fd",
-                400: "#60a5fa",
-                500: "#3b82f6",
-                600: "#2563eb",
-                700: "#1d4ed8",
-                800: "#1e40af",
-                900: "#1e3a8a",
-              },
-              "brand-green": { 500: "#10b981", 600: "#059669" },
-              "brand-purple": { 500: "#8b5cf6", 600: "#7c3aed" },
-              "brand-pink": { 500: "#ec4899", 600: "#db2777" },
-              "brand-teal": { 500: "#14b8a6", 600: "#0d9488" },
-              "brand-amber": { 500: "#f59e0b", 600: "#d97706" },
-            },
-          },
-        },
-      };
-    </script>
-  </head>
-  <body
-    id="page-tentang"
-    class="bg-gray-50 text-gray-800 flex flex-col min-h-screen"
-  >
-    <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <a
-            href="/KawanBaraja.swl/index.html"
-            class="flex items-center space-x-3"
-          >
-            <div
-              class="bg-brand-orange-500 text-white p-2 rounded-lg shadow-md"
-            >
-              <i data-lucide="graduation-cap"></i>
-            </div>
-            <span
-              class="text-2xl font-extrabold text-brand-orange-600 font-display"
-              >KawanBaraja</span
-            >
-          </a>
-          <nav class="hidden md:flex items-center space-x-6">
-            <a
-              href="/KawanBaraja.swl/layanan.html"
-              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-              >Layanan</a
-            >
-            <a
-              href="/KawanBaraja.swl/pemesanan.html"
-              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-              >Pemesanan</a
-            >
-            <a
-              href="/KawanBaraja.swl/tentang.html"
-              class="nav-link active hover:text-brand-orange-500 transition-colors font-semibold"
-              >Tentang Kami</a
-            >
-            <a
-              href="/KawanBaraja.swl/faq.html"
-              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-              >FAQ</a
-            >
-            <a
-              href="/KawanBaraja.swl/kontak.html"
-              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-              >Kontak</a
-            >
-          </nav>
-          <button
-            id="open-sidebar"
-            class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600"
-            aria-label="Buka menu"
-          >
-            <i data-lucide="menu" class="w-6 h-6"></i>
-          </button>
-        </div>
-      </div>
-    </header>
+<!-- Tentang -->
+<section id="tentang" class="page-section py-16">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-extrabold text-brand-blue-700 font-display">
+        Tentang Kami
+      </h2>
+      <p class="mt-2 text-gray-700">
+        Perjalanan & dedikasi di balik KawanBaraja.
+      </p>
+    </div>
 
-    <!-- Mobile Sidebar -->
     <div
-      id="sidebar-backdrop"
-      class="fixed inset-0 bg-black/30 z-50 hidden"
-    ></div>
-    <aside
-      id="mobile-sidebar"
-      class="fixed inset-y-0 left-0 w-72 bg-white shadow-xl z-50 sidebar-enter transition-transform duration-300 ease-out"
+      class="bg-white p-8 rounded-2xl shadow-lg flex flex-col md:flex-row items-center gap-8 md:gap-12"
     >
-      <div class="flex items-center justify-between px-4 h-16 border-b">
-        <span class="font-semibold text-brand-orange-600 font-display"
-          >Menu</span
+      <div class="md:w-1/3 text-center flex-shrink-0">
+        <img
+          src="assets/images/Syariffan.png"
+          alt="Foto Syariffan, S.Pd"
+          class="w-40 h-40 rounded-[20%] mx-auto object-cover shadow-lg border-4 border-brand-orange-200"
+        />
+        <h3
+          class="mt-4 text-2xl font-extrabold text-brand-orange-600 font-display"
         >
-        <button
-          id="close-sidebar"
-          class="p-2 rounded-md hover:bg-gray-100"
-          aria-label="Tutup menu"
-        >
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+          Syariffan, S.Pd
+        </h3>
+        <p class="text-gray-600 font-medium">Founder KawanBaraja</p>
+        <p class="text-sm mt-2">
+          <i data-lucide="map-pin" class="inline w-4 h-4 mr-1"></i>Sawahlunto,
+          Sumatera Barat
+        </p>
       </div>
-      <nav class="p-4 space-y-1">
-        <a
-          href="/KawanBaraja.swl/index.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >Beranda</a
-        >
-        <a
-          href="/KawanBaraja.swl/layanan.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >Layanan</a
-        >
-        <a
-          href="/KawanBaraja.swl/pemesanan.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >Pemesanan</a
-        >
-        <a
-          href="/KawanBaraja.swl/tentang.html"
-          class="block px-3 py-2 rounded-md bg-gray-100 text-brand-orange-600 font-medium"
-          >Tentang Kami</a
-        >
-        <a
-          href="/KawanBaraja.swl/faq.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >FAQ</a
-        >
-        <a
-          href="/KawanBaraja.swl/kontak.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >Kontak</a
-        >
-      </nav>
-    </aside>
-
-    <main id="main-content" class="flex-grow">
-      <section id="tentang" class="page-section active py-16">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-10">
-            <h2
-              class="text-3xl font-extrabold text-brand-blue-700 font-display"
-            >
-              Tentang Kami
-            </h2>
-            <p class="mt-2 text-gray-700">
-              Perjalanan & dedikasi di balik KawanBaraja.
-            </p>
-          </div>
-
-          <div
-            class="bg-white p-8 rounded-2xl shadow-lg flex flex-col md:flex-row items-center gap-8 md:gap-12"
-          >
-            <div class="md:w-1/3 text-center flex-shrink-0">
-              <img
-                src="/KawanBaraja.swl/assets/images/Syariffan.png"
-                alt="Foto Syariffan, S.Pd"
-                class="w-40 h-40 rounded-full mx-auto object-cover shadow-lg border-4 border-brand-orange-200"
-              />
-              <h3
-                class="mt-4 text-2xl font-extrabold text-brand-orange-600 font-display"
-              >
-                Syariffan, S.Pd
-              </h3>
-              <p class="text-gray-600 font-medium">Founder KawanBaraja</p>
-              <p class="text-sm mt-2">
-                <i data-lucide="map-pin" class="inline w-4 h-4 mr-1"></i
-                >Sawahlunto, Sumatera Barat
+      <div
+        class="md:w-2/3 border-t-2 md:border-t-0 md:border-l-2 border-dashed border-gray-300 pt-8 md:pt-0 md:pl-8"
+      >
+        <p
+          id="rotating-quote"
+          class="text-gray-700 leading-relaxed mb-6 italic"
+        ></p>
+        <div class="space-y-5">
+          <div class="flex items-start gap-4">
+            <div class="bg-brand-blue-100 text-brand-blue-600 p-2 rounded-full">
+              <i data-lucide="rocket"></i>
+            </div>
+            <div>
+              <h4 class="font-bold font-display">Misi Kami</h4>
+              <p class="text-sm text-gray-600">
+                Memberikan pendampingan akademik yang
+                <strong>cepat, akurat, dan edukatif</strong>—bukan sekadar
+                menyelesaikan tugas, tetapi juga membantu memahami konsepnya.
               </p>
             </div>
-            <div
-              class="md:w-2/3 border-t-2 md:border-t-0 md:border-l-2 border-dashed border-gray-300 pt-8 md:pt-0 md:pl-8"
-            >
-              <p
-                id="rotating-quote"
-                class="text-gray-700 leading-relaxed mb-6 italic"
-              ></p>
-              <div class="space-y-5">
-                <div class="flex items-start gap-4">
-                  <div
-                    class="bg-brand-blue-100 text-brand-blue-600 p-2 rounded-full"
-                  >
-                    <i data-lucide="rocket"></i>
-                  </div>
-                  <div>
-                    <h4 class="font-bold font-display">Misi Kami</h4>
-                    <p class="text-sm text-gray-600">
-                      Memberikan pendampingan akademik yang
-                      <strong>cepat, akurat, dan edukatif</strong>—bukan sekadar
-                      menyelesaikan tugas, tetapi juga membantu memahami
-                      konsepnya.
-                    </p>
-                  </div>
-                </div>
-                <div class="flex items-start gap-4">
-                  <div
-                    class="bg-brand-blue-100 text-brand-blue-600 p-2 rounded-full"
-                  >
-                    <i data-lucide="award"></i>
-                  </div>
-                  <div>
-                    <h4 class="font-bold font-display">Keahlian</h4>
-                    <p class="text-sm text-gray-600">
-                      Analisis data kuantitatif/kualitatif (SPSS/AMOS/PLS),
-                      manajemen sitasi (Mendeley/Zotero), parafrase akademik,
-                      serta proofreading sesuai gaya selingkung kampus.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
-
-          <!-- Testimoni Baru -->
-          <div class="mt-16">
-            <div class="text-center mb-8">
-              <h2
-                class="text-3xl font-extrabold text-brand-blue-700 font-display"
-              >
-                Kata Mereka
-              </h2>
-              <p class="mt-2 text-gray-700">
-                Geser untuk melihat testimoni lainnya.
-              </p>
+          <div class="flex items-start gap-4">
+            <div class="bg-brand-blue-100 text-brand-blue-600 p-2 rounded-full">
+              <i data-lucide="award"></i>
             </div>
-            <div class="relative max-w-sm mx-auto">
-              <!-- iPhone Mockup -->
-              <div
-                class="relative mx-auto bg-black border-[10px] border-black rounded-[40px] shadow-2xl"
-              >
-                <div
-                  class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-xl z-10"
-                ></div>
-                <div
-                  class="absolute -left-[13px] top-[90px] h-[40px] w-[3px] bg-gray-800 rounded-l-lg"
-                ></div>
-                <div
-                  class="absolute -left-[13px] top-[140px] h-[70px] w-[3px] bg-gray-800 rounded-l-lg"
-                ></div>
-                <div
-                  class="absolute -right-[13px] top-[120px] h-[70px] w-[3px] bg-gray-800 rounded-r-lg"
-                ></div>
-
-                <div
-                  class="w-full h-[600px] bg-gray-200 overflow-hidden rounded-[30px]"
-                >
-                  <div
-                    id="testimonial-slider"
-                    class="testimonial-slider h-full flex overflow-x-scroll snap-x snap-mandatory"
-                  >
-                    <!-- Slides akan di-render oleh JavaScript -->
-                  </div>
-                </div>
-              </div>
-              <div
-                id="testimonial-dots"
-                class="flex justify-center gap-2 mt-4"
-              ></div>
+            <div>
+              <h4 class="font-bold font-display">Keahlian</h4>
+              <p class="text-sm text-gray-600">
+                Analisis data kuantitatif/kualitatif (SPSS/AMOS/PLS), manajemen
+                sitasi (Mendeley/Zotero), parafrase akademik, serta proofreading
+                sesuai gaya selingkung kampus.
+              </p>
             </div>
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white pt-12 pb-6">
-      <!-- ... Konten footer Anda tetap sama ... -->
-    </footer>
-
-    <!-- Modals (FAB, Payment, Contact, User Info) -->
-    <!-- ... Semua modal Anda tetap sama ... -->
-
-    <script src="/KawanBaraja.swl/assets/js/main.js"></script>
-  </body>
-</html>
+    <!-- Testimoni -->
+    <div class="mt-16">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-extrabold text-brand-blue-700 font-display">
+          Kata Mereka
+        </h2>
+        <p class="mt-2 text-gray-700">Geser untuk melihat testimoni lainnya.</p>
+      </div>
+      <div class="relative max-w-sm mx-auto">
+        <div
+          class="relative mx-auto bg-black border-[10px] border-black rounded-[40px] shadow-2xl"
+        >
+          <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-xl z-10"
+          ></div>
+          <div
+            class="absolute -left-[13px] top-[90px] h-[40px] w-[3px] bg-gray-800 rounded-l-lg"
+          ></div>
+          <div
+            class="absolute -left-[13px] top-[140px] h-[70px] w-[3px] bg-gray-800 rounded-l-lg"
+          ></div>
+          <div
+            class="absolute -right-[13px] top-[120px] h-[70px] w-[3px] bg-gray-800 rounded-r-lg"
+          ></div>
+          <div
+            class="w-full h-[600px] bg-gray-200 overflow-hidden rounded-[30px]"
+          >
+            <div
+              id="testimonial-slider"
+              class="testimonial-slider h-full flex overflow-x-scroll snap-x snap-mandatory"
+            >
+              <!-- Slide testimoni akan dimuat di sini oleh main.js -->
+            </div>
+          </div>
+        </div>
+        <div id="testimonial-dots" class="flex justify-center gap-2 mt-4"></div>
+      </div>
+    </div>
+  </div>
+</section>

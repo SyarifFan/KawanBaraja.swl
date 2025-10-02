@@ -1,384 +1,153 @@
-<!DOCTYPE html>
-<html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pemesanan - KawanBaraja</title>
-    <!-- Tailwind & Fonts -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- External CSS -->
-    <link rel="stylesheet" href="/KawanBaraja.swl/assets/css/style.css" />
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Inter", "sans-serif"],
-              display: ["Poppins", "sans-serif"],
-            },
-            colors: {
-              "brand-orange": {
-                50: "#fff7ed",
-                100: "#ffedd5",
-                200: "#fed7aa",
-                300: "#fdba74",
-                400: "#fb923c",
-                500: "#f97316",
-                600: "#ea580c",
-                700: "#c2410c",
-                800: "#9a3412",
-                900: "#7c2d12",
-              },
-              "brand-blue": {
-                50: "#eff6ff",
-                100: "#dbeafe",
-                200: "#bfdbfe",
-                300: "#93c5fd",
-                400: "#60a5fa",
-                500: "#3b82f6",
-                600: "#2563eb",
-                700: "#1d4ed8",
-                800: "#1e40af",
-                900: "#1e3a8a",
-              },
-              "brand-green": { 500: "#10b981", 600: "#059669" },
-              "brand-purple": { 500: "#8b5cf6", 600: "#7c3aed" },
-              "brand-pink": { 500: "#ec4899", 600: "#db2777" },
-              "brand-teal": { 500: "#14b8a6", 600: "#0d9488" },
-              "brand-amber": { 500: "#f59e0b", 600: "#d97706" },
-            },
-          },
-        },
-      };
-    </script>
-  </head>
-  <body
-    id="page-pemesanan"
-    class="bg-blue-50 text-gray-800 flex flex-col min-h-screen"
-  >
-    <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <a
-            href="/KawanBaraja.swl/index.html"
-            class="flex items-center space-x-3"
-          >
-            <div
-              class="bg-brand-orange-500 text-white p-2 rounded-lg shadow-md"
-            >
-              <i data-lucide="graduation-cap"></i>
-            </div>
-            <span
-              class="text-2xl font-extrabold text-brand-orange-600 font-display"
-              >KawanBaraja</span
-            >
-          </a>
-          <nav class="hidden md:flex items-center space-x-6">
-            <a
-              href="/KawanBaraja.swl/layanan.html"
-              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-              >Layanan</a
-            >
-            <a
-              href="/KawanBaraja.swl/pemesanan.html"
-              class="nav-link active hover:text-brand-orange-500 transition-colors font-semibold"
-              >Pemesanan</a
-            >
-            <a
-              href="/KawanBaraja.swl/tentang.html"
-              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-              >Tentang Kami</a
-            >
-            <a
-              href="/KawanBaraja.swl/faq.html"
-              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-              >FAQ</a
-            >
-            <a
-              href="/KawanBaraja.swl/kontak.html"
-              class="nav-link hover:text-brand-orange-500 transition-colors font-semibold"
-              >Kontak</a
-            >
-          </nav>
-          <button
-            id="open-sidebar"
-            class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600"
-            aria-label="Buka menu"
-          >
-            <i data-lucide="menu" class="w-6 h-6"></i>
-          </button>
-        </div>
-      </div>
-    </header>
+<!-- Pemesanan -->
+<section id="pemesanan" class="page-section py-16 bg-blue-50">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-extrabold text-brand-orange-600 font-display">
+        Formulir Pemesanan
+      </h2>
+    </div>
 
-    <!-- Mobile Sidebar -->
     <div
-      id="sidebar-backdrop"
-      class="fixed inset-0 bg-black/30 z-50 hidden"
+      id="process-indicator"
+      class="flex justify-center items-center gap-2 md:gap-4 mb-8"
     ></div>
-    <aside
-      id="mobile-sidebar"
-      class="fixed inset-y-0 left-0 w-72 bg-white shadow-xl z-50 sidebar-enter transition-transform duration-300 ease-out"
-    >
-      <div class="flex items-center justify-between px-4 h-16 border-b">
-        <span class="font-semibold text-brand-orange-600 font-display"
-          >Menu</span
-        >
-        <button
-          id="close-sidebar"
-          class="p-2 rounded-md hover:bg-gray-100"
-          aria-label="Tutup menu"
-        >
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-      <nav class="p-4 space-y-1">
-        <a
-          href="/KawanBaraja.swl/index.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >Beranda</a
-        >
-        <a
-          href="/KawanBaraja.swl/layanan.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >Layanan</a
-        >
-        <a
-          href="/KawanBaraja.swl/pemesanan.html"
-          class="block px-3 py-2 rounded-md bg-gray-100 text-brand-orange-600 font-medium"
-          >Pemesanan</a
-        >
-        <a
-          href="/KawanBaraja.swl/tentang.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >Tentang Kami</a
-        >
-        <a
-          href="/KawanBaraja.swl/faq.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >FAQ</a
-        >
-        <a
-          href="/KawanBaraja.swl/kontak.html"
-          class="block px-3 py-2 rounded-md hover:bg-gray-100 font-medium"
-          >Kontak</a
-        >
-      </nav>
-    </aside>
 
-    <main class="flex-grow">
-      <section id="pemesanan" class="page-section active py-16">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-10">
-            <h2
-              class="text-3xl font-extrabold text-brand-orange-600 font-display"
-            >
-              Formulir Pemesanan
-            </h2>
-          </div>
-
-          <!-- --- PERUBAHAN DI SINI: VISUAL PROSES ORDER DIKEMBALIKAN KE VERSI AWAL --- -->
+    <div class="flex flex-col lg:flex-row gap-8">
+      <div class="lg:w-2/3 space-y-6">
+        <div
+          id="order-category-cards"
+          class="grid grid-cols-2 md:grid-cols-3 gap-4"
+        ></div>
+        <div
+          id="order-form-items"
+          class="bg-white p-6 rounded-xl shadow-md min-h-[320px]"
+        >
           <div
-            id="process-indicator"
-            class="flex justify-center items-center gap-2 md:gap-4 mb-8"
+            id="order-placeholder"
+            class="flex flex-col items-center justify-center h-full text-center text-gray-500"
           >
-            <!-- Konten akan dirender oleh JavaScript -->
+            <i data-lucide="mouse-pointer-click" class="w-16 h-16 mb-4"></i>
+            <p class="font-semibold">Pilih kategori layanan di atas</p>
+            <p class="text-sm">Daftar item akan muncul di sini.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:w-1/3">
+        <div class="sticky top-24 bg-white p-6 rounded-xl shadow-md">
+          <div
+            class="flex justify-between items-center mb-4 border-b pb-2 border-gray-200"
+          >
+            <h3
+              class="text-xl font-extrabold font-display flex items-center gap-2"
+            >
+              Ringkasan Pesanan
+            </h3>
+            <div class="flex items-center gap-2">
+              <button
+                id="copy-order-btn"
+                title="Salin detail pesanan"
+                class="text-blue-500 hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+                disabled
+              >
+                <i data-lucide="copy" class="w-5 h-5"></i>
+              </button>
+              <button
+                id="cancel-all-btn"
+                title="Batalkan Semua Pesanan"
+                class="text-red-500 hover:text-red-700 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+                disabled
+              >
+                <i data-lucide="trash-2" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+          <div class="mb-4 min-h-[50px] max-h-40 overflow-y-auto">
+            <div id="cart-items-list" class="space-y-3"></div>
+            <p id="empty-cart-message" class="text-gray-500">
+              Keranjang masih kosong...
+            </p>
           </div>
 
-          <div class="flex flex-col lg:flex-row gap-8">
-            <div class="lg:w-2/3 space-y-6">
-              <div
-                id="order-category-cards"
-                class="grid grid-cols-2 md:grid-cols-3 gap-4"
-              ></div>
-              <div
-                id="order-form-items"
-                class="bg-white p-6 rounded-xl shadow-md min-h-[320px]"
-              >
-                <div
-                  id="order-placeholder"
-                  class="flex flex-col items-center justify-center h-full text-center text-gray-500"
-                >
-                  <i
-                    data-lucide="mouse-pointer-click"
-                    class="w-16 h-16 mb-4"
-                  ></i>
-                  <p class="font-semibold">Pilih kategori layanan di atas</p>
-                  <p class="text-sm">Daftar item akan muncul di sini.</p>
-                </div>
-              </div>
+          <!-- Total & Checkout -->
+          <div class="border-t pt-4 mt-4 border-gray-200 space-y-2">
+            <div class="flex justify-between items-center text-sm">
+              <span>Subtotal:</span
+              ><span id="subtotal-price" class="font-medium">Rp 0</span>
             </div>
-            <div class="lg:w-1/3">
-              <div class="sticky top-24 bg-white p-6 rounded-xl shadow-md">
-                <div
-                  class="flex justify-between items-center mb-4 border-b pb-2 border-gray-200"
-                >
-                  <h3
-                    class="text-xl font-extrabold font-display flex items-center gap-2"
-                  >
-                    Ringkasan Pesanan <i data-lucide="shopping-basket"></i>
-                  </h3>
-                  <button
-                    id="cancel-all-btn"
-                    title="Batalkan Semua"
-                    class="text-red-500 hover:text-red-700 disabled:text-gray-400 disabled:cursor-not-allowed"
-                    disabled
-                  >
-                    <i data-lucide="trash-2" class="w-5 h-5"></i>
-                  </button>
-                </div>
-                <div class="mb-4 min-h-[50px] max-h-40 overflow-y-auto">
-                  <div id="cart-items-list" class="space-y-3"></div>
-                  <p id="empty-cart-message" class="text-gray-500">
-                    Keranjang masih kosong...
-                  </p>
-                </div>
+            <div class="flex justify-between items-center text-sm">
+              <span>Diskon:</span
+              ><span id="discount-amount" class="text-green-600 font-medium"
+                >Rp 0</span
+              >
+            </div>
+            <div
+              id="fast-track-row"
+              class="flex justify-between items-center text-sm"
+              style="display: none"
+            >
+              <span>Biaya Fast Track (15%):</span
+              ><span id="fast-track-fee" class="text-red-600 font-medium"
+                >Rp 0</span
+              >
+            </div>
+            <div
+              class="flex justify-between items-center font-extrabold text-lg font-display"
+            >
+              <span>Total Akhir:</span
+              ><span id="total-price" class="text-brand-orange-600">Rp 0</span>
+            </div>
+            <button
+              id="checkout-btn"
+              class="mt-6 w-full bg-brand-orange-500 text-white font-extrabold py-3 px-6 rounded-lg hover:bg-brand-orange-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center gap-2 font-display"
+              disabled
+            >
+              <i data-lucide="send" class="w-5 h-5"></i> Selesai & Pesan
+            </button>
+          </div>
 
-                <div class="border-t pt-4 mt-4 border-gray-200">
-                  <h4 class="font-bold mb-3 flex items-center gap-2">
-                    <i data-lucide="wallet-cards" class="w-5 h-5"></i> Metode
-                    Pembayaran
-                  </h4>
-                  <div class="grid grid-cols-2 gap-3">
-                    <button
-                      class="payment-modal-trigger flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 p-2 rounded-lg border"
-                      data-pay="dana"
-                    >
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg"
-                        alt="Logo DANA"
-                        class="h-4"
-                      />
-                    </button>
-                    <button
-                      class="payment-modal-trigger flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 p-2 rounded-lg border"
-                      data-pay="bsi"
-                    >
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bank_Syariah_Indonesia.svg/2560px-Bank_Syariah_Indonesia.svg.png"
-                        alt="Logo BSI"
-                        class="h-4"
-                      />
-                    </button>
-                  </div>
-                  <p class="text-xs text-gray-500 mt-2">
-                    Klik untuk melihat detail pembayaran.
-                  </p>
-                </div>
-
-                <!-- OPSI TAMBAHAN -->
-                <div class="border-t pt-4 mt-4 border-gray-200 space-y-3">
-                  <label
-                    for="fast-track-checkbox"
-                    class="flex items-center justify-between text-sm cursor-pointer pt-2"
-                  >
-                    <span class="font-semibold flex items-center gap-2"
-                      ><i data-lucide="zap"></i> Fast Track (Prioritas)</span
-                    >
-                    <input
-                      type="checkbox"
-                      id="fast-track-checkbox"
-                      class="h-4 w-4 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500"
-                    />
-                  </label>
-                  <p class="text-xs text-gray-500 -mt-2 pl-7">
-                    Pesanan Anda akan dikerjakan lebih dulu (+15% dari
-                    Subtotal).
-                  </p>
-                </div>
-
-                <div class="border-t pt-4 mt-4 border-gray-200 space-y-2">
-                  <div class="flex justify-between items-center text-sm">
-                    <span>Subtotal:</span
-                    ><span id="subtotal-price" class="font-medium">Rp 0</span>
-                  </div>
-                  <div
-                    id="fast-track-fee-container"
-                    class="flex justify-between items-center text-sm hidden"
-                  >
-                    <span>Biaya Fast Track:</span
-                    ><span id="fast-track-fee" class="font-medium">Rp 0</span>
-                  </div>
-                  <div class="flex justify-between items-center text-sm">
-                    <span>Diskon:</span
-                    ><span
-                      id="discount-amount"
-                      class="text-green-600 font-medium"
-                      >Rp 0</span
-                    >
-                  </div>
-                  <div
-                    class="flex justify-between items-center font-extrabold text-lg font-display"
-                  >
-                    <span>Total Akhir:</span
-                    ><span id="total-price" class="text-brand-orange-600"
-                      >Rp 0</span
-                    >
-                  </div>
-
-                  <div class="flex items-center gap-2 pt-4">
-                    <button
-                      id="checkout-btn"
-                      class="w-full bg-brand-orange-500 text-white font-extrabold py-3 px-6 rounded-lg hover:bg-brand-orange-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center gap-2 font-display"
-                      disabled
-                    >
-                      <i data-lucide="send" class="w-5 h-5"></i>Pesan
-                    </button>
-                    <button
-                      id="admin-copy-btn"
-                      title="Salin Pesan untuk Klien"
-                      class="flex-shrink-0 bg-brand-blue-500 text-white w-12 h-12 rounded-lg hover:bg-brand-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center"
-                      disabled
-                    >
-                      <i data-lucide="clipboard-copy" class="w-6 h-6"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="mt-4 pt-4 border-t border-gray-200 space-y-4">
-                  <div>
-                    <label
-                      for="customer-comments"
-                      class="block text-sm font-semibold text-gray-700"
-                      >Catatan Tambahan</label
-                    ><textarea
-                      id="customer-comments"
-                      rows="2"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500"
-                      placeholder="Contoh: Tolong gunakan referensi 5 tahun terakhir."
-                    ></textarea>
-                  </div>
-                  <div>
-                    <label
-                      for="discount-request"
-                      class="block text-sm font-semibold text-gray-700"
-                      >Permintaan Diskon (Rp)</label
-                    ><input
-                      id="discount-request"
-                      type="number"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                      placeholder="Opsional, misal: 10000"
-                    />
-                  </div>
-                </div>
-              </div>
+          <div class="mt-4 pt-4 border-t border-gray-200 space-y-4">
+            <div class="flex items-center">
+              <input
+                id="fast-track-checkbox"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500"
+              />
+              <label
+                for="fast-track-checkbox"
+                class="ml-2 block text-sm font-semibold text-gray-700"
+                >Fast Track (Prioritas)</label
+              >
+            </div>
+            <div>
+              <label
+                for="customer-comments"
+                class="block text-sm font-semibold text-gray-700"
+                >Catatan Tambahan</label
+              >
+              <textarea
+                id="customer-comments"
+                rows="2"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm"
+                placeholder="Contoh: Tolong gunakan referensi 5 tahun terakhir."
+              ></textarea>
+            </div>
+            <div>
+              <label
+                for="discount-request"
+                class="block text-sm font-semibold text-gray-700"
+                >Permintaan Diskon (Rp)</label
+              >
+              <input
+                id="discount-request"
+                type="number"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-orange-500 focus:ring-2 focus:ring-brand-orange-200 sm:text-sm"
+                placeholder="Opsional, misal: 10000"
+              />
             </div>
           </div>
         </div>
-      </section>
-    </main>
-
-    <!-- Footer, FAB, dan Modals -->
-    <!-- ... (Bagian ini tetap sama seperti file Anda sebelumnya) ... -->
-
-    <script src="/KawanBaraja.swl/assets/js/main.js"></script>
-  </body>
-</html>
+      </div>
+    </div>
+  </div>
+</section>
