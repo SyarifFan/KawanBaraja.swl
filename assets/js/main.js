@@ -1003,6 +1003,7 @@ document.addEventListener("DOMContentLoaded", () => {
       discountInput.value = maxDiscount;
       discount = maxDiscount;
     }
+
     const finalTotal = Math.max(0, subtotal + fastTrackFee - discount);
 
     let hasItems = false;
@@ -1067,7 +1068,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const subtotal = calculateSubtotal();
     const isFastTrack = fastTrackCheckbox.checked;
     const fastTrackFee = isFastTrack ? subtotal * 0.15 : 0;
-    const discount = parseInt(discountInput.value) || 0;
+
+    const maxDiscount = Math.floor(subtotal * 0.1);
+    let discount = parseInt(discountInput.value) || 0;
+    if (discount > maxDiscount && maxDiscount > 0) {
+      discount = maxDiscount;
+    }
+
     const finalTotal = Math.max(0, subtotal + fastTrackFee - discount);
 
     let summary = `*HARGA LAYANAN*\n\n`;
