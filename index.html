@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KADIJOKIAN - Solusi Cepat & Praktis untuk Semua Tugasmu</title>
+    <title>Kawan Baraja - Solusi Cepat & Praktis untuk Semua Tugasmu</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -86,7 +86,6 @@
         background: #fdba74;
       }
 
-      /* Pencegahan FOUC (Flash of Unstyled Content) */
       #main-content {
         opacity: 0;
         transition: opacity 400ms ease-in-out;
@@ -214,7 +213,6 @@
         transform: translateX(0);
       }
 
-      /* Testimonial Slider */
       .testimonial-slider {
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
@@ -226,7 +224,6 @@
         scroll-snap-align: center;
       }
 
-      /* Modal Styles */
       .modal-backdrop {
         transition: opacity 0.3s ease-in-out;
       }
@@ -252,7 +249,6 @@
         opacity: 1;
       }
 
-      /* Layanan Accordion for Mobile */
       .layanan-desc-mobile {
         max-height: 0;
         overflow: hidden;
@@ -269,7 +265,6 @@
         transform: rotate(180deg);
       }
 
-      /* Hide number input arrows */
       input[type="number"]::-webkit-inner-spin-button,
       input[type="number"]::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -279,7 +274,6 @@
         -moz-appearance: textfield;
       }
 
-      /* Order/Layanan category button hover effect */
       .order-category-btn,
       .layanan-nav-btn {
         transition: transform 0.2s ease-in-out;
@@ -289,7 +283,6 @@
         transform: scale(1.02);
       }
 
-      /* Tooltip Styles */
       .tooltip-container {
         position: relative;
         cursor: pointer;
@@ -327,6 +320,26 @@
         visibility: visible;
         opacity: 1;
       }
+
+      /* Toast Notification */
+      #toast-notification {
+        position: fixed;
+        bottom: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #2d3748;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 100;
+        transition: bottom 0.5s ease-in-out;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #toast-notification.show {
+        bottom: 30px;
+      }
     </style>
   </head>
   <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
@@ -339,14 +352,14 @@
               data-page="beranda"
               class="flex items-center space-x-3 page-link"
             >
-              <div
-                class="bg-brand-orange-500 text-white p-2 rounded-lg shadow-md"
-              >
-                <i data-lucide="graduation-cap"></i>
-              </div>
+              <img
+                src="assets/images/logo.png"
+                alt="Kawan Baraja Logo"
+                class="h-10 w-10"
+              />
               <span
                 class="text-2xl font-extrabold text-brand-orange-600 font-display"
-                >KADIJOKIAN</span
+                >Kawan Baraja</span
               >
             </a>
 
@@ -545,6 +558,126 @@
                     0
                   </p>
                   <p class="text-gray-700 font-semibold">Instansi Berbeda</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="mt-16 py-12">
+              <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                  <h2
+                    class="text-3xl font-extrabold text-brand-blue-700 font-display"
+                  >
+                    Alur Pemesanan Mudah & Cepat
+                  </h2>
+                  <p class="mt-2 text-gray-700">
+                    Hanya dalam beberapa langkah, tugas Anda akan kami
+                    selesaikan.
+                  </p>
+                </div>
+                <div class="relative">
+                  <div
+                    class="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-transparent"
+                    style="
+                      background-image: linear-gradient(
+                        to bottom,
+                        #fdba74 4px,
+                        transparent 4px
+                      );
+                      background-size: 1px 12px;
+                      background-repeat: repeat-y;
+                    "
+                  ></div>
+
+                  <div class="space-y-12">
+                    <div class="flex items-center relative">
+                      <div class="md:w-1/2 flex md:justify-end md:pr-12">
+                        <div class="text-center md:text-right max-w-sm">
+                          <h3
+                            class="text-xl font-bold text-brand-orange-600 font-display"
+                          >
+                            Langkah 1: Pilih Layanan
+                          </h3>
+                          <p class="mt-1 text-gray-600">
+                            Buka halaman pemesanan, pilih kategori, dan centang
+                            layanan yang Anda butuhkan.
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="bg-brand-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center absolute left-1/2 -translate-x-1/2 z-10 shadow-lg border-4 border-white"
+                      >
+                        <i
+                          data-lucide="mouse-pointer-click"
+                          class="w-6 h-6"
+                        ></i>
+                      </div>
+                      <div class="w-1/2"></div>
+                    </div>
+                    <div class="flex items-center relative">
+                      <div class="w-1/2"></div>
+                      <div
+                        class="bg-brand-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center absolute left-1/2 -translate-x-1/2 z-10 shadow-lg border-4 border-white"
+                      >
+                        <i data-lucide="file-pen-line" class="w-6 h-6"></i>
+                      </div>
+                      <div class="md:w-1/2 flex md:justify-start md:pl-12">
+                        <div class="text-center md:text-left max-w-sm">
+                          <h3
+                            class="text-xl font-bold text-brand-blue-600 font-display"
+                          >
+                            Langkah 2: Kirim Pesanan
+                          </h3>
+                          <p class="mt-1 text-gray-600">
+                            Isi nama dan deadline, lalu klik tombol pesan untuk
+                            mengirim rinciannya via WhatsApp.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-center relative">
+                      <div class="md:w-1/2 flex md:justify-end md:pr-12">
+                        <div class="text-center md:text-right max-w-sm">
+                          <h3
+                            class="text-xl font-bold text-brand-green-600 font-display"
+                          >
+                            Langkah 3: Pembayaran DP
+                          </h3>
+                          <p class="mt-1 text-gray-600">
+                            Lakukan pembayaran DP sebesar 50% sesuai instruksi
+                            dari admin sebagai tanda jadi.
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="bg-brand-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center absolute left-1/2 -translate-x-1/2 z-10 shadow-lg border-4 border-white"
+                      >
+                        <i data-lucide="wallet-cards" class="w-6 h-6"></i>
+                      </div>
+                      <div class="w-1/2"></div>
+                    </div>
+                    <div class="flex items-center relative">
+                      <div class="w-1/2"></div>
+                      <div
+                        class="bg-brand-purple-500 text-white rounded-full w-12 h-12 flex items-center justify-center absolute left-1/2 -translate-x-1/2 z-10 shadow-lg border-4 border-white"
+                      >
+                        <i data-lucide="file-check-2" class="w-6 h-6"></i>
+                      </div>
+                      <div class="md:w-1/2 flex md:justify-start md:pl-12">
+                        <div class="text-center md:text-left max-w-sm">
+                          <h3
+                            class="text-xl font-bold text-brand-purple-600 font-display"
+                          >
+                            Langkah 4: Pelunasan & Terima Hasil
+                          </h3>
+                          <p class="mt-1 text-gray-600">
+                            Setelah kami kirim pratinjau, lakukan pelunasan dan
+                            file akhir akan segera Anda terima.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </section>
@@ -754,28 +887,6 @@
                   </div>
 
                   <div class="border-t pt-4 mt-4 border-gray-200">
-                    <label
-                      for="fast-track-checkbox"
-                      class="flex items-center gap-3 p-3 rounded-lg bg-yellow-50 border border-yellow-200 cursor-pointer hover:bg-yellow-100"
-                    >
-                      <input
-                        type="checkbox"
-                        id="fast-track-checkbox"
-                        class="h-5 w-5 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500"
-                      />
-                      <div>
-                        <span class="font-semibold text-yellow-800"
-                          >Prioritaskan (Fast Track)</span
-                        >
-                        <p class="text-xs text-yellow-700">
-                          Pesanan Anda akan dikerjakan lebih dulu. (+20% dari
-                          subtotal)
-                        </p>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div class="border-t pt-4 mt-4 border-gray-200">
                     <h4 class="font-bold mb-3 flex items-center gap-2">
                       <i data-lucide="wallet-cards" class="w-5 h-5"></i> Metode
                       Pembayaran
@@ -808,6 +919,23 @@
                   </div>
 
                   <div class="border-t pt-4 mt-4 border-gray-200 space-y-2">
+                    <div class="flex items-center justify-between mb-2">
+                      <label
+                        for="fast-track-toggle"
+                        class="text-sm font-semibold text-gray-700 flex items-center gap-2 cursor-pointer"
+                      >
+                        <i
+                          data-lucide="zap"
+                          class="w-4 h-4 text-yellow-500"
+                        ></i>
+                        Fast Track (Prioritas)
+                      </label>
+                      <input
+                        type="checkbox"
+                        id="fast-track-toggle"
+                        class="h-5 w-5 rounded border-gray-300 text-brand-orange-600 focus:ring-brand-orange-500 cursor-pointer"
+                      />
+                    </div>
                     <div class="flex justify-between items-center text-sm">
                       <span>Subtotal:</span
                       ><span id="subtotal-price" class="font-medium">Rp 0</span>
@@ -816,7 +944,7 @@
                       <span>Biaya Fast Track (20%):</span
                       ><span
                         id="fast-track-fee"
-                        class="text-yellow-700 font-medium"
+                        class="font-medium text-yellow-600"
                         >Rp 0</span
                       >
                     </div>
@@ -836,7 +964,6 @@
                         >Rp 0</span
                       >
                     </div>
-
                     <div class="mt-6 flex items-center gap-2">
                       <button
                         id="checkout-btn"
@@ -849,10 +976,10 @@
                       <button
                         id="admin-copy-btn"
                         title="Salin Pesanan untuk Admin"
-                        class="flex-shrink-0 bg-brand-blue-500 text-white w-12 h-12 rounded-lg hover:bg-brand-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center"
+                        class="flex-shrink-0 bg-gray-600 text-white p-3.5 rounded-lg hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg"
                         disabled
                       >
-                        <i data-lucide="copy" class="w-5 h-5"></i>
+                        <i data-lucide="clipboard-copy" class="w-5 h-5"></i>
                       </button>
                     </div>
                   </div>
@@ -900,7 +1027,7 @@
                 Tentang Kami
               </h2>
               <p class="mt-2 text-gray-700">
-                Perjalanan & dedikasi di balik KADIJOKIAN.
+                Perjalanan & dedikasi di balik Kawan Baraja.
               </p>
             </div>
 
@@ -918,7 +1045,7 @@
                 >
                   Syariffan, S.Pd
                 </h3>
-                <p class="text-gray-600 font-medium">Founder KADIJOKIAN</p>
+                <p class="text-gray-600 font-medium">Founder Kawan Baraja</p>
                 <p class="text-sm mt-2">
                   <i data-lucide="map-pin" class="inline w-4 h-4 mr-1"></i
                   >Sawahlunto, Sumatera Barat
@@ -994,7 +1121,6 @@
                   <div
                     class="absolute -right-[13px] top-[120px] h-[70px] w-[3px] bg-gray-800 rounded-r-lg"
                   ></div>
-
                   <div
                     class="w-full h-[600px] bg-gray-200 overflow-hidden rounded-[30px]"
                   >
@@ -1048,7 +1174,7 @@
                 href="#"
                 class="contact-modal-trigger flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-100 transition-colors"
                 data-type="whatsapp"
-                data-name="Syariffan (Admin)"
+                data-name="Admin"
                 data-id="6288709650064"
                 data-icon="message-circle"
                 data-color="text-green-500"
@@ -1227,13 +1353,13 @@
                 data-page="beranda"
                 class="flex items-center justify-center md:justify-start space-x-3 page-link"
               >
-                <div
-                  class="bg-brand-orange-500 text-white p-2 rounded-lg shadow-md"
-                >
-                  <i data-lucide="graduation-cap"></i>
-                </div>
+                <img
+                  src="assets/images/logo.png"
+                  alt="Kawan Baraja Logo"
+                  class="h-10 w-10"
+                />
                 <span class="text-2xl font-extrabold font-display"
-                  >KADIJOKIAN</span
+                  >Kawan Baraja</span
                 >
               </a>
               <p class="text-gray-400 text-sm">
@@ -1350,7 +1476,7 @@
             class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400"
           >
             <p>
-              © <span id="current-year"></span> KADIJOKIAN. Dibuat dengan ❤️
+              © <span id="current-year"></span> KAWAN BARAJA. Dibuat dengan ❤️
               oleh Syariffan, S.Pd.
             </p>
           </div>
@@ -1611,6 +1737,11 @@
       </div>
     </div>
 
+    <div id="toast-notification">
+      <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+      <span id="toast-message"></span>
+    </div>
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         // USER DATA
@@ -1626,7 +1757,7 @@
               entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                   const counter = entry.target;
-                  counter.textContent = "0"; // Reset before starting
+                  counter.textContent = "0";
                   const target = +counter.getAttribute("data-target");
                   let current = 0;
                   const duration = 1500;
@@ -1955,7 +2086,7 @@
           {
             name: "Joko - Hukum",
             message:
-              "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada Kadijokian. Makasih banyak kak!",
+              "Turnitin di bawah 20%? Keren! Awalnya pusing banget sama parafrase, untung ada Kawan Baraja. Makasih banyak kak!",
           },
         ];
 
@@ -1991,10 +2122,8 @@
         const checkoutBtn = document.getElementById("checkout-btn");
         const adminCopyBtn = document.getElementById("admin-copy-btn");
         const cancelAllBtn = document.getElementById("cancel-all-btn");
-        const fastTrackCheckbox = document.getElementById(
-          "fast-track-checkbox"
-        );
         const discountInput = document.getElementById("discount-request");
+        const fastTrackToggle = document.getElementById("fast-track-toggle");
         const customerCommentsEl = document.getElementById("customer-comments");
         const rotatingQuoteEl = document.getElementById("rotating-quote");
         const fabContainer = document.getElementById("fab-container");
@@ -2005,7 +2134,6 @@
         const openSidebarBtn = document.getElementById("open-sidebar");
         const closeSidebarBtn = document.getElementById("close-sidebar");
 
-        // New Modal Refs
         const userInfoModal = document.getElementById("user-info-modal");
         const confirmOrderBtn = document.getElementById("confirm-order-btn");
         const closeUserInfoModalBtn = document.getElementById(
@@ -2019,9 +2147,8 @@
             minimumFractionDigits: 0,
           }).format(a);
 
-        // Homepage animation
         function runHomepageAnimation() {
-          const textToAnimate = `KADIJOKIAN siap membantumu!`;
+          const textToAnimate = `Kawan Baraja siap membantumu!`;
           animatedTextEl.innerHTML = "";
           textToAnimate.split("").forEach((char, idx) => {
             const span = document.createElement("span");
@@ -2029,11 +2156,9 @@
             span.style.animationDelay = `${idx * 0.05}s`;
             animatedTextEl.appendChild(span);
           });
-
           animateCounters();
         }
 
-        // FAB
         fabMainBtn.addEventListener("click", (e) => {
           e.stopPropagation();
           fabContainer.classList.toggle("open");
@@ -2046,7 +2171,6 @@
           }
         });
 
-        // SIDEBAR (MOBILE)
         function openSidebar() {
           sidebar.classList.add("sidebar-open");
           sidebarBackdrop.classList.remove("hidden");
@@ -2059,9 +2183,7 @@
         closeSidebarBtn.addEventListener("click", closeSidebar);
         sidebarBackdrop.addEventListener("click", closeSidebar);
 
-        // RENDER: LAYANAN
         function renderLayanan() {
-          // Desktop
           layananNavDesktop.innerHTML = servicesData
             .map(
               (s, i) => `
@@ -2081,7 +2203,6 @@
             )
             .join("");
 
-          // Mobile (Accordion)
           layananAccordionMobile.innerHTML = servicesData
             .map(
               (s, i) => `
@@ -2105,7 +2226,6 @@
         `
             )
             .join("");
-
           lucide.createIcons();
         }
 
@@ -2141,30 +2261,24 @@
                 b.classList.add("bg-brand-orange-100", "text-brand-orange-800");
               }
             });
-
           lucide.createIcons();
         }
 
         document.getElementById("layanan").addEventListener("click", (e) => {
           const btn = e.target.closest(".layanan-nav-btn");
           if (!btn) return;
-
           const slug = btn.dataset.serviceSlug;
-
           if (btn.closest("#layanan-accordion-mobile")) {
             const wasActive = btn.classList.contains("active");
             document
               .querySelectorAll("#layanan-accordion-mobile .layanan-nav-btn")
               .forEach((b) => b.classList.remove("active"));
-            if (!wasActive) {
-              btn.classList.add("active");
-            }
+            if (!wasActive) btn.classList.add("active");
           } else {
             updateLayananContent(slug);
           }
         });
 
-        // RENDER: TESTIMONIALS
         function renderTestimonials() {
           const slider = document.getElementById("testimonial-slider");
           const dotsContainer = document.getElementById("testimonial-dots");
@@ -2270,7 +2384,6 @@
           lucide.createIcons();
         }
 
-        // RENDER: ORDER
         function renderOrderCategoryCards() {
           let html = servicesData
             .map(
@@ -2434,7 +2547,6 @@
           }
         }
 
-        // CART & TOTALS
         function calculateSubtotal() {
           let subtotal = 0;
           for (const itemId in cart) {
@@ -2460,8 +2572,7 @@
         function updateCartUI() {
           cartItemsList.innerHTML = "";
           const subtotal = calculateSubtotal();
-          const fastTrackFee = fastTrackCheckbox.checked ? subtotal * 0.2 : 0;
-          const maxDiscount = Math.floor((subtotal + fastTrackFee) * 0.1);
+          const maxDiscount = Math.floor(subtotal * 0.1);
 
           let discount = parseInt(discountInput.value) || 0;
           if (discount > maxDiscount && maxDiscount > 0) {
@@ -2469,8 +2580,12 @@
             discount = maxDiscount;
           }
 
-          const cartKeys = Object.keys(cart);
+          let fastTrackFee = 0;
+          if (fastTrackToggle.checked && subtotal > 0) {
+            fastTrackFee = subtotal * 0.2;
+          }
 
+          const cartKeys = Object.keys(cart);
           const hasItems = cartKeys.some((key) => {
             const item = cart[key];
             if (item.isCustom) return true;
@@ -2555,12 +2670,11 @@
             }
           }
           discountInput.value = "";
+          fastTrackToggle.checked = false;
           customerCommentsEl.value = "";
-          fastTrackCheckbox.checked = false;
           updateCartUI();
         }
 
-        // Event Listeners: Order Page
         orderCategoryCardsContainer.addEventListener("click", (e) => {
           const btn = e.target.closest(".order-category-btn");
           if (!btn) return;
@@ -2691,7 +2805,7 @@
           }
         });
         discountInput.addEventListener("input", updateCartUI);
-        fastTrackCheckbox.addEventListener("change", updateCartUI);
+        fastTrackToggle.addEventListener("change", updateCartUI);
         discountInput.addEventListener("blur", () => {
           let cur = parseInt(discountInput.value) || 0;
           const rounded = Math.round(cur / 1000) * 1000;
@@ -2708,28 +2822,53 @@
             clickedContainer.classList.contains("tooltip-active");
           processIndicator
             .querySelectorAll(".tooltip-container")
-            .forEach((container) => {
-              container.classList.remove("tooltip-active");
-            });
-          if (!wasActive) {
-            clickedContainer.classList.add("tooltip-active");
-          }
+            .forEach((container) =>
+              container.classList.remove("tooltip-active")
+            );
+          if (!wasActive) clickedContainer.classList.add("tooltip-active");
         });
 
-        // --- MESSAGE GENERATION & CHECKOUT LOGIC ---
+        // --- CHECKOUT & MODAL LOGIC ---
+        function showToast(message) {
+          const toast = document.getElementById("toast-notification");
+          const toastMessage = document.getElementById("toast-message");
+          toastMessage.textContent = message;
+          toast.classList.add("show");
+          setTimeout(() => {
+            toast.classList.remove("show");
+          }, 3000);
+        }
+
         function generateOrderMessage() {
+          const visitorName =
+            document.getElementById("visitor-name").value.trim() || "Klien";
+          const deadlineValue = document
+            .getElementById("visitor-deadline-value")
+            .value.trim();
+          const deadlineUnit = document.getElementById(
+            "visitor-deadline-unit"
+          ).value;
+          const deadline = deadlineValue
+            ? `${deadlineValue} ${deadlineUnit}`
+            : "Tidak ditentukan";
+
           const subtotal = calculateSubtotal();
-          const fastTrackFee = fastTrackCheckbox.checked ? subtotal * 0.2 : 0;
           const disc = parseInt(discountInput.value) || 0;
+          let fastTrackFee = 0;
+          if (fastTrackToggle.checked && subtotal > 0) {
+            fastTrackFee = subtotal * 0.2;
+          }
           const finalTotal = Math.max(0, subtotal + fastTrackFee - disc);
           const comments = customerCommentsEl.value.trim();
           const bsiNumber = "7324408295";
           const danaNumber = "088709650064";
           const accountHolder = "Syariffan";
 
-          let msg = `Halo KADIJOKIAN, saya ${visitorData.name}. Saya tertarik untuk memesan layanan berikut:\n\n`;
-          if (visitorData.deadline)
-            msg += `*Estimasi Deadline:* ${visitorData.deadline}\n\n`;
+          let msg = `Halo Kawan Baraja, saya ${visitorName}. Saya tertarik untuk memesan layanan berikut:\n\n`;
+          if (deadline) msg += `*Estimasi Deadline:* ${deadline}\n`;
+          if (fastTrackToggle.checked)
+            msg += `*Layanan Prioritas (Fast Track):* Diaktifkan ✅\n`;
+          msg += `\n`;
 
           let regular = "";
           let custom = "";
@@ -2778,12 +2917,10 @@
 
           msg += "--------------------------------------\n";
           msg += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
-          if (fastTrackFee > 0) {
-            msg += `*Biaya Fast Track:* ${formatCurrency(fastTrackFee)}\n`;
-          }
-          if (disc > 0) {
-            msg += `*Diskon Diminta:* -${formatCurrency(disc)}\n`;
-          }
+          if (fastTrackFee > 0)
+            msg += `*Biaya Fast Track:* +${formatCurrency(fastTrackFee)}\n`;
+          if (disc > 0) msg += `*Diskon Diminta:* -${formatCurrency(disc)}\n`;
+
           msg += `*Total Akhir:* ${formatCurrency(finalTotal)}\n\n`;
 
           if (comments) {
@@ -2795,11 +2932,9 @@
 
           msg += `--------------------------------------\n*Informasi Pembayaran:*\nSilakan lakukan pembayaran ke salah satu rekening di bawah ini:\n\n*Bank Syariah Indonesia (BSI)*\nNo. Rek: ${bsiNumber}\nA/n: ${accountHolder}\n\n*DANA*\nNo. HP: ${danaNumber}\nA/n: ${accountHolder}\n\n`;
           msg += "Mohon konfirmasi dan informasinya. Terima kasih!";
-
           return msg;
         }
 
-        // --- CHECKOUT & NEW MODAL LOGIC ---
         function showUserInfoModal() {
           userInfoModal.classList.remove("modal-hidden");
           userInfoModal.classList.add("modal-visible");
@@ -2818,44 +2953,47 @@
         });
 
         adminCopyBtn.addEventListener("click", () => {
-          visitorData.name = "[NAMA KLIEN]";
-          visitorData.deadline = "[DEADLINE]";
-          const message = generateOrderMessage();
-          navigator.clipboard.writeText(message).then(() => {
-            const icon = adminCopyBtn.querySelector("i");
-            icon.setAttribute("data-lucide", "check");
-            lucide.createIcons();
-            setTimeout(() => {
-              icon.setAttribute("data-lucide", "copy");
-              lucide.createIcons();
-            }, 2000);
+          showUserInfoModal(); // Show modal to fill details first
+          // Once confirmed in modal, copying can happen
+          const tempConfirmHandler = () => {
+            const visitorNameInput = document.getElementById("visitor-name");
+            const visitorName = visitorNameInput.value.trim();
+            if (!visitorName) {
+              visitorNameInput.focus();
+              visitorNameInput.classList.add("border-red-500", "ring-red-500");
+              return;
+            }
+            visitorNameInput.classList.remove("border-red-500", "ring-red-500");
+
+            const message = generateOrderMessage();
+            navigator.clipboard
+              .writeText(message)
+              .then(() => {
+                showToast("Pesanan berhasil disalin!");
+                closeUserInfoModal();
+              })
+              .catch((err) => {
+                showToast("Gagal menyalin pesanan.");
+              });
+            confirmOrderBtn.removeEventListener("click", tempConfirmHandler); // Clean up
+          };
+          // Temporarily repurpose the confirm button for copying
+          confirmOrderBtn.addEventListener("click", tempConfirmHandler, {
+            once: true,
           });
         });
 
         confirmOrderBtn.addEventListener("click", () => {
           const visitorNameInput = document.getElementById("visitor-name");
-          const visitorName = visitorNameInput.value.trim();
-          if (!visitorName) {
+          if (!visitorNameInput.value.trim()) {
             visitorNameInput.focus();
             visitorNameInput.classList.add("border-red-500", "ring-red-500");
             return;
           }
           visitorNameInput.classList.remove("border-red-500", "ring-red-500");
 
-          visitorData.name = visitorName;
-          const deadlineValue = document
-            .getElementById("visitor-deadline-value")
-            .value.trim();
-          const deadlineUnit = document.getElementById(
-            "visitor-deadline-unit"
-          ).value;
-          visitorData.deadline = deadlineValue
-            ? `${deadlineValue} ${deadlineUnit}`
-            : "Tidak ditentukan";
-
           updateProcessIndicator(3);
           const msg = generateOrderMessage();
-
           closeUserInfoModal();
           window.open(
             `https://wa.me/6288709650064?text=${encodeURIComponent(msg)}`,
@@ -2902,7 +3040,6 @@
           }
         });
 
-        // SPA Navigation
         function showPage(id, slug = null) {
           document
             .querySelectorAll(".page-section")
@@ -3055,11 +3192,11 @@
           if (type === "whatsapp") {
             defaultMessage = `Assalamualaikum Kak ${
               name.split(" ")[0]
-            },\n\nSaya ingin bertanya tentang layanan KADIJOKIAN...`;
+            },\n\nSaya ingin bertanya tentang layanan Kawan Baraja...`;
           } else {
             defaultMessage = `Halo Kak ${
               name.split(" ")[0]
-            },\n\nSaya menemukan profil Anda dari website KADIJOKIAN.`;
+            },\n\nSaya menemukan profil Anda dari website Kawan Baraja.`;
           }
           messageTextarea.value = defaultMessage;
 
@@ -3096,7 +3233,6 @@
               "contact-modal-message"
             ).value;
             let url = "";
-
             if (currentContactInfo.type === "whatsapp") {
               url = `https://wa.me/${
                 currentContactInfo.id
@@ -3104,10 +3240,7 @@
             } else {
               url = currentContactInfo.url;
             }
-
-            if (url) {
-              window.open(url, "_blank");
-            }
+            if (url) window.open(url, "_blank");
             closeContactModal();
           });
 
@@ -3118,23 +3251,20 @@
           .getElementById("contact-modal-cancel")
           .addEventListener("click", closeContactModal);
         contactModal.addEventListener("click", (e) => {
-          if (e.target === contactModal) {
-            closeContactModal();
-          }
+          if (e.target === contactModal) closeContactModal();
         });
 
         // INITIAL RENDERS
         document.getElementById("current-year").textContent =
           new Date().getFullYear();
         renderLayanan();
-        updateLayananContent("harian"); // default tab
+        updateLayananContent("harian");
         renderOrderCategoryCards();
         renderFaq();
         renderTestimonials();
         updateProcessIndicator(0);
         lucide.createIcons();
         showPage("beranda");
-        // Menampilkan konten setelah semua siap untuk mencegah 'flash' footer
         document.getElementById("main-content").classList.add("loaded");
       });
     </script>
