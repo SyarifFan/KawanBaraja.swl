@@ -675,7 +675,33 @@
                     Bantu kami terus berkembang dan menyediakan layanan edukatif
                     yang terjangkau. Pilih metode di bawah untuk berdonasi.
                   </p>
-                  <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <button
+                      class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border"
+                      data-pay="bri"
+                    >
+                      <img
+                        src="assets/images/BRI.png"
+                        alt="BRI logo"
+                        class="h-6"
+                      />
+                      <span class="font-semibold text-sm"
+                        >Lihat Detail BRI</span
+                      >
+                    </button>
+                    <button
+                      class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border"
+                      data-pay="nagari"
+                    >
+                      <img
+                        src="assets/images/Nagari.png"
+                        alt="Nagari logo"
+                        class="h-6"
+                      />
+                      <span class="font-semibold text-sm"
+                        >Lihat Detail Nagari</span
+                      >
+                    </button>
                     <button
                       class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border"
                       data-pay="dana"
@@ -687,19 +713,6 @@
                       />
                       <span class="font-semibold text-sm"
                         >Lihat Detail DANA</span
-                      >
-                    </button>
-                    <button
-                      class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-4 rounded-xl border"
-                      data-pay="bsi"
-                    >
-                      <img
-                        src="assets/images/BSI.png"
-                        alt="BSI logo"
-                        class="h-6"
-                      />
-                      <span class="font-semibold text-sm"
-                        >Lihat Detail BSI</span
                       >
                     </button>
                   </div>
@@ -865,7 +878,27 @@
                       <i data-lucide="wallet-cards" class="w-5 h-5"></i> Metode
                       Pembayaran
                     </h4>
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-3 gap-3">
+                      <button
+                        class="payment-modal-trigger flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 p-2 rounded-lg border"
+                        data-pay="bri"
+                      >
+                        <img
+                          src="assets/images/BRI.png"
+                          alt="BRI logo"
+                          class="h-4"
+                        />
+                      </button>
+                      <button
+                        class="payment-modal-trigger flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 p-2 rounded-lg border"
+                        data-pay="nagari"
+                      >
+                        <img
+                          src="assets/images/Nagari.png"
+                          alt="Nagari logo"
+                          class="h-4"
+                        />
+                      </button>
                       <button
                         class="payment-modal-trigger flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 p-2 rounded-lg border"
                         data-pay="dana"
@@ -873,16 +906,6 @@
                         <img
                           src="assets/images/Dana.png"
                           alt="DANA logo"
-                          class="h-4"
-                        />
-                      </button>
-                      <button
-                        class="payment-modal-trigger flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 p-2 rounded-lg border"
-                        data-pay="bsi"
-                      >
-                        <img
-                          src="assets/images/BSI.png"
-                          alt="BSI logo"
                           class="h-4"
                         />
                       </button>
@@ -942,7 +965,7 @@
                       </button>
                       <button
                         id="admin-copy-btn"
-                        title="Salin Pesanan (untuk Admin)"
+                        title="Salin Rincian untuk Klien"
                         class="flex-shrink-0 bg-brand-blue-500 text-white p-3 rounded-lg hover:bg-brand-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg"
                         disabled
                       >
@@ -1026,7 +1049,7 @@
                 <img
                   src="assets/images/Syariffan.png"
                   alt="Foto Syariffan, S.Pd"
-                  class="w-40 h-40 rounded-full mx-auto object-cover shadow-lg border-4 border-brand-orange-200"
+                  class="w-40 h-40 rounded-3xl mx-auto object-cover shadow-lg border-4 border-brand-orange-200"
                 />
                 <h3
                   class="mt-4 text-2xl font-extrabold text-brand-orange-600 font-display"
@@ -1302,7 +1325,31 @@
                 Terima kasih atas dukungannya. Klik salah satu untuk melihat
                 detail pembayaran.
               </p>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                <button
+                  class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border"
+                  data-pay="bri"
+                >
+                  <img
+                    src="assets/images/BRI.png"
+                    alt="BRI logo"
+                    class="h-6"
+                  />
+                  <span class="font-semibold text-sm">Lihat Detail BRI</span>
+                </button>
+                <button
+                  class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border"
+                  data-pay="nagari"
+                >
+                  <img
+                    src="assets/images/Nagari.png"
+                    alt="Nagari logo"
+                    class="h-6"
+                  />
+                  <span class="font-semibold text-sm"
+                    >Lihat Detail Nagari</span
+                  >
+                </button>
                 <button
                   class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border"
                   data-pay="dana"
@@ -1313,13 +1360,6 @@
                     class="h-6"
                   />
                   <span class="font-semibold text-sm">Lihat Detail DANA</span>
-                </button>
-                <button
-                  class="payment-modal-trigger flex items-center gap-3 bg-gray-50 hover:bg-gray-100 p-3 rounded-lg border"
-                  data-pay="bsi"
-                >
-                  <img src="assets/images/BSI.png" alt="BSI logo" class="h-6" />
-                  <span class="font-semibold text-sm">Lihat Detail BSI</span>
                 </button>
               </div>
             </div>
@@ -1967,6 +2007,46 @@
                 name: "Proofreading & Editing",
                 price: 150000,
                 unit: "file",
+              },
+            ],
+          },
+          {
+            category: "Jasa Tulis & Ketik",
+            slug: "tulis-ketik",
+            icon: "file-pen-line",
+            color: "brand-amber-500",
+            description:
+              "Layanan tulis tangan dan pengetikan dokumen untuk berbagai kebutuhan. Kami memastikan tulisan rapi dan hasil ketikan sesuai dengan format yang Anda inginkan, baik dengan maupun tanpa draft.",
+            items: [
+              {
+                id: "tulis_buku",
+                name: "Tulis Tangan (Buku Tulis)",
+                price: 3000,
+                unit: "lembar",
+              },
+              {
+                id: "tulis_folio",
+                name: "Tulis Tangan (Folio)",
+                price: 4000,
+                unit: "lembar",
+              },
+              {
+                id: "tulis_hvs",
+                name: "Tulis Tangan (HVS)",
+                price: 5000,
+                unit: "lembar",
+              },
+              {
+                id: "ketik_draft",
+                name: "Ketik (Disediakan Draft)",
+                price: 3000,
+                unit: "halaman",
+              },
+              {
+                id: "ketik_no_draft",
+                name: "Ketik (Tanpa Draft)",
+                price: 5000,
+                unit: "halaman",
               },
             ],
           },
@@ -2832,7 +2912,7 @@
           }
         });
 
-        // --- CHECKOUT & NEW MODAL LOGIC ---
+        // --- CHECKOUT & MODAL LOGIC ---
         function showUserInfoModal() {
           userInfoModal.classList.remove("modal-hidden");
           userInfoModal.classList.add("modal-visible");
@@ -2851,10 +2931,6 @@
           const fastTrackFee = isFastTrack ? subtotal * 0.2 : 0;
           const finalTotal = Math.max(0, subtotal + fastTrackFee - disc);
           const comments = customerCommentsEl.value.trim();
-
-          const bsiNumber = "7324408295";
-          const danaNumber = "088709650064";
-          const accountHolder = "Syariffan";
 
           let msg = `Halo Kawan Baraja, saya ${visitorData.name}. Saya tertarik untuk memesan layanan berikut:\n\n`;
           if (visitorData.deadline)
@@ -2923,9 +2999,103 @@
               comments +
               "\n\n";
           }
+          
+          const briInfo = paymentMeta.bri;
+          const nagariInfo = paymentMeta.nagari;
+          const danaInfo = paymentMeta.dana;
 
-          msg += `--------------------------------------\n*Informasi Pembayaran:*\nSilakan lakukan pembayaran ke salah satu rekening di bawah ini:\n\n*Bank Syariah Indonesia (BSI)*\nNo. Rek: ${bsiNumber}\nA/n: ${accountHolder}\n\n*DANA*\nNo. HP: ${danaNumber}\nA/n: ${accountHolder}\n\n`;
+          msg += `--------------------------------------\n*Informasi Pembayaran:*\nSilakan lakukan pembayaran ke salah satu rekening di bawah ini:\n\n`;
+          msg += `*Bank BRI*\nNo. Rek: ${briInfo.number}\nA/n: ${briInfo.holder}\n\n`;
+          msg += `*Bank Nagari*\nNo. Rek: ${nagariInfo.number}\nA/n: ${nagariInfo.holder}\n\n`;
+          msg += `*DANA*\nNo. HP: ${danaInfo.number}\nA/n: ${danaInfo.holder}\n\n`;
           msg += "Mohon konfirmasi dan informasinya. Terima kasih!";
+
+          return msg;
+        }
+
+        // New function for admin copy
+        function generateAdminCopyMessage() {
+          const subtotal = calculateSubtotal();
+          const disc = parseInt(discountInput.value) || 0;
+          const isFastTrack = fastTrackToggle.checked;
+          const fastTrackFee = isFastTrack ? subtotal * 0.2 : 0;
+          const finalTotal = Math.max(0, subtotal + fastTrackFee - disc);
+          const comments = customerCommentsEl.value.trim();
+
+          let msg = "✨ *RINGKASAN PESANAN* ✨\n\n";
+          if (isFastTrack) msg += `*Prioritas Pengerjaan:* FAST TRACK ⚡\n\n`;
+
+          let regular = "";
+          let custom = "";
+
+          for (const id in cart) {
+            const c = cart[id];
+            if (c.isCustom) {
+              custom += `- ${c.name}\n  _(Harga akan didiskusikan)_\n`;
+              continue;
+            }
+            const item = servicesData
+              .flatMap((s) => s.items)
+              .find((i) => i.id === id);
+            if (item) {
+              if (item.selectable) {
+                const n = c.chapters?.length || 0;
+                if (n > 0) {
+                  let bill = new Set(c.chapters);
+                  if (c.totalChapters === 5 && bill.has("4") && bill.has("5"))
+                    bill.delete("5");
+                  const total = item.price * bill.size;
+                  regular += `*- ${item.name} (${
+                    c.category
+                  })* (BAB ${c.chapters.join(", ")})\n  Jumlah terhitung: ${
+                    bill.size
+                  } bab\n  Harga: ${formatCurrency(total)}\n\n`;
+                }
+              } else {
+                const total = item.price * c.quantity;
+                if (item.price === 0) {
+                  regular += `*- ${item.name}*\n  Harga: ${item.note}\n\n`;
+                } else {
+                  regular += `*- ${item.name}*\n  Jumlah: ${c.quantity} ${
+                    item.unit
+                  }\n  Harga: ${formatCurrency(total)}\n\n`;
+                }
+              }
+            }
+          }
+
+          if (regular) msg += `*Layanan Utama:*\n${regular}`;
+          if (custom) {
+            if (regular) msg += `--------------------------------------\n`;
+            msg += `*Layanan Kustom:*\n${custom}\n`;
+          }
+
+          msg += "--------------------------------------\n";
+          msg += `*Subtotal:* ${formatCurrency(subtotal)}\n`;
+          if (isFastTrack)
+            msg += `*Biaya Fast Track (20%):* +${formatCurrency(
+              fastTrackFee
+            )}\n`;
+          if (disc > 0) {
+            msg += `*Diskon Diberikan:* -${formatCurrency(disc)}\n`;
+          }
+          msg += `*Total Akhir:* ${formatCurrency(finalTotal)}\n\n`;
+
+          if (comments) {
+            msg +=
+              "--------------------------------------\n*Catatan Tambahan:*\n" +
+              comments +
+              "\n\n";
+          }
+          
+          const briInfo = paymentMeta.bri;
+          const nagariInfo = paymentMeta.nagari;
+          const danaInfo = paymentMeta.dana;
+
+          msg += `--------------------------------------\n*Metode Pembayaran Tersedia:*\n\n`;
+          msg += `*Bank BRI*\nNo. Rek: ${briInfo.number}\nA/n: ${briInfo.holder}\n\n`;
+          msg += `*Bank Nagari*\nNo. Rek: ${nagariInfo.number}\nA/n: ${nagariInfo.holder}\n\n`;
+          msg += `*DANA*\nNo. HP: ${danaInfo.number}\nA/n: ${danaInfo.holder}`;
 
           return msg;
         }
@@ -2970,16 +3140,7 @@
         });
 
         adminCopyBtn.addEventListener("click", () => {
-          // Temporarily set a default name if it's empty, just for message generation
-          const originalName = visitorData.name;
-          if (!visitorData.name || visitorData.name === "Klien") {
-            visitorData.name = "[Nama Klien]";
-          }
-          if (!visitorData.deadline) {
-            visitorData.deadline = "[Deadline]";
-          }
-
-          const message = generateOrderMessage();
+          const message = generateAdminCopyMessage();
           navigator.clipboard.writeText(message).then(() => {
             const icon = adminCopyBtn.querySelector("i");
             icon.setAttribute("data-lucide", "check");
@@ -2989,9 +3150,6 @@
               lucide.createIcons();
             }, 2000);
           });
-
-          // Restore original data
-          visitorData.name = originalName;
         });
 
         // FAQ accordion
@@ -3087,15 +3245,22 @@
         const paymentMeta = {
           dana: {
             title: "DANA",
-            number: "088709650064",
-            holder: "Syariffan",
+            number: "085265895671",
+            holder: "Reren Nabila Agusti",
             icon: "smartphone",
             color: "bg-blue-100 text-blue-600",
           },
-          bsi: {
-            title: "Bank Syariah Indonesia (BSI)",
-            number: "7324408295",
-            holder: "Syariffan",
+          bri: {
+            title: "Bank BRI",
+            number: "787401007489536",
+            holder: "SHINTIA SEPPIANTI SAFITRI",
+            icon: "banknote",
+            color: "bg-blue-100 text-blue-700",
+          },
+          nagari: {
+            title: "Bank Nagari",
+            number: "71020201041845",
+            holder: "SHINTIA SEPPIANTI SAFITRI",
             icon: "banknote",
             color: "bg-green-100 text-green-700",
           },
@@ -3131,13 +3296,13 @@
           paymentModal.classList.remove("modal-visible");
         }
 
-        document
-          .querySelectorAll(".payment-modal-trigger")
-          .forEach((btn) =>
-            btn.addEventListener("click", () =>
-              showPaymentModal(btn.dataset.pay)
-            )
-          );
+        document.body.addEventListener("click", (e) => {
+          const trigger = e.target.closest(".payment-modal-trigger");
+          if (trigger) {
+            showPaymentModal(trigger.dataset.pay);
+          }
+        });
+
         document
           .getElementById("payment-modal-close")
           .addEventListener("click", closePaymentModal);
