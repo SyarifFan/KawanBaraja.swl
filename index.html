@@ -498,14 +498,14 @@
             <div
               class="flex flex-col md:flex-row items-center justify-between gap-8"
             >
-              <div class="md:w-1/2 flex justify-center">
+              <div class="md:w-1/2 flex justify-center order-1 md:order-2">
                 <img
                   src="assets/images/Mahasiswa.png"
                   alt="Ilustrasi Mahasiswa"
                   class="w-3/4 md:w-full max-w-md animate-float"
                 />
               </div>
-              <div class="md:w-1/2 text-center md:text-left">
+              <div class="md:w-1/2 text-center md:text-left order-2 md:order-1">
                 <h1
                   class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-brand-orange-600 leading-tight font-display"
                 >
@@ -2567,13 +2567,13 @@
                 cart[item.id] ? "flex" : "hidden"
               } items-center space-x-2"> <button data-id="${
                 item.id
-              }" data-change="-1" class="qty-btn bg-gray-200 w-8 h-8 rounded-full font-bold hover:bg-gray-300" aria-label="Kurangi">-</button> <span id="qty_val_${
+              }" data-change="-1" class="qty-btn bg-gray-200 w-10 h-10 rounded-full font-bold hover:bg-gray-300" aria-label="Kurangi">-</button> <span id="qty_val_${
                 item.id
               }" class="font-bold w-10 text-center">${
                 cart[item.id] ? cart[item.id].quantity : 1
               }</span> <button data-id="${
                 item.id
-              }" data-change="1" class="qty-btn bg-gray-200 w-8 h-8 rounded-full font-bold hover:bg-gray-300" aria-label="Tambah">+</button> </div>`;
+              }" data-change="1" class="qty-btn bg-gray-200 w-10 h-10 rounded-full font-bold hover:bg-gray-300" aria-label="Tambah">+</button> </div>`;
             }
             inner += `</div>`;
             wrap.innerHTML = inner;
