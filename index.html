@@ -365,6 +365,12 @@
         color: white;
         border: 3px solid #ffedd5;
       }
+
+      /* PERBAIKAN: Mencegah ikon di dalam tombol 'mencuri' event klik */
+      button svg,
+      a svg {
+        pointer-events: none;
+      }
     </style>
   </head>
   <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
@@ -1763,6 +1769,47 @@
     </div>
 
     <script>
+      // --- PERBAIKAN: Fungsi Salin Teks yang Lebih Andal ---
+      function copyToClipboard(text, successCallback, failureCallback) {
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard
+            .writeText(text)
+            .then(successCallback)
+            .catch((err) => {
+              console.error("Async clipboard copy failed:", err);
+              fallbackCopy(text, successCallback, failureCallback);
+            });
+        } else {
+          fallbackCopy(text, successCallback, failureCallback);
+        }
+      }
+
+      function fallbackCopy(text, successCallback, failureCallback) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          const successful = document.execCommand("copy");
+          if (successful) {
+            successCallback();
+          } else {
+            console.error("Fallback copy command failed");
+            if (failureCallback) failureCallback();
+          }
+        } catch (err) {
+          console.error("Fallback copy error:", err);
+          if (failureCallback) failureCallback();
+        }
+        document.body.removeChild(textArea);
+      }
+      // --- Akhir Perbaikan ---
+
       document.addEventListener("DOMContentLoaded", () => {
         // USER DATA
         let visitorData = { name: "Klien", deadline: "" };
@@ -2562,31 +2609,34 @@
                 ? formatCurrency(item.price) + "/" + item.unit
                 : item.note || ""
             })</span></label> </div>`;
+            // --- PERBAIKAN & PENINGKATAN: Kontrol Kuantitas Baru ---
             if (!item.selectable) {
+              const currentQty = cart[item.id] ? cart[item.id].quantity : 1;
               inner += `<div id="qty_${
                 item.id
               }" class="${
                 cart[item.id] ? "flex" : "hidden"
-              } items-center gap-2">
-                  <span id="qty_val_${
+              } items-center">
+                  <button data-id="${
                     item.id
-                  }" class="font-bold text-lg w-9 text-center">${
-                cart[item.id] ? cart[item.id].quantity : 1
-              }</span>
-                  <div class="flex flex-col">
-                      <button data-id="${
-                        item.id
-                      }" data-change="1" class="qty-btn bg-brand-orange-500 text-white w-10 h-7 rounded-t-md flex items-center justify-center active:bg-brand-orange-600" aria-label="Tambah">
-                          <i data-lucide="chevron-up" class="w-5 h-5"></i>
-                      </button>
-                      <button data-id="${
-                        item.id
-                      }" data-change="-1" class="qty-btn bg-brand-orange-500 text-white w-10 h-7 rounded-b-md flex items-center justify-center active:bg-brand-orange-600" aria-label="Kurangi">
-                          <i data-lucide="chevron-down" class="w-5 h-5"></i>
-                      </button>
-                  </div>
+                  }" data-change="-1" class="qty-btn bg-gray-200 text-gray-700 w-8 h-8 flex items-center justify-center rounded-l-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" aria-label="Kurangi" ${
+                currentQty <= 1 ? "disabled" : ""
+              }>
+                      <i data-lucide="minus" class="w-4 h-4"></i>
+                  </button>
+                  <input type="number" id="qty_val_${
+                    item.id
+                  }" data-id="${
+                item.id
+              }" class="qty-input w-12 h-8 text-center font-bold text-gray-800 bg-white border-t border-b border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-orange-300" value="${currentQty}" min="1">
+                  <button data-id="${
+                    item.id
+                  }" data-change="1" class="qty-btn bg-gray-200 text-gray-700 w-8 h-8 flex items-center justify-center rounded-r-lg hover:bg-gray-300 transition-colors" aria-label="Tambah">
+                      <i data-lucide="plus" class="w-4 h-4"></i>
+                  </button>
               </div>`;
             }
+            // --- Akhir Perbaikan ---
             inner += `</div>`;
             wrap.innerHTML = inner;
             if (item.selectable) {
@@ -2791,16 +2841,33 @@
           else renderOrderItems(slug);
           updateProcessIndicator(1);
         });
+
+        // --- PERBAIKAN: Event Listener untuk Kontrol Kuantitas Baru ---
         orderFormItemsContainer.addEventListener("click", (e) => {
           const qtyBtn = e.target.closest(".qty-btn");
           if (qtyBtn) {
             const id = qtyBtn.dataset.id;
             const change = parseInt(qtyBtn.dataset.change, 10);
-            const cur = cart[id] ? cart[id].quantity : 0;
-            const next = Math.max(1, cur + change);
-            cart[id].quantity = next;
-            document.getElementById(`qty_val_${id}`).textContent = next;
-            updateCartUI();
+
+            if (!cart[id]) return;
+
+            const currentQuantity = cart[id].quantity;
+            const newQuantity = Math.max(1, currentQuantity + change);
+
+            if (newQuantity !== currentQuantity) {
+              cart[id].quantity = newQuantity;
+
+              const inputEl = document.getElementById(`qty_val_${id}`);
+              if (inputEl) inputEl.value = newQuantity;
+
+              const container = document.getElementById(`qty_${id}`);
+              if (container) {
+                const minusBtn = container.querySelector('[data-change="-1"]');
+                if (minusBtn) minusBtn.disabled = newQuantity <= 1;
+              }
+
+              updateCartUI();
+            }
           }
 
           if (e.target.id === "add-custom-service-btn") {
@@ -2817,6 +2884,43 @@
             input.focus();
           }
         });
+
+        orderFormItemsContainer.addEventListener("input", (e) => {
+          const qtyInput = e.target.closest(".qty-input");
+          if (qtyInput) {
+            const id = qtyInput.dataset.id;
+            let newQuantity = parseInt(qtyInput.value, 10);
+
+            if (isNaN(newQuantity) || newQuantity < 1) {
+              // Jika input tidak valid, jangan langsung ubah, biarkan pengguna memperbaikinya
+              return;
+            }
+
+            if (cart[id] && cart[id].quantity !== newQuantity) {
+              cart[id].quantity = newQuantity;
+
+              const container = document.getElementById(`qty_${id}`);
+              if (container) {
+                const minusBtn = container.querySelector('[data-change="-1"]');
+                if (minusBtn) minusBtn.disabled = newQuantity <= 1;
+              }
+
+              updateCartUI();
+            }
+          }
+        });
+
+        orderFormItemsContainer.addEventListener("blur", (e) => {
+            const qtyInput = e.target.closest(".qty-input");
+            if(qtyInput) {
+                if (qtyInput.value === "" || parseInt(qtyInput.value) < 1) {
+                    qtyInput.value = 1;
+                    // Trigger input event manually to update state
+                    qtyInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            }
+        }, true); // Use capture phase to catch blur event
+
         orderFormItemsContainer.addEventListener("change", (e) => {
           const t = e.target;
           if (t.type === "checkbox" && !t.classList.contains("chapter-check")) {
@@ -2843,7 +2947,10 @@
                 if (qtyEl) {
                   qtyEl.classList.remove("hidden");
                   qtyEl.classList.add("flex");
-                  document.getElementById(`qty_val_${id}`).textContent = "1";
+                  const inputEl = document.getElementById(`qty_val_${id}`);
+                  if (inputEl) inputEl.value = "1";
+                  const minusBtn = qtyEl.querySelector('[data-change="-1"]');
+                  if(minusBtn) minusBtn.disabled = true;
                 }
               }
               cart[id] = cartItem;
@@ -2884,6 +2991,8 @@
             updateCartUI();
           }
         });
+        // --- Akhir Perbaikan ---
+
         orderFormItemsContainer.addEventListener("input", (e) => {
           if (e.target.classList.contains("total-chapters-input")) {
             const id = e.target.dataset.id;
@@ -3296,10 +3405,13 @@
             .getElementById("payment-modal-icon")
             .setAttribute("data-lucide", data.icon);
           lucide.createIcons();
-          document.getElementById("payment-modal-copy").dataset.number =
-            data.number;
-          document.getElementById("payment-modal-copy").dataset.holder =
-            data.holder;
+          // PERBAIKAN: Menambahkan semua data yang diperlukan untuk disalin
+          const copyBtn = document.getElementById("payment-modal-copy");
+          copyBtn.dataset.number = data.number;
+          copyBtn.dataset.holder = data.holder;
+          copyBtn.dataset.title = data.title;
+          paymentModal.classList.remove("modal-hidden");
+          paymentModal.classList.add("modal-visible");
         }
 
         function closePaymentModal() {
@@ -3324,20 +3436,35 @@
           if (e.target === paymentModal) closePaymentModal();
         });
 
+        // --- PERBAIKAN: Event Listener untuk Tombol Salin yang Lebih Baik ---
         document
           .getElementById("payment-modal-copy")
           .addEventListener("click", function () {
             const numberToCopy = this.dataset.number;
             const holderToCopy = this.dataset.holder;
-            const textToCopy = `${numberToCopy}\n(a.n. ${holderToCopy})`;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-              const btnText = document.getElementById("copy-button-text");
-              btnText.textContent = "Berhasil Disalin!";
-              setTimeout(() => {
-                btnText.textContent = "Salin Info";
-              }, 2000);
-            });
+            const titleToCopy = this.dataset.title;
+            const textToCopy = `Bank: ${titleToCopy}\nNomor Rekening: ${numberToCopy}\nAtas Nama: ${holderToCopy}`;
+            const btnText = document.getElementById("copy-button-text");
+
+            copyToClipboard(
+              textToCopy,
+              () => {
+                // Success
+                btnText.textContent = "Berhasil Disalin!";
+                setTimeout(() => {
+                  btnText.textContent = "Salin Info";
+                }, 2000);
+              },
+              () => {
+                // Failure
+                btnText.textContent = "Gagal Menyalin";
+                setTimeout(() => {
+                  btnText.textContent = "Salin Info";
+                }, 2000);
+              }
+            );
           });
+        // --- Akhir Perbaikan ---
 
         // CONTACT MODAL
         const contactModal = document.getElementById("contact-modal");
@@ -3449,4 +3576,3 @@
     </script>
   </body>
 </html>
-
